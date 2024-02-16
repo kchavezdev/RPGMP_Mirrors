@@ -31,7 +31,7 @@ SOFTWARE.
  * @base PluginCommonBase
  * @orderafter PluginCommonBase
  *
- * @plugindesc [v1.0]Add reflections to events and actors.
+ * @plugindesc [v1.1]Add reflections to events and actors.
  *
  * @help 
  * This is a plugin that allows the developer to add reflections to actors and 
@@ -179,11 +179,11 @@ SOFTWARE.
  * resetActorReflectImage(actor_id)
  *   | Same as Match Actor Reflection command
  * 
- * refreshReflectWallCache()
- *   | Same as Refresh Wall Reflections command
- * 
  * setWallReflectMode(mode)
  *   | Same as Set Wall Reflection Mode command
+ * 
+ * refreshReflectWallCache()
+ *   | Same as Refresh Wall Reflections command
  * 
  * @param regionsParent
  * @text Regions
