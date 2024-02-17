@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2022 K. Chavez <kchavez.dev@gmail.com>
+Copyright (c) 2022-2023 K. Chavez <kchavez.dev@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,12 +31,15 @@ SOFTWARE.
  * @base PluginCommonBase
  * @orderafter PluginCommonBase
  *
- * @plugindesc [v1.3.2]Add reflections to events and actors.
+ * @plugindesc [v1.3.3]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
  * 
  * Changelog: 
+ *     v1.3.3 - 2023/12/01
+ *         - Fixed a crash related to launching this plugin without
+ *           FilterControllerMZ
  *     v1.3.2 - 2022/12/20
  *         - Fixed bugs where incorrect scaling on the x axis would be applied
  *           to reflections of events using tileset sprites
@@ -1734,7 +1737,6 @@ Sprite_Character.prototype.updateReflectionSprite = function () {
 
     this.updateReflectFloor();
     this.updateReflectWall();
-    this.updateReflectFilters();
 };
 
 /**
@@ -1896,15 +1898,6 @@ KCDev.Mirrors.getWallY = function (x, y) {
     }
 };
 
-/**
- * New method: Sprite_Character.prototype.updateReflectFilter
- * Matches the sprite's reflections to the filters.
- */
-Sprite_Character.prototype.updateReflectFilters = function () {
-    this._reflectFloor.filters = this.filters;
-    this._reflectWall.filters = this.filters;
-};
-
 KCDev.Mirrors.Sprite_Character_isImageChanged = Sprite_Character.prototype.isImageChanged;
 /**
  * Aliased method: Sprite_Character.prototype.isImageChanged
@@ -2025,9 +2018,6 @@ if (window.Filter_Controller) {
         }
         return targets;
     };
-
-    // dummy out this function
-    Sprite_Character.prototype.updateReflectFilters = function () { }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
