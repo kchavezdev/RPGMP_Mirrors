@@ -1528,6 +1528,10 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
 
 KCDev.Mirrors.setupMapReflectOptions = function () {
 
+    if (!$dataMap.meta) {
+        return;
+    }
+
     const findMetaSimple = function (str) {
         return KCDev.Mirrors.findMetaSimple(str, $dataMap);
     };
