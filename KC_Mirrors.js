@@ -417,7 +417,27 @@ SOFTWARE.
  * @noteType file
  * @noteData events
  * 
+ * @noteParam reflect_char
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData events
+ * 
+ * @noteParam Reflect_Char
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData events
+ * 
  * @noteParam REFLECT_ACTOR
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData actors
+ * 
+ * @noteParam reflect_actor
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData actors
+ * 
+ * @noteParam Reflect_Actor
  * @noteDir img/characters/
  * @noteType file
  * @noteData actors
