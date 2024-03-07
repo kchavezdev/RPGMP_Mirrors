@@ -2016,7 +2016,7 @@ KCDev.Mirrors.setReflectFrame = function (r) {
     const sx = (r.characterBlockX() + r.characterPatternX()) * pw;
     const sy = (r.characterBlockY() + r.characterPatternY()) * ph;
     r.setFrame(sx, sy, pw, ph);
-}
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Sprite_Character edits                                                                                 //
