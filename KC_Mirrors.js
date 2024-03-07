@@ -31,12 +31,16 @@ SOFTWARE.
  * @base PluginCommonBase
  * @orderafter PluginCommonBase
  *
- * @plugindesc [v1.3.4]Add reflections to events and actors.
+ * @plugindesc [v1.3.5]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
  * 
  * Changelog: 
+ *     v1.3.5 - XXXX/XX/XX
+ *         - Restructure internal code
+ *         - Make reflections compatible with GALV_CharacterFramesMZ
+ *         - Make reflections compatible with GALV_DiagonalMovementMZ
  *     v1.3.4 - 2024/02/17
  *         - Updated plugin url to point to current repository
  *     v1.3.3 - 2023/12/01
