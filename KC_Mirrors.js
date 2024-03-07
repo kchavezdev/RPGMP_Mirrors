@@ -790,24 +790,52 @@ KCDev.Mirrors.wallModes.event = 1;
  */
 KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
 
+    initMembers() {
+        super.initMembers();
+        this._parentSprite = null;
+        this.z = 2 * KCDev.Mirrors.zValue;
+    }
+
     /**
      * 
-     * @param {Sprite_Character} parentCharSprite This is the character this sprite represents a reflection of
-     * @param  {...any} spriteArgs 
+     * @param {Sprite_Character} parentSprite 
      */
-    constructor(parentCharSprite, ...spriteArgs) {
-        super(spriteArgs);
-        this.anchor.x = 0.5;
-        this.anchor.y = 1;
-        this.parentSprite = parentCharSprite;
-        this.z = 2 * KCDev.Mirrors.zValue;
-        this._character = parentCharSprite._character;
+    initialize(parentSprite) {
+        super.initialize();
+        this._parentSprite = parentSprite;
+
+        this.setCharacter(parentSprite._character);
+    }
+
+    setCharacter(character) {
+        if (!character) {
+            this._character = null;
+            return;
+        }
+
+        this._character = new Proxy(character, {
+            get(target, prop, receiver) {
+
+                if (prop === '_characterIndex') {
+                    const reflectIndex = Reflect.get(target, '_reflectIndex', receiver);
+                    if (reflectIndex >= 0) {
+                        return reflectIndex;
+                    }
+                }
+                return Reflect.get(...arguments);
+            }
+        });
     }
 
     // we're letting the parent graphic handle this
     update() { }
 
     refreshGraphic() {
+
+        this.setCharacter(this._parentSprite._character);
+
+        if (!this._character) return;
+
         this._characterName = (this._character.reflectName() === '') ? this._character.characterName() : this._character.reflectName();
         this._characterIndex = (this._character.reflectIndex() < 0) ? this._character.characterIndex() : this._character.reflectIndex();
         this.bitmap = ImageManager.loadCharacter(this._characterName);
@@ -815,37 +843,45 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
         this._tileId = 0;
     }
 
-    // changing the index used in characterBlockX and characterBlockY to the internally stored index rather than the one in the character
-    characterBlockX() {
-        if (this._isBigCharacter) {
-            return 0;
-        } else {
-            const index = this._characterIndex;
-            return (index % 4) * 3;
-        }
-    }
-
-    characterBlockY() {
-        if (this._isBigCharacter) {
-            return 0;
-        } else {
-            const index = this._characterIndex;
-            return Math.floor(index / 4) * 4;
-        }
-    };
-
+    // the sprite's position flickers if we don't do this here
     _refresh() {
         super._refresh();
-        const pp = this.parentSprite.pivot;
+        const pp = this._parentSprite.pivot;
         this.pivot.set(pp.x, pp.y);
     }
 };
 
 KCDev.Mirrors.Sprite_Reflect_Wall = class Sprite_Reflect_Wall extends KCDev.Mirrors.Sprite_Reflect {
 
-    // draw graphic for opposite facing direction
-    characterPatternY() {
-        return (this._character.reverseDir(this._character.direction()) - 2) / 2;
+    /**
+     * 
+     * @param {Game_Character} character 
+     * @returns 
+     */
+    setCharacter(character) {
+        if (!character) {
+            this._character = null;
+            return;
+        }
+
+        this._character = new Proxy(character, {
+            get(target, prop, receiver) {
+
+                if (prop === '_characterIndex') {
+                    const reflectIndex = Reflect.get(target, '_reflectIndex', receiver);
+                    if (reflectIndex >= 0) {
+                        return reflectIndex;
+                    }
+                }
+                else if (prop === '_direction') {
+                    const dir = Reflect.get(...arguments);
+                    if (dir) {
+                        return target.reverseDir(dir);
+                    }
+                }
+                return Reflect.get(...arguments);
+            }
+        });
     }
 };
 
