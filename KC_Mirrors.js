@@ -262,10 +262,11 @@ SOFTWARE.
  *   | Same as Override Map Settings command
  * 
  * Changelog: 
- *     v1.3.5 - 2024/03/06
+ *     v1.3.5 - 2024/03/07
  *         - Restructure internal code
  *         - Make reflections compatible with GALV_CharacterFramesMZ
  *         - Make reflections compatible with GALV_DiagonalMovementMZ
+ *         - Fixed event reflection plugin commands
  *     v1.3.4 - 2024/02/17
  *         - Updated plugin url to point to current repository
  *     v1.3.3 - 2023/12/01
