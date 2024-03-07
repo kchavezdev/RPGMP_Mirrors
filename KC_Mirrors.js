@@ -29,83 +29,14 @@ SOFTWARE.
  * @url https://github.com/kchavezdev/RPGMP_Mirrors
  * @target MZ
  * @base PluginCommonBase
- * @orderafter PluginCommonBase
+ * @orderAfter PluginCommonBase
+ * @orderAfter GALV_DiagonalMovementMZ
+ * @orderAfter GALV_CharacterFramesMZ
  *
- * @plugindesc [v1.3.4]Add reflections to events and actors.
+ * @plugindesc [v1.3.5]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
- * 
- * Changelog: 
- *     v1.3.4 - 2024/02/17
- *         - Updated plugin url to point to current repository
- *     v1.3.3 - 2023/12/01
- *         - Fixed a crash related to launching this plugin without
- *           FilterControllerMZ
- *     v1.3.2 - 2022/12/20
- *         - Fixed bugs where incorrect scaling on the x axis would be applied
- *           to reflections of events using tileset sprites
- *      v1.3.1 - 2022/10/26
- *	       - Quick fix to CharReflections Filter Controller target
- *     v1.3.0 - 2022/10/26
- *         - Added FilterControllerMZ targets
- *           | CharReflectionsFloor - Applies filter to all floor reflections
- *           | CharReflectionsWall - Applies filter to all wall reflections
- *           | CharReflections - Applies filter to all character reflections
- *         - Added new note tags to actors, characters, and maps:
- *             | <REFLECT_FLOOR_OFFSETS:[x],[y]>
- *             | <REFLECT_WALL_OFFSETS:[x],[y]>
- *         - Added an option to fix Z-fighting under certain conditions on
- *           wall reflections in 'perspective' mode
- *             | You probably don't need this fix unless you're using a pixel
- *               movement plugin
- *         - Fixed a bug in the Change Event Reflect plugin command that
- *           caused the wrong event to be used as reference for unchanged
- *           parameters
- *         - Internal code refactor
- *           | All plugin parameters are exposed on the KCDev.Mirrors object
- *     v1.2.0 - 2022/08/05
- *         - Reflections of each type can now be separately toggled on and off
- *           for the entire map through note tags and a new plugin command
- *             | New command: Override Map Settings
- *             | New map note tag: <REFLECT_TYPE:[ALL/FLOOR/WALL]>
- *         - The reflection mode the map uses can be changed via the map notes
- *           and the aforementioned new command
- *             | New map note tag: <REFLECT_MODE:[PERSPECTIVE/EVENT]>
- *         - The developer can now set the opacity of each reflection type
- *           through the updated plugin command and via new note tags
- *             | New event and actor tags: <REFLECT_FLOOR_OPACITY:[x]>, 
- *                                         <REFLECT_WALL_OPACITY:[x]>
- *         - Characters that are made transparent via move route commands
- *           now also have their reflections disappear if those reflections
- *           are not using custom opacities
- *     v1.1.4 - 2022/07/19
- *         - Adjusted how reflections are handled internally for compatibility
- *           with KC_MoveRouteTF
- *     v1.1.3 - 2022/07/16
- *         - Fixed issue where characters using a sprite from the tileset and
- *           with a priority other than 'Below Characters' would never have
- *           reflections
- *     v1.1.2 - 2022/07/14
- *         - Fixed a typo that caused incorrect behavior when setting event
- *           reflection properties via plugin command and manually selecting
- *           'Unchanged' from the dropdown box
- *     v1.1.1 - 2022/07/14
- *         - Added a few safety checks to avoid a game crash when trying to
- *           access characters that do not exist (e.g. trying to change the
- *           reflection of the third follower when the player has two
- *           followers)
- *     v1.1.0 - 2022/07/12
- *         - Fixed bug where characters standing out of the maximum wall
- *           reflection range would appear on the mirror with incorrect
- *           scaling
- *         - Added the 'event-like' wall reflection mode and renamed the
- *           mode featured in the previous version to 'pseudo-perspective'
- *           mode
- *         - Removed restriction that caused events using tile IDs to not
- *           appear in wall reflections
- *     v1.0.0 - 2022/07/11
- *         - Initial release
  * 
  * This is a plugin that allows the developer to add reflections to actors and 
  * events. This is done by drawing sprites below the map but above the parallax
@@ -142,6 +73,10 @@ SOFTWARE.
  * of pixels using the <REFLECT_FLOOR_OFFSETS:[x],[y]> and 
  * <REFLECT_WALL_OFFSETS:[x],[y]>, which can be useful for fine-tuning
  * reflections on a per-map and per-character basis.
+ * 
+ * As of version 1.3.5, this plugin is compatible with GALV_DiagonalMovementMZ
+ * and GALV_CharacterFramesMZ. This plugin should be placed under those
+ * if they are being used in the project.
  * 
  * -----------------------------Plugin Parameters-----------------------------
  * 
@@ -326,6 +261,83 @@ SOFTWARE.
  * overrideMapSettings(floorEnabled, wallEnabled, mode)
  *   | Same as Override Map Settings command
  * 
+ * Changelog: 
+ *     v1.3.5 - 2024/03/07
+ *         - Restructure internal code
+ *         - Make reflections compatible with GALV_CharacterFramesMZ
+ *         - Make reflections compatible with GALV_DiagonalMovementMZ
+ *         - Fixed event reflection plugin commands
+ *         - Tried to fixup "Exclude Unused Files" note tags
+ *     v1.3.4 - 2024/02/17
+ *         - Updated plugin url to point to current repository
+ *     v1.3.3 - 2023/12/01
+ *         - Fixed a crash related to launching this plugin without
+ *           FilterControllerMZ
+ *     v1.3.2 - 2022/12/20
+ *         - Fixed bugs where incorrect scaling on the x axis would be applied
+ *           to reflections of events using tileset sprites
+ *      v1.3.1 - 2022/10/26
+ *	       - Quick fix to CharReflections Filter Controller target
+ *     v1.3.0 - 2022/10/26
+ *         - Added FilterControllerMZ targets
+ *           | CharReflectionsFloor - Applies filter to all floor reflections
+ *           | CharReflectionsWall - Applies filter to all wall reflections
+ *           | CharReflections - Applies filter to all character reflections
+ *         - Added new note tags to actors, characters, and maps:
+ *             | <REFLECT_FLOOR_OFFSETS:[x],[y]>
+ *             | <REFLECT_WALL_OFFSETS:[x],[y]>
+ *         - Added an option to fix Z-fighting under certain conditions on
+ *           wall reflections in 'perspective' mode
+ *             | You probably don't need this fix unless you're using a pixel
+ *               movement plugin
+ *         - Fixed a bug in the Change Event Reflect plugin command that
+ *           caused the wrong event to be used as reference for unchanged
+ *           parameters
+ *         - Internal code refactor
+ *           | All plugin parameters are exposed on the KCDev.Mirrors object
+ *     v1.2.0 - 2022/08/05
+ *         - Reflections of each type can now be separately toggled on and off
+ *           for the entire map through note tags and a new plugin command
+ *             | New command: Override Map Settings
+ *             | New map note tag: <REFLECT_TYPE:[ALL/FLOOR/WALL]>
+ *         - The reflection mode the map uses can be changed via the map notes
+ *           and the aforementioned new command
+ *             | New map note tag: <REFLECT_MODE:[PERSPECTIVE/EVENT]>
+ *         - The developer can now set the opacity of each reflection type
+ *           through the updated plugin command and via new note tags
+ *             | New event and actor tags: <REFLECT_FLOOR_OPACITY:[x]>, 
+ *                                         <REFLECT_WALL_OPACITY:[x]>
+ *         - Characters that are made transparent via move route commands
+ *           now also have their reflections disappear if those reflections
+ *           are not using custom opacities
+ *     v1.1.4 - 2022/07/19
+ *         - Adjusted how reflections are handled internally for compatibility
+ *           with KC_MoveRouteTF
+ *     v1.1.3 - 2022/07/16
+ *         - Fixed issue where characters using a sprite from the tileset and
+ *           with a priority other than 'Below Characters' would never have
+ *           reflections
+ *     v1.1.2 - 2022/07/14
+ *         - Fixed a typo that caused incorrect behavior when setting event
+ *           reflection properties via plugin command and manually selecting
+ *           'Unchanged' from the dropdown box
+ *     v1.1.1 - 2022/07/14
+ *         - Added a few safety checks to avoid a game crash when trying to
+ *           access characters that do not exist (e.g. trying to change the
+ *           reflection of the third follower when the player has two
+ *           followers)
+ *     v1.1.0 - 2022/07/12
+ *         - Fixed bug where characters standing out of the maximum wall
+ *           reflection range would appear on the mirror with incorrect
+ *           scaling
+ *         - Added the 'event-like' wall reflection mode and renamed the
+ *           mode featured in the previous version to 'pseudo-perspective'
+ *           mode
+ *         - Removed restriction that caused events using tile IDs to not
+ *           appear in wall reflections
+ *     v1.0.0 - 2022/07/11
+ *         - Initial release
+ * 
  * @param regionsParent
  * @text Regions
  * 
@@ -406,7 +418,27 @@ SOFTWARE.
  * @noteType file
  * @noteData events
  * 
+ * @noteParam reflect_char
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData events
+ * 
+ * @noteParam Reflect_Char
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData events
+ * 
  * @noteParam REFLECT_ACTOR
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData actors
+ * 
+ * @noteParam reflect_actor
+ * @noteDir img/characters/
+ * @noteType file
+ * @noteData actors
+ * 
+ * @noteParam Reflect_Actor
  * @noteDir img/characters/
  * @noteType file
  * @noteData actors
@@ -675,6 +707,9 @@ SOFTWARE.
  * 
  */
 
+var Imported = Imported || {};
+Imported.KC_Mirrors = true;
+
 // A general namespace for all of my plugins
 
 var KCDev = KCDev || {};
@@ -705,7 +740,7 @@ KCDev.Mirrors.noReflectRegions = null;
     const script = document.currentScript;
 
     /**
-     * @typedef KCMirrorParams
+     * @typedef KCDev.Mirrors.PluginParams
      * @property {number} zValue
      * @property {number} maxWallDistance
      * @property {object} actorDefault
@@ -718,7 +753,7 @@ KCDev.Mirrors.noReflectRegions = null;
      * @property {number} wallReflectVar
      */
 
-    const /** @type {KCMirrorParams} */ parameters = PluginManagerEx.createParameter(script);
+    const /** @type {KCDev.Mirrors.PluginParams} */ parameters = PluginManagerEx.createParameter(script);
 
     if (parameters.zValue !== undefined) {
         KCDev.Mirrors.zValue = parameters.zValue;
@@ -738,7 +773,7 @@ KCDev.Mirrors.noReflectRegions = null;
 
     // plugin commands
     PluginManagerEx.registerCommand(script, 'changeEventReflect', function (args) {
-        KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id), args));
+        KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
     });
 
     PluginManagerEx.registerCommand(script, 'changeActorReflect', function (args) {
@@ -749,7 +784,7 @@ KCDev.Mirrors.noReflectRegions = null;
     });
 
     PluginManagerEx.registerCommand(script, 'resetEventReflect', function (args) {
-        KCDev.Mirrors.resetEventReflectImage.call(this, args.id);
+        KCDev.Mirrors.resetEventReflectImage.call(this, args.id || this.eventId());
     });
 
     PluginManagerEx.registerCommand(script, 'resetActorReflect', function (args) {
@@ -787,24 +822,52 @@ KCDev.Mirrors.wallModes.event = 1;
  */
 KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
 
+    initMembers() {
+        super.initMembers();
+        this._parentSprite = null;
+        this.z = 2 * KCDev.Mirrors.zValue;
+    }
+
     /**
      * 
-     * @param {Sprite_Character} parentCharSprite This is the character this sprite represents a reflection of
-     * @param  {...any} spriteArgs 
+     * @param {Sprite_Character} parentSprite 
      */
-    constructor(parentCharSprite, ...spriteArgs) {
-        super(spriteArgs);
-        this.anchor.x = 0.5;
-        this.anchor.y = 1;
-        this.parentSprite = parentCharSprite;
-        this.z = 2 * KCDev.Mirrors.zValue;
-        this._character = parentCharSprite._character;
+    initialize(parentSprite) {
+        super.initialize();
+        this._parentSprite = parentSprite;
+
+        this.setCharacter(parentSprite._character);
+    }
+
+    setCharacter(character) {
+        if (!character) {
+            this._character = null;
+            return;
+        }
+
+        this._character = new Proxy(character, {
+            get(target, prop, receiver) {
+
+                if (prop === '_characterIndex') {
+                    const reflectIndex = Reflect.get(target, '_reflectIndex', receiver);
+                    if (reflectIndex >= 0) {
+                        return reflectIndex;
+                    }
+                }
+                return Reflect.get(...arguments);
+            }
+        });
     }
 
     // we're letting the parent graphic handle this
     update() { }
 
     refreshGraphic() {
+
+        this.setCharacter(this._parentSprite._character);
+
+        if (!this._character) return;
+
         this._characterName = (this._character.reflectName() === '') ? this._character.characterName() : this._character.reflectName();
         this._characterIndex = (this._character.reflectIndex() < 0) ? this._character.characterIndex() : this._character.reflectIndex();
         this.bitmap = ImageManager.loadCharacter(this._characterName);
@@ -812,37 +875,45 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
         this._tileId = 0;
     }
 
-    // changing the index used in characterBlockX and characterBlockY to the internally stored index rather than the one in the character
-    characterBlockX() {
-        if (this._isBigCharacter) {
-            return 0;
-        } else {
-            const index = this._characterIndex;
-            return (index % 4) * 3;
-        }
-    }
-
-    characterBlockY() {
-        if (this._isBigCharacter) {
-            return 0;
-        } else {
-            const index = this._characterIndex;
-            return Math.floor(index / 4) * 4;
-        }
-    };
-
+    // the sprite's position flickers if we don't do this here
     _refresh() {
         super._refresh();
-        const pp = this.parentSprite.pivot;
+        const pp = this._parentSprite.pivot;
         this.pivot.set(pp.x, pp.y);
     }
 };
 
 KCDev.Mirrors.Sprite_Reflect_Wall = class Sprite_Reflect_Wall extends KCDev.Mirrors.Sprite_Reflect {
 
-    // draw graphic for opposite facing direction
-    characterPatternY() {
-        return (this._character.reverseDir(this._character.direction()) - 2) / 2;
+    /**
+     * 
+     * @param {Game_Character} character 
+     * @returns 
+     */
+    setCharacter(character) {
+        if (!character) {
+            this._character = null;
+            return;
+        }
+
+        this._character = new Proxy(character, {
+            get(target, prop, receiver) {
+
+                if (prop === '_characterIndex') {
+                    const reflectIndex = Reflect.get(target, '_reflectIndex', receiver);
+                    if (reflectIndex >= 0) {
+                        return reflectIndex;
+                    }
+                }
+                else if (prop === '_direction') {
+                    const dir = Reflect.get(...arguments);
+                    if (dir) {
+                        return target.reverseDir(dir);
+                    }
+                }
+                return Reflect.get(...arguments);
+            }
+        });
     }
 };
 
@@ -1023,7 +1094,7 @@ KCDev.Mirrors.convertChangeReflectArgs = function (char, args) {
             reflectFloor() { return false; },
             reflectWall() { return false; },
             reflectFloorOpacity() { return undefined; },
-            setReflectWallOpacity() { return undefined; },
+            reflectWallOpacity() { return undefined; },
             reflectFloorXOffset() { return 0; },
             reflectFloorYOffset() { return 0; },
             reflectWallXOffset() { return 0; },
@@ -1528,6 +1599,10 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
 
 KCDev.Mirrors.setupMapReflectOptions = function () {
 
+    if (!$dataMap.meta) {
+        return;
+    }
+
     const findMetaSimple = function (str) {
         return KCDev.Mirrors.findMetaSimple(str, $dataMap);
     };
@@ -1626,15 +1701,10 @@ Game_Map.prototype.setReflectWallYOffset = function (y = 0) {
 KCDev.Mirrors.Game_Map_refresh = Game_Map.prototype.refresh;
 /**
  * Aliased method: Game_Map.prototype.refresh
- * Adds a compatibility fix for save files created with old version of plugin
- * Rebuild the wall reflection cache
  */
 Game_Map.prototype.refresh = function () {
     KCDev.Mirrors.Game_Map_refresh.apply(this, arguments);
-    if (this._reflectFloor === undefined) {
-        KCDev.Mirrors.setupMapReflectOptions();
-    }
-    KCDev.Mirrors.refreshReflectWallCache();
+    KCDev.Mirrors.setupMapReflectOptions();
 };
 
 KCDev.Mirrors.Game_Map_setup = Game_Map.prototype.setup;
@@ -1716,19 +1786,26 @@ Sprite_Character.prototype.updateOther = function () {
 };
 
 /**
+ * New method: Sprite_Character.prototype.createReflectionSprites
+ * Handles the creation of both reflection sprites
+ */
+Sprite_Character.prototype.createReflectionSprites = function () {
+    this._reflectionFloor = new KCDev.Mirrors.Sprite_Reflect(this);
+    this._reflectionWall = new KCDev.Mirrors.Sprite_Reflect_Wall(this);
+    this._reflectionFloor.bitmap = new Bitmap();
+    this._reflectionWall.bitmap = new Bitmap();
+    this._character.requestReflectRefresh();
+    SceneManager._scene._spriteset._tilemap.addChild(this._reflectionFloor);
+    SceneManager._scene._spriteset._tilemap.addChild(this._reflectionWall);
+};
+
+/**
  * New method: Sprite_Character.prototype.updateReflectionSprite
  * Handles the creation of, refreshes for, and updates to both reflection sprites
  */
 Sprite_Character.prototype.updateReflectionSprite = function () {
     if (!this._reflectionFloor) {
-        this._reflectionFloor = new KCDev.Mirrors.Sprite_Reflect(this);
-        this._reflectionWall = new KCDev.Mirrors.Sprite_Reflect_Wall(this);
-        this._reflectionFloor.bitmap = new Bitmap();
-        this._reflectionWall.bitmap = new Bitmap();
-        this._character.requestReflectRefresh();
-        //const parent = .
-        SceneManager._scene._spriteset._tilemap.addChild(this._reflectionFloor);
-        SceneManager._scene._spriteset._tilemap.addChild(this._reflectionWall);
+        this.createReflectionSprites();
     }
 
     if (this._character.reflectRefreshRequested()) {
@@ -1927,7 +2004,7 @@ KCDev.Mirrors.handleReflectFrame = function (r) {
     else {
         KCDev.Mirrors.setReflectFrame(r);
     }
-}
+};
 
 /**
  * Switches to the appropriate frame for the reflection sprite
@@ -2024,4 +2101,65 @@ if (window.Filter_Controller) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END FilterControllerMZ Extension                                                                           //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// START Galv Plugins Compatibility                                                                           //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if (Imported.Galv_CharacterFrames) {
+    KCDev.Mirrors.handleReflectFrameGalv = KCDev.Mirrors.handleReflectFrame;
+    KCDev.Mirrors.handleReflectFrame = function (r) {
+        r._cframes = this._cframes;
+        KCDev.Mirrors.handleReflectFrameGalv.apply(this, arguments);
+    };
+}
+
+if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
+
+    KCDev.Mirrors.flippedDiagonals = {
+        7: 3,
+        9: 1,
+        1: 9,
+        3: 7
+    };
+
+    /**
+     * @param {Game_Character} character 
+     */
+    KCDev.Mirrors.Sprite_Reflect_Wall.prototype.setCharacter = function (character) {
+        if (!character) {
+            this._character = null;
+            return;
+        }
+
+        this._character = new Proxy(character, {
+            get(target, prop, receiver) {
+
+                if (prop === '_characterIndex') {
+                    const reflectIndex = Reflect.get(target, '_reflectIndex', receiver);
+                    if (reflectIndex >= 0) {
+                        return reflectIndex;
+                    }
+                }
+                else if (prop === '_direction') {
+                    const dir = Reflect.get(...arguments);
+                    if (dir) {
+                        return target.reverseDir(dir);
+                    }
+                }
+                else if (prop === '_diagDir') {
+                    const dir = Reflect.get(...arguments);
+                    if (dir in KCDev.Mirrors.flippedDiagonals) {
+                        return KCDev.Mirrors.flippedDiagonals[dir];
+                    }
+                }
+                return Reflect.get(...arguments);
+            }
+        });
+    };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// END Galv Plugins Compatibility                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
