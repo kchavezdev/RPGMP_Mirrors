@@ -2124,7 +2124,6 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
         3: 7
     };
 
-    KCDev.Mirrors.Sprite_Reflect_Wall_setCharacter = KCDev.Mirrors.Sprite_Reflect_Wall.prototype.setCharacter;
     /**
      * @param {Game_Character} character 
      */
