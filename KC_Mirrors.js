@@ -826,6 +826,7 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
         super.initMembers();
         this._parentSprite = null;
         this.z = 2 * KCDev.Mirrors.zValue;
+        this._isWallReflection = false;
     }
 
     /**
@@ -860,32 +861,12 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
         const pp = this._parentSprite.pivot;
         this.pivot.set(pp.x, pp.y);
     }
-
-    // changing the index used in characterBlockX and characterBlockY to the internally stored index rather than the one in the character
-    characterBlockX() {
-        if (this._isBigCharacter) {
-            return 0;
-        } else {
-            const index = this._characterIndex;
-            return (index % 4) * 3;
-        }
-    }
-
-    characterBlockY() {
-        if (this._isBigCharacter) {
-            return 0;
-        } else {
-            const index = this._characterIndex;
-            return Math.floor(index / 4) * 4;
-        }
-    };
 };
 
 KCDev.Mirrors.Sprite_Reflect_Wall = class Sprite_Reflect_Wall extends KCDev.Mirrors.Sprite_Reflect {
-
-    // draw graphic for opposite facing direction
-    characterPatternY() {
-        return (this._character.reverseDir(this._character.direction()) - 2) / 2;
+    initMembers() {
+        super.initMembers();
+        this._isWallReflection = true;
     }
 };
 
@@ -1980,14 +1961,31 @@ KCDev.Mirrors.handleReflectFrame = function (r) {
 
 /**
  * Switches to the appropriate frame for the reflection sprite
- * @param {Sprite_Character} r Reflection sprite
+ * @param {KCDev.Mirrors.Sprite_Reflect} r Reflection sprite
  */
 KCDev.Mirrors.setReflectFrame = function (r) {
+
+    // store these values
+    const tempCharIndex = r._character._characterIndex;
+    const tempCharName = r._character._characterName;
+    const tempCharDir = r._character._direction;
+    
+    // load in reflection parameters
+    r._character._characterName = r._characterName;
+    r._character._characterIndex = r._characterIndex;
+    if (r._isWallReflection) r._character._direction = r._character.reverseDir(tempCharDir);
+
+    // set the frame
     const pw = r.patternWidth();
     const ph = r.patternHeight();
     const sx = (r.characterBlockX() + r.characterPatternX()) * pw;
     const sy = (r.characterBlockY() + r.characterPatternY()) * ph;
     r.setFrame(sx, sy, pw, ph);
+
+    // restore name and index
+    r._character._characterIndex = tempCharIndex;
+    r._character._characterName = tempCharName;
+    r._character._direction = tempCharDir;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2079,7 +2077,14 @@ if (window.Filter_Controller) {
 // START Galv Plugins Compatibility                                                                           //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if (Imported.Galv_CharacterFrames && false) {
+if (Imported.Galv_CharacterFrames) {
+
+    KCDev.Mirrors.Sprite_Reflect_initMembers_GalvCF = KCDev.Mirrors.Sprite_Reflect.prototype.initMembers;
+    KCDev.Mirrors.Sprite_Reflect.prototype.initMembers = function () {
+        KCDev.Mirrors.Sprite_Reflect_initMembers_GalvCF.apply(this, arguments);
+        this._cframes = 3;
+    };
+
     KCDev.Mirrors.Sprite_Reflect_refreshGraphic_GalvCF = KCDev.Mirrors.Sprite_Reflect.prototype.refreshGraphic;
     KCDev.Mirrors.Sprite_Reflect.prototype.refreshGraphic = function () {
         KCDev.Mirrors.Sprite_Reflect_refreshGraphic_GalvCF.apply(this, arguments);
@@ -2090,55 +2095,42 @@ if (Imported.Galv_CharacterFrames && false) {
         else {
             this._cframes = 3;
         }
-        this._character._cframesReflect = this._cframes;
     };
 
-    KCDev.Mirrors.Sprite_Reflect_setCharacter_GalvCF = KCDev.Mirrors.Sprite_Reflect.prototype.setCharacter
-    KCDev.Mirrors.Sprite_Reflect.prototype.setCharacter = function (character) {
-        KCDev.Mirrors.Sprite_Reflect_setCharacter_GalvCF.apply(this, arguments);
-        if (!this._character) return;
+    KCDev.Mirrors.setReflectFrame_GalvCF = KCDev.Mirrors.setReflectFrame;
+    /**
+     * @param {KCDev.Mirrors.Sprite_Reflect} r 
+     */
+    KCDev.Mirrors.setReflectFrame = function (r) {
 
-        this._character = new Proxy(this._character, {
-            get(target, prop, receiver) {
-                if (prop === '_cframes') {
-                    return Reflect.get(target, '_cframesReflect', receiver);
-                }
-                return Reflect.get(...arguments);
-            }
-        });
+        // store character values
+        const tmpCFrames = r._character._cframes;
+
+        // write reflection values
+        r._character._cframes = r._cframes;
+
+        KCDev.Mirrors.setReflectFrame_GalvCF.apply(this, arguments);
+        
+        // restore original character values
+        r._character._cframes = tmpCFrames;
     };
 }
 
-if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic && false) {
+if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
 
-    KCDev.Mirrors.flippedDiagonals = {
-        7: 3,
-        9: 1,
-        1: 9,
-        3: 7
-    };
-
-    KCDev.Mirrors.Sprite_Reflect_Wall_setCharacter_GalvDM = KCDev.Mirrors.Sprite_Reflect_Wall.prototype.setCharacter;
+    KCDev.Mirrors.setReflectFrame_GalvDM = KCDev.Mirrors.setReflectFrame;
     /**
-     * @param {Game_Character} character 
+     * @param {KCDev.Mirrors.Sprite_Reflect} r 
      */
-    KCDev.Mirrors.Sprite_Reflect_Wall.prototype.setCharacter = function (character) {
+    KCDev.Mirrors.setReflectFrame = function (r) {
 
-        KCDev.Mirrors.Sprite_Reflect_Wall_setCharacter_GalvDM.apply(this, arguments);
+        const tmpDiagDir = r._character._diagDir;
 
-        if (!this._character) return;
+        if (r._isWallReflection && tmpDiagDir) r._character._diagDir = r._character.reverseDir(tmpDiagDir);
 
-        this._character = new Proxy(this._character, {
-            get(target, prop, receiver) {
-                if (prop === '_diagDir') {
-                    const dir = Reflect.get(...arguments);
-                    if (dir in KCDev.Mirrors.flippedDiagonals) {
-                        return KCDev.Mirrors.flippedDiagonals[dir];
-                    }
-                }
-                return Reflect.get(...arguments);
-            }
-        });
+        KCDev.Mirrors.setReflectFrame_GalvDM.apply(this, arguments);
+        
+        r._character._diagDir = tmpDiagDir;
     };
 }
 
