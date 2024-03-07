@@ -267,6 +267,7 @@ SOFTWARE.
  *         - Make reflections compatible with GALV_CharacterFramesMZ
  *         - Make reflections compatible with GALV_DiagonalMovementMZ
  *         - Fixed event reflection plugin commands
+ *         - Tried to fixup "Exclude Unused Files" note tags
  *     v1.3.4 - 2024/02/17
  *         - Updated plugin url to point to current repository
  *     v1.3.3 - 2023/12/01
