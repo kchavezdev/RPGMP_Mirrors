@@ -675,6 +675,9 @@ SOFTWARE.
  * 
  */
 
+var Imported = Imported || {};
+Imported.KC_Mirrors = true;
+
 // A general namespace for all of my plugins
 
 var KCDev = KCDev || {};
