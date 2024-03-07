@@ -1669,15 +1669,10 @@ Game_Map.prototype.setReflectWallYOffset = function (y = 0) {
 KCDev.Mirrors.Game_Map_refresh = Game_Map.prototype.refresh;
 /**
  * Aliased method: Game_Map.prototype.refresh
- * Adds a compatibility fix for save files created with old version of plugin
- * Rebuild the wall reflection cache
  */
 Game_Map.prototype.refresh = function () {
     KCDev.Mirrors.Game_Map_refresh.apply(this, arguments);
-    if (this._reflectFloor === undefined) {
-        KCDev.Mirrors.setupMapReflectOptions();
-    }
-    KCDev.Mirrors.refreshReflectWallCache();
+    KCDev.Mirrors.setupMapReflectOptions();
 };
 
 KCDev.Mirrors.Game_Map_setup = Game_Map.prototype.setup;
