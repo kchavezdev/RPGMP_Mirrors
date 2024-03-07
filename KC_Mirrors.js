@@ -745,7 +745,7 @@ KCDev.Mirrors.noReflectRegions = null;
 
     // plugin commands
     PluginManagerEx.registerCommand(script, 'changeEventReflect', function (args) {
-        KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id), args));
+        KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
     });
 
     PluginManagerEx.registerCommand(script, 'changeActorReflect', function (args) {
@@ -756,7 +756,7 @@ KCDev.Mirrors.noReflectRegions = null;
     });
 
     PluginManagerEx.registerCommand(script, 'resetEventReflect', function (args) {
-        KCDev.Mirrors.resetEventReflectImage.call(this, args.id);
+        KCDev.Mirrors.resetEventReflectImage.call(this, args.id || this.eventId());
     });
 
     PluginManagerEx.registerCommand(script, 'resetActorReflect', function (args) {
@@ -1066,7 +1066,7 @@ KCDev.Mirrors.convertChangeReflectArgs = function (char, args) {
             reflectFloor() { return false; },
             reflectWall() { return false; },
             reflectFloorOpacity() { return undefined; },
-            setReflectWallOpacity() { return undefined; },
+            reflectWallOpacity() { return undefined; },
             reflectFloorXOffset() { return 0; },
             reflectFloorYOffset() { return 0; },
             reflectWallXOffset() { return 0; },
