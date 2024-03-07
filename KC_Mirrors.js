@@ -29,7 +29,9 @@ SOFTWARE.
  * @url https://github.com/kchavezdev/RPGMP_Mirrors
  * @target MZ
  * @base PluginCommonBase
- * @orderafter PluginCommonBase
+ * @orderAfter PluginCommonBase
+ * @orderAfter GALV_DiagonalMovementMZ
+ * @orderAfter GALV_CharacterFramesMZ
  *
  * @plugindesc [v1.3.5]Add reflections to events and actors.
  *
@@ -71,6 +73,10 @@ SOFTWARE.
  * of pixels using the <REFLECT_FLOOR_OFFSETS:[x],[y]> and 
  * <REFLECT_WALL_OFFSETS:[x],[y]>, which can be useful for fine-tuning
  * reflections on a per-map and per-character basis.
+ * 
+ * As of version 1.3.5, this plugin is compatible with GALV_DiagonalMovementMZ
+ * and GALV_CharacterFramesMZ. This plugin should be placed under those
+ * if they are being used in the project.
  * 
  * -----------------------------Plugin Parameters-----------------------------
  * 
@@ -256,7 +262,7 @@ SOFTWARE.
  *   | Same as Override Map Settings command
  * 
  * Changelog: 
- *     v1.3.5 - XXXX/XX/XX
+ *     v1.3.5 - 2024/03/06
  *         - Restructure internal code
  *         - Make reflections compatible with GALV_CharacterFramesMZ
  *         - Make reflections compatible with GALV_DiagonalMovementMZ
