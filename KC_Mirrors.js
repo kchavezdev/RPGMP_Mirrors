@@ -708,7 +708,7 @@ KCDev.Mirrors.noReflectRegions = null;
     const script = document.currentScript;
 
     /**
-     * @typedef KCMirrorParams
+     * @typedef KCDev.Mirrors.PluginParams
      * @property {number} zValue
      * @property {number} maxWallDistance
      * @property {object} actorDefault
@@ -721,7 +721,7 @@ KCDev.Mirrors.noReflectRegions = null;
      * @property {number} wallReflectVar
      */
 
-    const /** @type {KCMirrorParams} */ parameters = PluginManagerEx.createParameter(script);
+    const /** @type {KCDev.Mirrors.PluginParams} */ parameters = PluginManagerEx.createParameter(script);
 
     if (parameters.zValue !== undefined) {
         KCDev.Mirrors.zValue = parameters.zValue;
