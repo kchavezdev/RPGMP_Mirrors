@@ -1754,19 +1754,26 @@ Sprite_Character.prototype.updateOther = function () {
 };
 
 /**
+ * New method: Sprite_Character.prototype.createReflectionSprites
+ * Handles the creation of both reflection sprites
+ */
+Sprite_Character.prototype.createReflectionSprites = function () {
+    this._reflectionFloor = new KCDev.Mirrors.Sprite_Reflect(this);
+    this._reflectionWall = new KCDev.Mirrors.Sprite_Reflect_Wall(this);
+    this._reflectionFloor.bitmap = new Bitmap();
+    this._reflectionWall.bitmap = new Bitmap();
+    this._character.requestReflectRefresh();
+    SceneManager._scene._spriteset._tilemap.addChild(this._reflectionFloor);
+    SceneManager._scene._spriteset._tilemap.addChild(this._reflectionWall);
+};
+
+/**
  * New method: Sprite_Character.prototype.updateReflectionSprite
  * Handles the creation of, refreshes for, and updates to both reflection sprites
  */
 Sprite_Character.prototype.updateReflectionSprite = function () {
     if (!this._reflectionFloor) {
-        this._reflectionFloor = new KCDev.Mirrors.Sprite_Reflect(this);
-        this._reflectionWall = new KCDev.Mirrors.Sprite_Reflect_Wall(this);
-        this._reflectionFloor.bitmap = new Bitmap();
-        this._reflectionWall.bitmap = new Bitmap();
-        this._character.requestReflectRefresh();
-        //const parent = .
-        SceneManager._scene._spriteset._tilemap.addChild(this._reflectionFloor);
-        SceneManager._scene._spriteset._tilemap.addChild(this._reflectionWall);
+        this.createReflectionSprites();
     }
 
     if (this._character.reflectRefreshRequested()) {
@@ -1965,7 +1972,7 @@ KCDev.Mirrors.handleReflectFrame = function (r) {
     else {
         KCDev.Mirrors.setReflectFrame(r);
     }
-}
+};
 
 /**
  * Switches to the appropriate frame for the reflection sprite
