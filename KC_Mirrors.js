@@ -2083,6 +2083,52 @@ if (Imported.Galv_CharacterFrames) {
     };
 }
 
+if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
+
+    KCDev.Mirrors.flippedDiagonals = {
+        7: 3,
+        9: 1,
+        1: 9,
+        3: 7
+    };
+
+    KCDev.Mirrors.Sprite_Reflect_Wall_setCharacter = KCDev.Mirrors.Sprite_Reflect_Wall.prototype.setCharacter;
+    /**
+     * @param {Game_Character} character 
+     */
+    KCDev.Mirrors.Sprite_Reflect_Wall.prototype.setCharacter = function (character) {
+        if (!character) {
+            this._character = null;
+            return;
+        }
+
+        this._character = new Proxy(character, {
+            get(target, prop, receiver) {
+
+                if (prop === '_characterIndex') {
+                    const reflectIndex = Reflect.get(target, '_reflectIndex', receiver);
+                    if (reflectIndex >= 0) {
+                        return reflectIndex;
+                    }
+                }
+                else if (prop === '_direction') {
+                    const dir = Reflect.get(...arguments);
+                    if (dir) {
+                        return target.reverseDir(dir);
+                    }
+                }
+                else if (prop === '_diagDir') {
+                    const dir = Reflect.get(...arguments);
+                    if (dir in KCDev.Mirrors.flippedDiagonals) {
+                        return KCDev.Mirrors.flippedDiagonals[dir];
+                    }
+                }
+                return Reflect.get(...arguments);
+            }
+        });
+    };
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Galv Plugins Compatibility                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
