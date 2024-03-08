@@ -835,9 +835,8 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
      * @param {Sprite_Character} parentSprite 
      */
     initialize(parentSprite) {
-        super.initialize();
+        super.initialize(parentSprite._character);
         this._parentSprite = parentSprite;
-        this.setCharacter(parentSprite._character);
     }
 
     // we're letting the parent graphic handle this
