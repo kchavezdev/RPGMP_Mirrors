@@ -33,7 +33,7 @@ SOFTWARE.
  * @orderAfter GALV_DiagonalMovementMZ
  * @orderAfter GALV_CharacterFramesMZ
  *
- * @plugindesc [v1.3.5]Add reflections to events and actors.
+ * @plugindesc [v1.3.6]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
@@ -262,7 +262,9 @@ SOFTWARE.
  * overrideMapSettings(floorEnabled, wallEnabled, mode)
  *   | Same as Override Map Settings command
  * 
- * Changelog: 
+ * Changelog:
+ *     v1.3.6 - 2024/03/08
+ *         - Fixup Sprite_Reflect initialization
  *     v1.3.5 - 2024/03/07
  *         - Restructure internal code
  *         - Make reflections compatible with GALV_CharacterFramesMZ
