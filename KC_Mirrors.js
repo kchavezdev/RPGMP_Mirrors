@@ -75,8 +75,9 @@ SOFTWARE.
  * reflections on a per-map and per-character basis.
  * 
  * As of version 1.3.5, this plugin is compatible with GALV_DiagonalMovementMZ
- * and GALV_CharacterFramesMZ. This plugin should be placed under those
- * if they are being used in the project.
+ * and GALV_CharacterFramesMZ. Note that you will see visual oddities if you
+ * set a reflection spritesheet with a non-matching number of character
+ * frames.
  * 
  * -----------------------------Plugin Parameters-----------------------------
  * 
@@ -1982,7 +1983,7 @@ KCDev.Mirrors.setReflectFrame = function (r) {
     const sy = (r.characterBlockY() + r.characterPatternY()) * ph;
     r.setFrame(sx, sy, pw, ph);
 
-    // restore name and index
+    // restore character properties
     r._character._characterIndex = tempCharIndex;
     r._character._characterName = tempCharName;
     r._character._direction = tempCharDir;
