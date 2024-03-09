@@ -263,8 +263,9 @@ SOFTWARE.
  *   | Same as Override Map Settings command
  * 
  * Changelog:
- *     v1.3.6 - 2024/03/08
- *         - Fixup Sprite_Reflect initialization
+ *     v1.3.6 - 2024/03/09
+ *         - Fix Sprite_Reflect initialization for plugin compatibility
+ *         - Consolidate Sprite_Reflect and Sprite_Reflect_wall into one class
  *     v1.3.5 - 2024/03/07
  *         - Restructure internal code
  *         - Make reflections compatible with GALV_CharacterFramesMZ
