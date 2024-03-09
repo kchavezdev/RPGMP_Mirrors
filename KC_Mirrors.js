@@ -1878,6 +1878,10 @@ KCDev.Mirrors.refreshReflectWallCache = function () {
 /**
  * Returns the reflectable wall region map for the current game map
  * For performance, we pre-compute the closest wall region for every tile on the map
+ * (we map columns to rows with reflections, so we should only visit each tile on the map
+ * once while building this cache)
+ * Each row is sorted starting from the lowest tile with a reflection (bottom edge of map)
+ * to the highest (top edge of map)
  */
 KCDev.Mirrors.buildCurrentMapCache = function () {
     const /** @type {Map<number, number[]} */ regionMap = KCDev.Mirrors.reflectWallPositions;
@@ -1911,14 +1915,18 @@ KCDev.Mirrors.getWallY = function (x, y) {
         KCDev.Mirrors.currMapId = mapId;
     }
 
+    // check for any walls in this column, array assumed to be sorted from high to low
     const col = KCDev.Mirrors.reflectWallPositions.get(x);
-    if (col) {
-        const yArr = col.filter(yCoord => yCoord <= y);
-        return yArr.length > 0 ? yArr[0] : -1;
+
+    // last element is always smallest, so if y is smaller, then no need to check entire array
+    if (col && y >= col[col.length - 1]) {
+        const wallY = col.find(wallY => wallY <= y);
+        if (wallY !== undefined) {
+            return wallY;
+        }
     }
-    else {
-        return -1;
-    }
+    
+    return -1;
 };
 
 KCDev.Mirrors.Sprite_Character_isImageChanged = Sprite_Character.prototype.isImageChanged;
