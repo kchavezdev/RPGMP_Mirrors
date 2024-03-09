@@ -829,7 +829,7 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
         super.initMembers();
         this._parentSprite = null;
         this.z = 2 * KCDev.Mirrors.zValue;
-        this._isWallReflection = false;
+        this._isReflectionWall = false;
     }
 
     /**
@@ -862,13 +862,6 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
         super._refresh();
         const pp = this._parentSprite.pivot;
         this.pivot.set(pp.x, pp.y);
-    }
-};
-
-KCDev.Mirrors.Sprite_Reflect_Wall = class Sprite_Reflect_Wall extends KCDev.Mirrors.Sprite_Reflect {
-    initMembers() {
-        super.initMembers();
-        this._isWallReflection = true;
     }
 };
 
@@ -1746,9 +1739,10 @@ Sprite_Character.prototype.updateOther = function () {
  */
 Sprite_Character.prototype.createReflectionSprites = function () {
     this._reflectionFloor = new KCDev.Mirrors.Sprite_Reflect(this);
-    this._reflectionWall = new KCDev.Mirrors.Sprite_Reflect_Wall(this);
-    this._reflectionFloor.bitmap = new Bitmap();
-    this._reflectionWall.bitmap = new Bitmap();
+    this._reflectionWall = new KCDev.Mirrors.Sprite_Reflect(this);
+    this._reflectionWall._isReflectionWall = true;
+    this._reflectionFloor.bitmap = this.bitmap;
+    this._reflectionWall.bitmap = this.bitmap;
     this._character.requestReflectRefresh();
     SceneManager._scene._spriteset._tilemap.addChild(this._reflectionFloor);
     SceneManager._scene._spriteset._tilemap.addChild(this._reflectionWall);
@@ -1804,7 +1798,7 @@ Sprite_Character.prototype.updateReflectFloor = function () {
  */
 Sprite_Character.prototype.updateReflectWall = function () {
 
-    const /**@type {KCDev.Mirrors.Sprite_Reflect_Wall} */ r = this._reflectionWall;
+    const /**@type {KCDev.Mirrors.Sprite_Reflect} */ r = this._reflectionWall;
 
     const char = this._character;
     const charX = this._character.x;
@@ -1975,7 +1969,7 @@ KCDev.Mirrors.setReflectFrame = function (r) {
     // load in reflection parameters
     r._character._characterName = r._characterName;
     r._character._characterIndex = r._characterIndex;
-    if (r._isWallReflection) r._character._direction = r._character.reverseDir(tempCharDir);
+    if (r._isReflectionWall) r._character._direction = r._character.reverseDir(tempCharDir);
 
     // set the frame
     const pw = r.patternWidth();
@@ -2128,7 +2122,7 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
 
         const tmpDiagDir = r._character._diagDir;
 
-        if (r._isWallReflection && tmpDiagDir) r._character._diagDir = r._character.reverseDir(tmpDiagDir);
+        if (r._isReflectionWall && tmpDiagDir) r._character._diagDir = r._character.reverseDir(tmpDiagDir);
 
         KCDev.Mirrors.setReflectFrame_GalvDM.apply(this, arguments);
         
