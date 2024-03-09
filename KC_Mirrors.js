@@ -733,7 +733,7 @@ KCDev.Mirrors.eventDefault.reflectFloor = false;
 KCDev.Mirrors.eventDefault.reflectWall = false;
 KCDev.Mirrors.useZFightFix = false;
 /** @type {Map<number,number[]>} */
-KCDev.Mirrors.reflectWallPositions = null;
+KCDev.Mirrors.reflectWallPositions = new Map();
 KCDev.Mirrors.currMapId = -1;
 /** @type {Set<number>} */
 KCDev.Mirrors.wallRegions = null;
@@ -1871,27 +1871,23 @@ Sprite_Character.prototype.updateReflectCommon = function (r) {
  * Rebuilds and sets wall reflection cache for current map.
  */
 KCDev.Mirrors.refreshReflectWallCache = function () {
-    KCDev.Mirrors.reflectWallPositions = KCDev.Mirrors.buildCurrentMapCache();
+    KCDev.Mirrors.reflectWallPositions.clear();
+    KCDev.Mirrors.buildCurrentMapCache();
 };
 
 /**
  * Returns the reflectable wall region map for the current game map
  * For performance, we pre-compute the closest wall region for every tile on the map
- * @returns {Map<number, number[]}
  */
 KCDev.Mirrors.buildCurrentMapCache = function () {
-    const /** @type {Map<number, number[]} */ regionMap = new Map();
+    const /** @type {Map<number, number[]} */ regionMap = KCDev.Mirrors.reflectWallPositions;
 
     for (let i = $gameMap.width() - 1; i >= 0; i--) {
         for (let j = $gameMap.height() - 1; j >= 0; j--) {
             const regionId = $gameMap.regionId(i, j);
 
             if (KCDev.Mirrors.wallRegions.has(regionId)) {
-                let yArr = regionMap.get(i);
-
-                if (!yArr) {
-                    yArr = [];
-                }
+                const yArr = regionMap.get(i) || [];
 
                 yArr.push(j);
 
@@ -1899,8 +1895,6 @@ KCDev.Mirrors.buildCurrentMapCache = function () {
             }
         }
     }
-
-    return regionMap;
 };
 
 /**
