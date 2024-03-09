@@ -264,8 +264,9 @@ SOFTWARE.
  * 
  * Changelog:
  *     v1.3.6 - 2024/03/09
- *         - Fix Sprite_Reflect initialization for plugin compatibility
- *         - Consolidate Sprite_Reflect and Sprite_Reflect_wall into one class
+ *         - Changed Sprite_Reflect initialization for plugin compatibility
+ *         - Consolidated Sprite_Reflect and Sprite_Reflect_wall into one class
+ *         - Optimized wall coordinate lookups
  *     v1.3.5 - 2024/03/07
  *         - Restructure internal code
  *         - Make reflections compatible with GALV_CharacterFramesMZ
