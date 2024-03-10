@@ -1080,14 +1080,14 @@ KCDev.Mirrors.convertChangeReflectArgs = function (char, args) {
  */
 KCDev.Mirrors.overrideMapSettings = function (floorEnabled = 'unchanged', wallEnabled = 'unchanged', mode = 'unchanged') {
     const refType = 'Reflect_Type';
-    const reflect = PluginManagerEx.findMetaValue($dataMap, [refType, refType.toLowerCase(), refType.toUpperCase()])?.trim().toUpperCase();
+    const reflect = KCDev.Mirrors.findMetaSimple(refType, $dataMap)?.trim().toUpperCase();
     if (floorEnabled !== 'unchanged') $gameMap.setReflectFloor(floorEnabled === 'map notes' ? reflect === 'FLOOR' || reflect === 'ALL' || reflect === undefined : floorEnabled === 'allow');
     if (wallEnabled !== 'unchanged') $gameMap.setReflectWall(wallEnabled === 'map notes' ? reflect === 'WALL' || reflect === 'ALL' || reflect === undefined : wallEnabled === 'allow');
 
     if (mode !== 'unchanged') {
         if (mode === 'map notes') {
             const refMode = 'Reflect_Mode';
-            mode = PluginManagerEx.findMetaValue($dataMap, [refMode, refMode.toLowerCase(), refMode.toUpperCase()])?.toLowerCase().trim();
+            mode = KCDev.Mirrors.findMetaSimple(refMode, $dataMap)?.toLowerCase().trim();
         }
         switch (mode) {
             case 'perspective':
@@ -1566,7 +1566,7 @@ KCDev.Mirrors.setupMapReflectOptions = function () {
     const refType = 'Reflect_Type';
     const refWallOff = 'Reflect_Wall_Offsets';
     const refFloorOff = 'Reflect_Floor_Offsets';
-    const reflect = PluginManagerEx.findMetaValue($dataMap, [refType, refType.toLowerCase(), refType.toUpperCase()])?.trim().toUpperCase();
+    const reflect = KCDev.Mirrors.findMetaSimple(refType, $dataMap)?.trim().toUpperCase();
     $gameMap.setReflectWall(reflect === 'WALL' || reflect === 'ALL' || reflect === undefined);
     $gameMap.setReflectFloor(reflect === 'FLOOR' || reflect === 'ALL' || reflect === undefined);
     const refMode = 'Reflect_Mode';
