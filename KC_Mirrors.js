@@ -741,6 +741,74 @@ KCDev.Mirrors.wallRegions = null;
 /** @type {Set<number>} */
 KCDev.Mirrors.noReflectRegions = null;
 
+KCDev.Mirrors.findMetaSimple = function (str, target) {
+    return PluginManagerEx.findMetaValue(target, [str, str.toLowerCase(), str.toUpperCase()]);
+};
+
+/**
+ * Parses note tags for events and actors
+ * @param {Game_Event | Game_Actor} reflectableObj Game object with reflection setting and getting methods
+ * @param {rm.types.Actor | rm.types.Event} target Database information that will be used to find the note tags
+ * @param {{reflectFloor: boolean, reflectWall: boolean}} defaults Default values for floor and wall reflections for the target object
+ * @param {boolean} isActor Actors and events use different reflection characters!
+ */
+KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isActor = false) {
+
+    const findMetaSimple = function (str) {
+        return KCDev.Mirrors.findMetaSimple(str, target);
+    };
+
+    const refChar = isActor ? 'Reflect_Actor' : 'Reflect_Char';
+    const refIdx = 'Reflect_Index';
+    const refType = 'Reflect_Type';
+    const refFloorOpa = 'Reflect_Floor_Opacity';
+    const refWallOpa = 'Reflect_Wall_Opacity';
+    const refWallOff = 'Reflect_Wall_Offsets';
+    const refFloorOff = 'Reflect_Floor_Offsets';
+    const metaChar = findMetaSimple(refChar);
+    const metaIdx = findMetaSimple(refIdx);
+    const metaFloorOpa = findMetaSimple(refFloorOpa);
+    const metaWallOpa = findMetaSimple(refWallOpa);
+    const metaRefWallOff = findMetaSimple(refWallOff) || '';
+    const metaRefFloorOff = findMetaSimple(refFloorOff) || '';
+    const wallOffs = metaRefWallOff.split(',').map(num => parseInt(num));
+    const floorOffs = metaRefFloorOff.split(',').map(num => parseInt(num));
+    const reflectType = findMetaSimple(refType);
+    reflectableObj.reflectFloorToggle(defaults.reflectFloor);
+    reflectableObj.reflectWallToggle(defaults.reflectWall);
+    if (reflectType) {
+        switch (reflectType.trim().toUpperCase()) {
+            case 'FLOOR':
+                reflectableObj.reflectFloorToggle(true);
+                reflectableObj.reflectWallToggle(false);
+                break;
+
+            case 'WALL':
+                reflectableObj.reflectWallToggle(true);
+                reflectableObj.reflectFloorToggle(false);
+                break;
+
+            case 'ALL':
+                reflectableObj.reflectEnable();
+                break;
+
+            case 'NONE':
+                reflectableObj.reflectDisable();
+                break;
+
+            default:
+                break;
+        }
+    }
+    reflectableObj.setReflectImage(metaChar ? metaChar.trim() : '', metaIdx);
+    reflectableObj.setReflectFloorOpacity(typeof (metaFloorOpa) === 'number' ? metaFloorOpa : undefined);
+    reflectableObj.setReflectWallOpacity(typeof (metaWallOpa) === 'number' ? metaWallOpa : undefined);
+    reflectableObj.setReflectFloorXOffset(floorOffs[0] || 0);
+    reflectableObj.setReflectFloorYOffset(floorOffs[1] || 0);
+    reflectableObj.setReflectWallXOffset(wallOffs[0] || 0);
+    reflectableObj.setReflectWallYOffset(wallOffs[1] || 0);
+};
+
 (() => {
 
     if (Window.PluginManagerEx) {
@@ -1479,75 +1547,6 @@ Game_Event.prototype.setupPage = function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Game_Event edits                                                                                       //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-KCDev.Mirrors.findMetaSimple = function (str, target) {
-    return PluginManagerEx.findMetaValue(target, [str, str.toLowerCase(), str.toUpperCase()]);
-};
-
-/**
- * Parses note tags for events and actors
- * @param {Game_Event | Game_Actor} reflectableObj Game object with reflection setting and getting methods
- * @param {rm.types.Actor | rm.types.Event} target Database information that will be used to find the note tags
- * @param {{reflectFloor: boolean, reflectWall: boolean}} defaults Default values for floor and wall reflections for the target object
- * @param {boolean} isActor Actors and events use different reflection characters!
- */
-KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isActor = false) {
-
-    const findMetaSimple = function (str) {
-        return KCDev.Mirrors.findMetaSimple(str, target);
-    };
-
-    const refChar = isActor ? 'Reflect_Actor' : 'Reflect_Char';
-    const refIdx = 'Reflect_Index';
-    const refType = 'Reflect_Type';
-    const refFloorOpa = 'Reflect_Floor_Opacity';
-    const refWallOpa = 'Reflect_Wall_Opacity';
-    const refWallOff = 'Reflect_Wall_Offsets';
-    const refFloorOff = 'Reflect_Floor_Offsets';
-    const metaChar = findMetaSimple(refChar);
-    const metaIdx = findMetaSimple(refIdx);
-    const metaFloorOpa = findMetaSimple(refFloorOpa);
-    const metaWallOpa = findMetaSimple(refWallOpa);
-    const metaRefWallOff = findMetaSimple(refWallOff) || '';
-    const metaRefFloorOff = findMetaSimple(refFloorOff) || '';
-    const wallOffs = metaRefWallOff.split(',').map(num => parseInt(num));
-    const floorOffs = metaRefFloorOff.split(',').map(num => parseInt(num));
-    const reflectType = findMetaSimple(refType);
-    reflectableObj.reflectFloorToggle(defaults.reflectFloor);
-    reflectableObj.reflectWallToggle(defaults.reflectWall);
-    if (reflectType) {
-        switch (reflectType.trim().toUpperCase()) {
-            case 'FLOOR':
-                reflectableObj.reflectFloorToggle(true);
-                reflectableObj.reflectWallToggle(false);
-                break;
-
-            case 'WALL':
-                reflectableObj.reflectWallToggle(true);
-                reflectableObj.reflectFloorToggle(false);
-                break;
-
-            case 'ALL':
-                reflectableObj.reflectEnable();
-                break;
-
-            case 'NONE':
-                reflectableObj.reflectDisable();
-                break;
-
-            default:
-                break;
-        }
-    }
-    reflectableObj.setReflectImage(metaChar ? metaChar.trim() : '', metaIdx);
-    reflectableObj.setReflectFloorOpacity(typeof (metaFloorOpa) === 'number' ? metaFloorOpa : undefined);
-    reflectableObj.setReflectWallOpacity(typeof (metaWallOpa) === 'number' ? metaWallOpa : undefined);
-    reflectableObj.setReflectFloorXOffset(floorOffs[0] || 0);
-    reflectableObj.setReflectFloorYOffset(floorOffs[1] || 0);
-    reflectableObj.setReflectWallXOffset(wallOffs[0] || 0);
-    reflectableObj.setReflectWallYOffset(wallOffs[1] || 0);
-};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // START Game_Map edits                                                                                       //
