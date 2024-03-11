@@ -748,7 +748,7 @@ KCDev.Mirrors.noReflectRegions = null;
  * @returns 
  */
 KCDev.Mirrors.findMetaSimple = function (str, target) {
-    return PluginManagerEx.findMetaValue(target, [str, str.toLowerCase(), str.toUpperCase()]);
+    return target.meta[str] || target.meta[str.toLowerCase()] || target.meta[str.toLowerCase()];
 };
 
 /**
@@ -818,6 +818,17 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
 (() => {
 
     if (Window.PluginManagerEx) {
+
+        /**
+         * 
+         * @param {string} str 
+         * @param {{meta: Record<string,string>}} target 
+         * @returns 
+         */
+        KCDev.Mirrors.findMetaSimple = function (str, target) {
+            return PluginManagerEx.findMetaValue(target, [str, str.toLowerCase(), str.toUpperCase()]);
+        };
+
         const script = document.currentScript;
 
         /**
@@ -833,9 +844,9 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
          * @property {string} wallReflectType
          * @property {number} wallReflectVar
          */
-    
+
         const /** @type {KCDev.Mirrors.PluginParams} */ parameters = PluginManagerEx.createParameter(script);
-    
+
         if (parameters.zValue !== undefined) {
             KCDev.Mirrors.zValue = parameters.zValue;
         }
@@ -845,41 +856,41 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         if (parameters.wallReflectType) {
             KCDev.Mirrors.wallReflectType = parameters.wallReflectType;
         }
-    
+
         KCDev.Mirrors.useZFightFix = parameters.attemptFixZFight;
         KCDev.Mirrors.actorDefault = parameters.actorDefault;
         KCDev.Mirrors.eventDefault = parameters.eventDefault;
         KCDev.Mirrors.wallRegions = new Set(parameters.wallRegions);
         KCDev.Mirrors.noReflectRegions = new Set(parameters.noReflectRegions);
-    
+
         // plugin commands
         PluginManagerEx.registerCommand(script, 'changeEventReflect', function (args) {
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
         });
-    
+
         PluginManagerEx.registerCommand(script, 'changeActorReflect', function (args) {
             const actorId = KCDev.Mirrors.getRealActorId(args.id);
             const actor = $gameActors.actor(actorId);
             args.id = actorId;
             KCDev.Mirrors.setActorReflect(...KCDev.Mirrors.convertChangeReflectArgs(actor, args));
         });
-    
+
         PluginManagerEx.registerCommand(script, 'resetEventReflect', function (args) {
             KCDev.Mirrors.resetEventReflectImage.call(this, args.id || this.eventId());
         });
-    
+
         PluginManagerEx.registerCommand(script, 'resetActorReflect', function (args) {
             KCDev.Mirrors.resetActorReflectImage.call(this, args.id);
         });
-    
+
         PluginManagerEx.registerCommand(script, 'refreshReflectMap', function (args) {
             KCDev.Mirrors.refreshReflectWallCache();
         });
-    
+
         PluginManagerEx.registerCommand(script, 'setWallReflectMode', function (args) {
             KCDev.Mirrors.setWallReflectMode(args.mode);
         });
-    
+
         PluginManagerEx.registerCommand(script, 'overrideMapSettings', function (args) {
             KCDev.Mirrors.overrideMapSettings(args.reflectFloor, args.reflectWall, args.mode);
         });
@@ -1937,7 +1948,7 @@ KCDev.Mirrors.getWallY = function (x, y) {
             return wallY;
         }
     }
-    
+
     return -1;
 };
 
@@ -1980,7 +1991,7 @@ KCDev.Mirrors.setReflectFrame = function (r) {
     const tempCharIndex = r._character._characterIndex;
     const tempCharName = r._character._characterName;
     const tempCharDir = r._character._direction;
-    
+
     // load in reflection parameters
     r._character._characterName = r._characterName;
     r._character._characterIndex = r._characterIndex;
@@ -2121,7 +2132,7 @@ if (Imported.Galv_CharacterFrames) {
         r._character._cframes = r._cframes;
 
         KCDev.Mirrors.setReflectFrame_GalvCF.apply(this, arguments);
-        
+
         // restore original character values
         r._character._cframes = tmpCFrames;
     };
@@ -2140,7 +2151,7 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
         if (r._isReflectionWall && tmpDiagDir) r._character._diagDir = r._character.reverseDir(tmpDiagDir);
 
         KCDev.Mirrors.setReflectFrame_GalvDM.apply(this, arguments);
-        
+
         r._character._diagDir = tmpDiagDir;
     };
 }
