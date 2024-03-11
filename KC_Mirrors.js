@@ -741,6 +741,12 @@ KCDev.Mirrors.wallRegions = null;
 /** @type {Set<number>} */
 KCDev.Mirrors.noReflectRegions = null;
 
+/**
+ * 
+ * @param {string} str 
+ * @param {{meta: Record<string,string>}} target 
+ * @returns 
+ */
 KCDev.Mirrors.findMetaSimple = function (str, target) {
     return PluginManagerEx.findMetaValue(target, [str, str.toLowerCase(), str.toUpperCase()]);
 };
