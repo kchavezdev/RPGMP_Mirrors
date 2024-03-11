@@ -920,14 +920,14 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
             const actorDefault = JsonEx.parse(parameters.actorDefault);
             KCDev.Mirrors.actorDefault = { reflectFloor: actorDefault.reflectFloor.toLowerCase() === 'true', reflectWall: actorDefault.reflectWall.toLowerCase() === 'true' };
         } catch (error) {
-            console.error(error.message)
+            console.error(error.message);
         }
 
         try {
             const eventDefault = JsonEx.parse(parameters.eventDefault);
             KCDev.Mirrors.eventDefault = { reflectFloor: eventDefault.reflectFloor.toLowerCase() === 'true', reflectWall: eventDefault.reflectWall.toLowerCase() === 'true' };
         } catch (error) {
-            console.error(error.message)
+            console.error(error.message);
         }
 
         try {
