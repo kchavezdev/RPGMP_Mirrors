@@ -896,7 +896,59 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         });
     }
     else {
-        throw new Error("TODO: PARSE PARAMETERS WITH REGULAR PLUGIN MANAGER")
+
+        const script = document.currentScript.src.split("/").pop().replace(/\.js$/, "");
+
+        const /** @type {KCDev.Mirrors.PluginParams} */ parameters = PluginManager.parameters(script);
+
+        if (parameters.zValue !== undefined) {
+            KCDev.Mirrors.zValue = parameters.zValue;
+        }
+        if (parameters.maxWallDistance !== undefined) {
+            KCDev.Mirrors.maxWallDistance = parameters.maxWallDistance;
+        }
+        if (parameters.wallReflectType) {
+            KCDev.Mirrors.wallReflectType = parameters.wallReflectType;
+        }
+
+        KCDev.Mirrors.useZFightFix = parameters.attemptFixZFight.toLowerCase() === 'true';
+        const actorDefault = JsonEx.parse(parameters.actorDefault);
+        KCDev.Mirrors.actorDefault = {reflectFloor: actorDefault.reflectFloor.toLowerCase() === 'true', reflectWall: actorDefault.reflectWall.toLowerCase() === 'true'};
+        KCDev.Mirrors.eventDefault = parameters.eventDefault;
+        KCDev.Mirrors.wallRegions = new Set(parameters.wallRegions);
+        KCDev.Mirrors.noReflectRegions = new Set(parameters.noReflectRegions);
+
+        // plugin commands
+        PluginManager.registerCommand(script, 'changeEventReflect', function (args) {
+            KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
+        });
+
+        PluginManager.registerCommand(script, 'changeActorReflect', function (args) {
+            const actorId = KCDev.Mirrors.getRealActorId(args.id);
+            const actor = $gameActors.actor(actorId);
+            args.id = actorId;
+            KCDev.Mirrors.setActorReflect(...KCDev.Mirrors.convertChangeReflectArgs(actor, args));
+        });
+
+        PluginManager.registerCommand(script, 'resetEventReflect', function (args) {
+            KCDev.Mirrors.resetEventReflectImage.call(this, args.id || this.eventId());
+        });
+
+        PluginManager.registerCommand(script, 'resetActorReflect', function (args) {
+            KCDev.Mirrors.resetActorReflectImage.call(this, args.id);
+        });
+
+        PluginManager.registerCommand(script, 'refreshReflectMap', function (args) {
+            KCDev.Mirrors.refreshReflectWallCache();
+        });
+
+        PluginManager.registerCommand(script, 'setWallReflectMode', function (args) {
+            KCDev.Mirrors.setWallReflectMode(args.mode);
+        });
+
+        PluginManager.registerCommand(script, 'overrideMapSettings', function (args) {
+            KCDev.Mirrors.overrideMapSettings(args.reflectFloor, args.reflectWall, args.mode);
+        });
     }
 
 })();
