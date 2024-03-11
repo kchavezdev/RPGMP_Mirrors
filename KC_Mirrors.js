@@ -901,22 +901,45 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
 
         const /** @type {KCDev.Mirrors.PluginParams} */ parameters = PluginManager.parameters(script);
 
-        if (parameters.zValue !== undefined) {
-            KCDev.Mirrors.zValue = parameters.zValue;
+        const zValue = Number(parameters.zValue);
+        if (zValue) {
+            KCDev.Mirrors.zValue = zValue;
         }
-        if (parameters.maxWallDistance !== undefined) {
-            KCDev.Mirrors.maxWallDistance = parameters.maxWallDistance;
+
+        const maxWallDistance = Number(parameters.maxWallDistance);
+        if (!isNaN(maxWallDistance)) {
+            KCDev.Mirrors.maxWallDistance = maxWallDistance;
         }
-        if (parameters.wallReflectType) {
+
+        if (parameters.wallReflectType in KCDev.Mirrors.wallModes) {
             KCDev.Mirrors.wallReflectType = parameters.wallReflectType;
         }
 
         KCDev.Mirrors.useZFightFix = parameters.attemptFixZFight.toLowerCase() === 'true';
-        const actorDefault = JsonEx.parse(parameters.actorDefault);
-        KCDev.Mirrors.actorDefault = {reflectFloor: actorDefault.reflectFloor.toLowerCase() === 'true', reflectWall: actorDefault.reflectWall.toLowerCase() === 'true'};
-        KCDev.Mirrors.eventDefault = parameters.eventDefault;
-        KCDev.Mirrors.wallRegions = new Set(parameters.wallRegions);
-        KCDev.Mirrors.noReflectRegions = new Set(parameters.noReflectRegions);
+        try {
+            const actorDefault = JsonEx.parse(parameters.actorDefault);
+            KCDev.Mirrors.actorDefault = { reflectFloor: actorDefault.reflectFloor.toLowerCase() === 'true', reflectWall: actorDefault.reflectWall.toLowerCase() === 'true' };
+        } catch (error) {
+            console.error(error.message)
+        }
+
+        try {
+            const eventDefault = JsonEx.parse(parameters.eventDefault);
+            KCDev.Mirrors.eventDefault = { reflectFloor: eventDefault.reflectFloor.toLowerCase() === 'true', reflectWall: eventDefault.reflectWall.toLowerCase() === 'true' };
+        } catch (error) {
+            console.error(error.message)
+        }
+
+        try {
+            KCDev.Mirrors.wallRegions = new Set(JsonEx.parse(parameters.wallRegions));
+        } catch (error) {
+            KCDev.Mirrors.wallRegions = new Set();
+        }
+        try {
+            KCDev.Mirrors.noReflectRegions = new Set(JsonEx.parse(parameters.noReflectRegions));
+        } catch (error) {
+            KCDev.Mirrors.noReflectRegions = new Set();
+        }
 
         // plugin commands
         PluginManager.registerCommand(script, 'changeEventReflect', function (args) {
@@ -931,11 +954,11 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         });
 
         PluginManager.registerCommand(script, 'resetEventReflect', function (args) {
-            KCDev.Mirrors.resetEventReflectImage.call(this, args.id || this.eventId());
+            KCDev.Mirrors.resetEventReflectImage.call(this, Number(args.id) || this.eventId());
         });
 
         PluginManager.registerCommand(script, 'resetActorReflect', function (args) {
-            KCDev.Mirrors.resetActorReflectImage.call(this, args.id);
+            KCDev.Mirrors.resetActorReflectImage.call(this, Number(args.id));
         });
 
         PluginManager.registerCommand(script, 'refreshReflectMap', function (args) {
