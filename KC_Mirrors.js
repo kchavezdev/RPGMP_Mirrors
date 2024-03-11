@@ -817,6 +817,20 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
 
 (() => {
 
+    /**
+     * @typedef KCDev.Mirrors.PluginParams
+     * @property {number} zValue
+     * @property {number} maxWallDistance
+     * @property {object} actorDefault
+     * @property {boolean} actorDefault.reflectFloor
+     * @property {boolean} actorDefault.reflectWall
+     * @property {object} eventDefault
+     * @property {boolean} eventDefault.reflectFloor
+     * @property {boolean} eventDefault.reflectWall
+     * @property {string} wallReflectType
+     * @property {number} wallReflectVar
+     */
+
     if (Window.PluginManagerEx) {
 
         /**
@@ -830,20 +844,6 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         };
 
         const script = document.currentScript;
-
-        /**
-         * @typedef KCDev.Mirrors.PluginParams
-         * @property {number} zValue
-         * @property {number} maxWallDistance
-         * @property {object} actorDefault
-         * @property {boolean} actorDefault.reflectFloor
-         * @property {boolean} actorDefault.reflectWall
-         * @property {object} eventDefault
-         * @property {boolean} eventDefault.reflectFloor
-         * @property {boolean} eventDefault.reflectWall
-         * @property {string} wallReflectType
-         * @property {number} wallReflectVar
-         */
 
         const /** @type {KCDev.Mirrors.PluginParams} */ parameters = PluginManagerEx.createParameter(script);
 
