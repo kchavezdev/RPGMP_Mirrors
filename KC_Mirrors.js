@@ -815,21 +815,39 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
     reflectableObj.setReflectWallYOffset(wallOffs[1] || 0);
 };
 
-(() => {
+/**
+ * @typedef {Object} KCDev.Mirrors.GeneralCommandArgs Plugin command arguments
+ * @property {number} id ID of the target event or actor.
+ * @property {string} character Character file name to use as the reflection.
+ * @property {number | string} index Index of the character to use as a reflection. Empty string means do not change.
+ * @property {boolean | string} reflectFloor Enables or disables the floor reflections of the target.
+ * @property {boolean | string} reflectWall Enables or disables the wall reflections of the target.
+ * @property {number | string} reflectFloorOpacity Floor opacity to use for the reflection
+ * @property {number | string} reflectWallOpacity Wall opacity to use for the reflection
+ * @property {number | string} reflectFloorXOffset Floor reflection x offset
+ * @property {number | string} reflectFloorYOffset Floor reflection y offset
+ * @property {number | string} reflectWallXOffset Wall reflection x offset
+ * @property {number | string} reflectWallYOffset Wall reflection y offset
+ */
 
-    /**
-     * @typedef KCDev.Mirrors.PluginParams
-     * @property {number} zValue
-     * @property {number} maxWallDistance
-     * @property {object} actorDefault
-     * @property {boolean} actorDefault.reflectFloor
-     * @property {boolean} actorDefault.reflectWall
-     * @property {object} eventDefault
-     * @property {boolean} eventDefault.reflectFloor
-     * @property {boolean} eventDefault.reflectWall
-     * @property {string} wallReflectType
-     * @property {number} wallReflectVar
-     */
+/**
+ * @typedef {Object} KCDev.Mirrors.PluginParams
+ * @property {number} zValue
+ * @property {number} maxWallDistance
+ * @property {object} actorDefault
+ * @property {boolean} actorDefault.reflectFloor
+ * @property {boolean} actorDefault.reflectWall
+ * @property {object} eventDefault
+ * @property {boolean} eventDefault.reflectFloor
+ * @property {boolean} eventDefault.reflectWall
+ * @property {string} wallReflectType
+ * @property {number} wallReflectVar
+ * @property {boolean} attemptFixZFight
+ * @property {number[]} wallRegions
+ * @property {number[]} noReflectRegions
+ */
+
+(() => {
 
     if (Window.PluginManagerEx) {
 
