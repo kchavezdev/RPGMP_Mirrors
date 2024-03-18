@@ -1929,7 +1929,7 @@ Sprite_Character.prototype.updateReflectionSprite = function () {
  * Updates the floor sprite's reflection's position and visibility for this character sprite
  */
 Sprite_Character.prototype.updateReflectFloor = function () {
-    
+
     const /**@type {KCDev.Mirrors.Sprite_Reflect} */ r = this._reflectionFloor;
     const char = this._character;
     const o = char.reflectFloorOpacity();
@@ -2296,13 +2296,11 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
 
 // Apparently, having a lot of events with the "@" property name slows down property access times a lot
 KCDev.Mirrors.DataManager_correctDataErrors = DataManager.correctDataErrors;
-DataManager.correctDataErrors = function() {
+DataManager.correctDataErrors = function () {
     KCDev.Mirrors.DataManager_correctDataErrors.apply(this, arguments);
-    if ($gameMap) {
-        $gameMap.events().forEach(e => {
-            if (e["@"]) {
-                delete e["@"];
-            }
-        });
-    }
+    $gameMap?.events().forEach(e => {
+        if (e["@"]) {
+            delete e["@"];
+        }
+    });
 };
