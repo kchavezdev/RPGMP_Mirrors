@@ -263,6 +263,8 @@ SOFTWARE.
  *   | Same as Override Map Settings command
  * 
  * Changelog:
+ *     v1.4.0 - 2024/XX/XX
+ *         - TBA
  *     v1.3.6 - 2024/03/09
  *         - Changed Sprite_Reflect initialization for plugin compatibility
  *         - Consolidated Sprite_Reflect and Sprite_Reflect_wall into one class
