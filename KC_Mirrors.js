@@ -264,7 +264,9 @@ SOFTWARE.
  * 
  * Changelog:
  *     v1.4.0 - 2024/XX/XX
- *         - TBA
+ *         - Add MV Support
+ *         - Make PluginCommonBase optional
+ *         - Performance optimizations
  *     v1.3.6 - 2024/03/09
  *         - Changed Sprite_Reflect initialization for plugin compatibility
  *         - Consolidated Sprite_Reflect and Sprite_Reflect_wall into one class
