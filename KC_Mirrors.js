@@ -1905,8 +1905,8 @@ Sprite_Character.prototype.createReflectionSprites = function () {
     this._reflectionFloor.bitmap = this.bitmap;
     this._reflectionWall.bitmap = this.bitmap;
     this._character.requestReflectRefresh();
-    SceneManager._scene._spriteset._tilemap.addChild(this._reflectionFloor);
-    SceneManager._scene._spriteset._tilemap.addChild(this._reflectionWall);
+    this.parent.addChild(this._reflectionFloor);
+    this.parent.addChild(this._reflectionWall);
 };
 
 /**
