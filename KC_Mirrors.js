@@ -833,7 +833,7 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
  * @property {number | string} index Index of the character to use as a reflection. Empty string means do not change.
  * @property {boolean | string} reflectFloor Enables or disables the floor reflections of the target.
  * @property {boolean | string} reflectWall Enables or disables the wall reflections of the target.
- * @property {number | string} args.reflectFloorOpacity Floor opacity to use for the reflection
+ * @property {number | string} reflectFloorOpacity Floor opacity to use for the reflection
  * @property {number | string} reflectWallOpacity Wall opacity to use for the reflection
  * @property {number | string} reflectFloorXOffset Floor reflection x offset
  * @property {number | string} reflectFloorYOffset Floor reflection y offset
@@ -1929,14 +1929,15 @@ Sprite_Character.prototype.updateReflectionSprite = function () {
  * Updates the floor sprite's reflection's position and visibility for this character sprite
  */
 Sprite_Character.prototype.updateReflectFloor = function () {
+
     const /**@type {KCDev.Mirrors.Sprite_Reflect} */ r = this._reflectionFloor;
     const char = this._character;
     const o = char.reflectFloorOpacity();
     r.visible = $gameMap.reflectFloor() && char.reflectFloor() && !KCDev.Mirrors.noReflectRegions.has($gameMap.regionId(char.x, char.y)) && ((o === undefined && !char.isTransparent()) || o);
 
     if (r.visible) {
-        r.opacity = o === undefined ? this.opacity : o;
         this.updateReflectCommon(r);
+        r.opacity = o === undefined ? this.opacity : o;
         // need to add portion of tile height for compatibility with KC_MoveRouteTF
         r.y = this.y + ((this.pivot.y) ? r.patternHeight() * this.scale.y : 0);
         r.angle = this.angle + 180;
@@ -1954,7 +1955,7 @@ Sprite_Character.prototype.updateReflectFloor = function () {
  * Updates the wall sprite's reflection's position, visibility, and scale for this character sprite
  */
 Sprite_Character.prototype.updateReflectWall = function () {
-
+    //return;
     const /**@type {KCDev.Mirrors.Sprite_Reflect} */ r = this._reflectionWall;
 
     const char = this._character;
@@ -2292,3 +2293,14 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Galv Plugins Compatibility                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Apparently, having a lot of events with the "@" property name slows down property access times a lot
+KCDev.Mirrors.DataManager_correctDataErrors = DataManager.correctDataErrors;
+DataManager.correctDataErrors = function () {
+    KCDev.Mirrors.DataManager_correctDataErrors.apply(this, arguments);
+    $gameMap?.events().forEach(e => {
+        if (e["@"]) {
+            delete e["@"];
+        }
+    });
+};
