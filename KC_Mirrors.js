@@ -892,6 +892,8 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         KCDev.Mirrors.wallRegions = new Set(parameters.wallRegions);
         KCDev.Mirrors.noReflectRegions = new Set(parameters.noReflectRegions);
 
+        if (Utils.RPGMAKER_NAME !== 'MZ') return;
+
         // plugin commands
         PluginManagerEx.registerCommand(script, 'changeEventReflect', function (args) {
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
@@ -1005,6 +1007,8 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         } catch (error) {
             KCDev.Mirrors.noReflectRegions = new Set();
         }
+
+        if (Utils.RPGMAKER_NAME !== 'MZ') return;
 
         function convertVanillaArgs(args) {
             for (const prop in args) {
