@@ -263,7 +263,6 @@ SOFTWARE.
  * 
  * Changelog:
  *     v1.4.0 - 2024/XX/XX
- *         - Add MV Support
  *         - Make PluginCommonBase optional
  *         - Performance optimizations
  *     v1.3.6 - 2024/03/09
