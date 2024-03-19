@@ -1944,7 +1944,7 @@ Sprite_Character.prototype.updateReflectFloor = function () {
         r.opacity = o === undefined ? this.opacity : o;
         // need to add portion of tile height for compatibility with KC_MoveRouteTF
         r.y = this.y + ((this.pivot.y) ? r.patternHeight() * this.scale.y : 0);
-        r.angle = this.angle + 180;
+        r.rotation = this.rotation + Math.PI;
         r.scale.x = -this.scale.x;
         r.scale.y = this.scale.y;
         r.y += char.jumpHeight() * 1.25;
@@ -2021,7 +2021,7 @@ Sprite_Character.prototype.updateReflectWall = function () {
 Sprite_Character.prototype.updateReflectCommon = function (r) {
     r.x = this.x;
     r.scale.set(this.scale.x, this.scale.y);
-    r.angle = this.angle;
+    r.rotation = this.rotation;
     r.pivot.y = this.pivot.y;
     r.setBlendColor(this.getBlendColor());
     r.setColorTone(this.getColorTone());
