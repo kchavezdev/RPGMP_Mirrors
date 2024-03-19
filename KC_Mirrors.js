@@ -1173,7 +1173,7 @@ KCDev.Mirrors.getRealActorId = function (actorId) {
         else {
             const followers = $gamePlayer.followers();
             const follower = followers.follower(Math.abs(actorId) - 1);
-            if (follower?.actor()) {
+            if (follower && follower.actor()) {
                 return follower.actor().actorId();
             }
             else {
@@ -1302,14 +1302,16 @@ KCDev.Mirrors.convertChangeReflectArgs = function (char, args) {
  */
 KCDev.Mirrors.overrideMapSettings = function (floorEnabled = 'unchanged', wallEnabled = 'unchanged', mode = 'unchanged') {
     const refType = 'Reflect_Type';
-    const reflect = KCDev.Mirrors.findMetaSimple(refType, $dataMap)?.trim().toUpperCase();
+    const metaRefType = KCDev.Mirrors.findMetaSimple(refType, $dataMap);
+    const reflect = (typeof metaRefType === 'string') ? metaRefType.trim().toUpperCase() : undefined;
     if (floorEnabled !== 'unchanged') $gameMap.setReflectFloor(floorEnabled === 'map notes' ? reflect === 'FLOOR' || reflect === 'ALL' || reflect === undefined : floorEnabled === 'allow');
     if (wallEnabled !== 'unchanged') $gameMap.setReflectWall(wallEnabled === 'map notes' ? reflect === 'WALL' || reflect === 'ALL' || reflect === undefined : wallEnabled === 'allow');
 
     if (mode !== 'unchanged') {
         if (mode === 'map notes') {
             const refMode = 'Reflect_Mode';
-            mode = KCDev.Mirrors.findMetaSimple(refMode, $dataMap)?.toLowerCase().trim();
+            const metaRefMode = KCDev.Mirrors.findMetaSimple(refMode, $dataMap)
+            mode = (typeof metaRefMode === 'string') ? metaRefMode.toLowerCase().trim() : undefined;
         }
         switch (mode) {
             case 'perspective':
@@ -1719,11 +1721,13 @@ KCDev.Mirrors.setupMapReflectOptions = function () {
     const refType = 'Reflect_Type';
     const refWallOff = 'Reflect_Wall_Offsets';
     const refFloorOff = 'Reflect_Floor_Offsets';
-    const reflect = KCDev.Mirrors.findMetaSimple(refType, $dataMap)?.trim().toUpperCase();
+    const metaRefType = findMetaSimple(refType);
+    const reflect = (typeof metaRefType === 'string') ? metaRefType.trim().toUpperCase() : undefined;
     $gameMap.setReflectWall(reflect === 'WALL' || reflect === 'ALL' || reflect === undefined);
     $gameMap.setReflectFloor(reflect === 'FLOOR' || reflect === 'ALL' || reflect === undefined);
     const refMode = 'Reflect_Mode';
-    const reflectMode = findMetaSimple(refMode)?.toUpperCase().trim();
+    const metaRefMode = findMetaSimple(refMode);
+    const reflectMode = (typeof metaRefMode === 'string') ? metaRefMode.toUpperCase().trim() : undefined;
     const metaRefWallOff = findMetaSimple(refWallOff) || '';
     const metaRefFloorOff = findMetaSimple(refFloorOff) || '';
     const wallOffs = metaRefWallOff.split(',').map(num => parseInt(num));
@@ -2302,9 +2306,11 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
 KCDev.Mirrors.DataManager_correctDataErrors = DataManager.correctDataErrors;
 DataManager.correctDataErrors = function () {
     KCDev.Mirrors.DataManager_correctDataErrors.apply(this, arguments);
-    $gameMap?.events().forEach(e => {
-        if (e["@"]) {
-            delete e["@"];
-        }
-    });
+    if ($gameMap) {
+        $gameMap.events().forEach(e => {
+            if (e["@"]) {
+                delete e["@"];
+            }
+        });
+    }
 };
