@@ -741,6 +741,10 @@ KCDev.Mirrors.wallRegions = null;
 /** @type {Set<number>} */
 KCDev.Mirrors.noReflectRegions = null;
 
+KCDev.Mirrors.wallModes = {};
+KCDev.Mirrors.wallModes.perspective = 0;
+KCDev.Mirrors.wallModes.event = 1;
+
 /**
  * 
  * @param {string} str 
@@ -748,7 +752,7 @@ KCDev.Mirrors.noReflectRegions = null;
  * @returns 
  */
 KCDev.Mirrors.findMetaSimple = function (str, target) {
-    return target.meta[str] || target.meta[str.toLowerCase()] || target.meta[str.toLowerCase()];
+    return target.meta[str] || target.meta[str.toLowerCase()] || target.meta[str.toUpperCase()];
 };
 
 /**
@@ -764,6 +768,14 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         return KCDev.Mirrors.findMetaSimple(str, target);
     };
 
+    function parseNumber(num) {
+        const n = Number(num);
+        if (!isNaN(n)) {
+            return n;
+        }
+        return undefined;
+    }
+
     const refChar = isActor ? 'Reflect_Actor' : 'Reflect_Char';
     const refIdx = 'Reflect_Index';
     const refType = 'Reflect_Type';
@@ -772,13 +784,13 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
     const refWallOff = 'Reflect_Wall_Offsets';
     const refFloorOff = 'Reflect_Floor_Offsets';
     const metaChar = findMetaSimple(refChar);
-    const metaIdx = findMetaSimple(refIdx);
-    const metaFloorOpa = findMetaSimple(refFloorOpa);
-    const metaWallOpa = findMetaSimple(refWallOpa);
+    const metaIdx = parseNumber(findMetaSimple(refIdx));
+    const metaFloorOpa = parseNumber(findMetaSimple(refFloorOpa));
+    const metaWallOpa = parseNumber(findMetaSimple(refWallOpa));
     const metaRefWallOff = findMetaSimple(refWallOff) || '';
     const metaRefFloorOff = findMetaSimple(refFloorOff) || '';
-    const wallOffs = metaRefWallOff.split(',').map(num => parseInt(num));
-    const floorOffs = metaRefFloorOff.split(',').map(num => parseInt(num));
+    const wallOffs = metaRefWallOff.split(',').map(num => Number(num));
+    const floorOffs = metaRefFloorOff.split(',').map(num => Number(num));
     const reflectType = findMetaSimple(refType);
     reflectableObj.reflectFloorToggle(defaults.reflectFloor);
     reflectableObj.reflectWallToggle(defaults.reflectWall);
@@ -822,7 +834,7 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
  * @property {number | string} index Index of the character to use as a reflection. Empty string means do not change.
  * @property {boolean | string} reflectFloor Enables or disables the floor reflections of the target.
  * @property {boolean | string} reflectWall Enables or disables the wall reflections of the target.
- * @property {number | string} reflectFloorOpacity Floor opacity to use for the reflection
+ * @property {number | string} args.reflectFloorOpacity Floor opacity to use for the reflection
  * @property {number | string} reflectWallOpacity Wall opacity to use for the reflection
  * @property {number | string} reflectFloorXOffset Floor reflection x offset
  * @property {number | string} reflectFloorYOffset Floor reflection y offset
@@ -985,22 +997,30 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
         }
 
         try {
-            KCDev.Mirrors.wallRegions = new Set(JsonEx.parse(parameters.wallRegions));
+            KCDev.Mirrors.wallRegions = new Set(JsonEx.parse(parameters.wallRegions).map(id => Number(id)));
         } catch (error) {
             KCDev.Mirrors.wallRegions = new Set();
         }
         try {
-            KCDev.Mirrors.noReflectRegions = new Set(JsonEx.parse(parameters.noReflectRegions));
+            KCDev.Mirrors.noReflectRegions = new Set(JsonEx.parse(parameters.noReflectRegions).map(id => Number(id)));
         } catch (error) {
             KCDev.Mirrors.noReflectRegions = new Set();
         }
 
+        function convertVanillaArgs(args) {
+            for (const prop in args) {
+                args[prop] = tryParseParameter(args[prop]);
+            }
+        }
+
         // plugin commands
         PluginManager.registerCommand(script, 'changeEventReflect', function (args) {
+            convertVanillaArgs(args)
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
         });
 
         PluginManager.registerCommand(script, 'changeActorReflect', function (args) {
+            convertVanillaArgs(args);
             const actorId = KCDev.Mirrors.getRealActorId(args.id);
             const actor = $gameActors.actor(actorId);
             args.id = actorId;
@@ -1029,10 +1049,6 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
     }
 
 })();
-
-KCDev.Mirrors.wallModes = {};
-KCDev.Mirrors.wallModes.perspective = 0;
-KCDev.Mirrors.wallModes.event = 1;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // START CUSTOM CLASS DEFINITIONS                                                                             //
@@ -1241,18 +1257,7 @@ KCDev.Mirrors.getWallReflectMode = function () {
  * Returns a list of arguments to set the target's reflection properties and substitutes values that are
  * unchanged for the current values.
  * @param {Game_Character} char Character that is being updated
- * @param {Object} args Plugin command arguments
- * @param {number} args.id ID of the target event or actor.
- * @param {string} args.character Character file name to use as the reflection.
- * @param {number | string} args.index Index of the character to use as a reflection. Empty string means do not change.
- * @param {boolean | string} args.reflectFloor Enables or disables the floor reflections of the target.
- * @param {boolean | string} args.reflectWall Enables or disables the wall reflections of the target.
- * @param {number | string} args.reflectFloorOpacity Floor opacity to use for the reflection
- * @param {number | string} args.reflectWallOpacity Wall opacity to use for the reflection
- * @param {number | string} args.reflectFloorXOffset Floor reflection x offset
- * @param {number | string} args.reflectFloorYOffset Floor reflection y offset
- * @param {number | string} args.reflectWallXOffset Wall reflection x offset
- * @param {number | string} args.reflectWallYOffset Wall reflection y offset
+ * @param {KCDev.Mirrors.GeneralCommandArgs} args Plugin command arguments
  * @returns {Array<any>}
  */
 KCDev.Mirrors.convertChangeReflectArgs = function (char, args) {
