@@ -858,6 +858,37 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
  * @property {number[]} noReflectRegions
  */
 
+KCDev.Mirrors.tryParseParameter = function (param) {
+    if (typeof param !== 'string') return param;
+
+    // first try parsing as an object
+    try {
+        return JsonEx.parse(param);
+    } catch (error) {
+
+    }
+
+    // this ensures param JUST has numbers in it
+    // Number('') returns 0, which is undesirable
+    // parseFloat('123abc') returns 123, which is also not wanted
+    // so we have to use both to ensure whitespace is not parsed and characters are not ignored
+    const num = Number(param)
+    if (num === parseFloat(param)) {
+        return num;
+    }
+
+    if (param === 'true') {
+        return true;
+    }
+
+    if (param === 'false') {
+        return false;
+    }
+
+    // if those failed, it's probably a string so leave alone
+    return param;
+};
+
 (() => {
 
     if (Window.PluginManagerEx) {
@@ -928,42 +959,6 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
     }
     else {
 
-        /**
-         * @param {string} param
-         * @returns {any} 
-         */
-        function tryParseParameter(param) {
-
-            if (typeof param !== 'string') return param;
-
-            // first try parsing as an object
-            try {
-                return JsonEx.parse(param);
-            } catch (error) {
-
-            }
-
-            // this ensures param JUST has numbers in it
-            // Number('') returns 0, which is undesirable
-            // parseFloat('123abc') returns 123, which is also not wanted
-            // so we have to use both to ensure whitespace is not parsed and characters are not ignored
-            const num = Number(param)
-            if (num === parseFloat(param)) {
-                return num;
-            }
-
-            if (param === 'true') {
-                return true;
-            }
-
-            if (param === 'false') {
-                return false;
-            }
-
-            // if those failed, it's probably a string so leave alone
-            return param;
-        }
-
         const script = document.currentScript.src.split("/").pop().replace(/\.js$/, "");
 
         const /** @type {KCDev.Mirrors.PluginParams} */ parameters = PluginManager.parameters(script);
@@ -1012,7 +1007,7 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
 
         function convertVanillaArgs(args) {
             for (const prop in args) {
-                args[prop] = tryParseParameter(args[prop]);
+                args[prop] = KCDev.Mirrors.tryParseParameter(args[prop]);
             }
         }
 
