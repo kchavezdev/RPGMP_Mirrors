@@ -1067,6 +1067,18 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 KCDev.Mirrors.setWallReflectMode(args[0]);
             break;
 
+        case 'overrideMapReflectSetting':
+            if (args[0] === 'floor') {
+                KCDev.Mirrors.overrideMapSettings(args[1] === 'true', 'unchanged', 'unchanged');
+            }
+            else if (args[0] === 'wall') {
+                KCDev.Mirrors.overrideMapSettings('unchanged', args[1] === 'true', 'unchanged');
+            }
+            else if (args[0] === 'mode') {
+                KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', args[1]);
+            }
+            break;
+
         
 
         default:
