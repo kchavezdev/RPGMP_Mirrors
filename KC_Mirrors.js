@@ -1079,7 +1079,28 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
             break;
 
-        
+        case 'setReflection':
+            let isActor = false;
+            if (args[0] === 'actor') {
+                isActor = true;
+            }
+            else if (args[0] === 'event') {
+                isActor = false;
+            }
+            else {
+                console.error('KC_Mirrors: setReflection received invalid 1st argument: ' + args[0]);
+                // invalid first arg so break early
+                break;
+            }
+
+
+
+            let id = KCDev.Mirrors.tryParseParameter(args[1]);
+
+
+
+
+            break;
 
         default:
             break;
