@@ -1048,6 +1048,32 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
 })();
 
+// MV Style Plugin Commands
+KCDev.Mirrors.Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+/**
+ * 
+ * @param {string} command 
+ * @param {string[]} args 
+ */
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    KCDev.Mirrors.Game_Interpreter_pluginCommand.apply(this, arguments);
+    switch(command) {
+       case 'refreshReflectMap':
+            KCDev.Mirrors.refreshReflectWallCache();
+            break;
+
+        case 'setWallReflectMode':
+            if (args[0] in KCDev.Mirrors.wallModes)
+                KCDev.Mirrors.setWallReflectMode(args[0]);
+            break;
+
+        
+
+        default:
+            break;
+    };
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // START CUSTOM CLASS DEFINITIONS                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
