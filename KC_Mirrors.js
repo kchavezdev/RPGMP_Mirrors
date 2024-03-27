@@ -858,6 +858,19 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
  * @property {number[]} noReflectRegions
  */
 
+/**
+ * 
+ * @param {string} text 
+ */
+KCDev.Mirrors.convertEscapeCharacters = function (text) {
+    text = text.replace(/\\/g, '\x1b');
+    text = text.replace(/\x1b\x1b/g, '\\');
+    text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => {
+
+    });
+
+};
+
 KCDev.Mirrors.tryParseParameter = function (param) {
     if (typeof param !== 'string') return param;
 
@@ -867,6 +880,9 @@ KCDev.Mirrors.tryParseParameter = function (param) {
     } catch (error) {
 
     }
+
+    // convert \v[x] and \s[x]
+    KCDev.Mirrors.convertEscapeCharacters(param);
 
     // this ensures param JUST has numbers in it
     // Number('') returns 0, which is undesirable
