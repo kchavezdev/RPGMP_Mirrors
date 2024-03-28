@@ -869,9 +869,23 @@ KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
     text = text.replace(/\\/g, '\x1b');
     text = text.replace(/\x1b\x1b/g, '\\');
     text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => {
-
+        return $gameVariables.value(args);
     });
 
+    // game switch replacements
+    text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) => {
+        return $gameSwitches(args) ? 'true' : 'false';
+    });
+
+    if (event) {
+        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (substring, args) => {
+            return $gameSelfSwitches.value([event._mapId, event._eventId, args.toUpperCase()]) ? 'true' : 'false';
+        });
+    }
+
+    text = text.replace(/\x1b/g, '\\');
+
+    return text;
 };
 
 KCDev.Mirrors.tryParseParameter = function (param) {
@@ -885,7 +899,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
     }
 
     // convert \v[x] and \s[x]
-    KCDev.Mirrors.convertEscapeCharacters(param);
+    param = KCDev.Mirrors.convertEscapeCharacters(param);
 
     // this ensures param JUST has numbers in it
     // Number('') returns 0, which is undesirable
