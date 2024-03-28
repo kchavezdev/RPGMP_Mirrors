@@ -861,8 +861,11 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
 /**
  * 
  * @param {string} text 
+ * @param {Game_Event?} event
  */
-KCDev.Mirrors.convertEscapeCharacters = function (text) {
+KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
+
+    // game variable replacements
     text = text.replace(/\\/g, '\x1b');
     text = text.replace(/\x1b\x1b/g, '\\');
     text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => {
@@ -1095,7 +1098,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
             break;
 
-        case 'setReflection':
+        case 'setReflectImage':
             let isActor = false;
             if (args[0] === 'actor') {
                 isActor = true;
