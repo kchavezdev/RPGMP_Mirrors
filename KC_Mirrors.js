@@ -1111,7 +1111,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
  * @param {Game_Interpreter} interpretter 
  * @returns {{isActor: boolean, id: id, character: Game_Character} | null}
  */
-KCDev.Mirrors.handleCommonMvPluginCommandArgs = function (commandName, args, interpretter) {
+KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter) {
     let isActor = false;
     if (args[0] === 'actor') {
         isActor = true;
@@ -1227,7 +1227,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            const commonArgs = KCDev.Mirrors.handleCommonMvPluginCommandArgs(command, args, this);
+            const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
 
             if (!commonArgs) {
                 break;
