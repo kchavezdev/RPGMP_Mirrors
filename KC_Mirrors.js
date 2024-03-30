@@ -1195,8 +1195,6 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
         }
 
-            if (args.length < 3) {
-                console.error('KC_Mirrors: setReflectImage received too few arguments!');
         case 'overrideMapReflectSetting': {
                 break;
             }
