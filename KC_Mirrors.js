@@ -1196,12 +1196,22 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'overrideMapReflectSetting': {
+            if (args.length < 2) {
+                console.error(`KC_Mirrors: ${command} received too few arguments!`);
                 break;
             }
 
+            const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
+            const arg1 = KCDev.Mirrors.tryParseParameter(args[1]);
+
+            if (arg0 === 'floor') {
+                KCDev.Mirrors.overrideMapSettings(arg1, 'unchanged', 'unchanged');
             }
-            else if (args[0] === 'event') {
-                isActor = false;
+            else if (arg0 === 'wall') {
+                KCDev.Mirrors.overrideMapSettings('unchanged', arg1, 'unchanged');
+            }
+            else if (arg0 === 'mode') {
+                KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', arg1);
             }
             else {
                 console.error(`\
