@@ -1265,7 +1265,18 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'setReflectOpacity': {
-
+            const numArgs = 4;
+            if (args.length < numArgs) {
+                console.error(`KC_Mirrors: ${command} received too few arguments!
+                Expected: ${numArgs}
+                Received: ${args.length}`);
+                break;
+            }
+            const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
+            if (!commonArgs) {
+                break;
+            }
+            console.debug(`KC_Mirrors: ${command} is not yet complete!`)
             break;
         }
 
