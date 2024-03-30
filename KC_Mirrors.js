@@ -1104,6 +1104,66 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
 })();
 
+/**
+ * 
+ * @param {string} commandName 
+ * @param {string[]} args 
+ * @param {Game_Interpreter} interpretter 
+ * @returns {{isActor: boolean, id: id, character: Game_Character} | null}
+ */
+KCDev.Mirrors.handleCommonMvPluginCommandArgs = function (commandName, args, interpretter) {
+    let isActor = false;
+    if (args[0] === 'actor') {
+        isActor = true;
+    }
+    else if (args[0] === 'event') {
+        isActor = false;
+    }
+    else {
+        console.error(`\
+        KC_Mirrors: ${commandName} received invalid 1st argument: ${args[0]} 
+        Should be \'actor\' or \'event\'`);
+        return null;
+    }
+
+    let /** @type {number} */ id = KCDev.Mirrors.tryParseParameter(args[1]);
+
+    if (typeof id !== 'number') {
+        console.error(`\
+        KC_Mirrors: ${commandName} received invalid 2nd argument: ${args[1]}
+        Should be a number!`)
+        return null;
+    }
+
+    /** @type {Game_Character} */
+    let char;
+    if (isActor) {
+        id = KCDev.Mirrors.getRealActorId(id);
+        char = $gameActors.actor(id);
+    }
+    else {
+        if (id === 0) {
+            id = interpretter.eventId();
+        }
+        char = $gameMap.event(id);
+    }
+
+    if (!char) {
+        const c = isActor ? 'actor' : 'event';
+        console.error(`\
+        KC_Mirrors: ${commandName} could not find ${c} with id ${id}
+        Original 2nd argument: ${args[1]}`);
+        return null;
+    }
+
+    return {
+        isActor: isActor,
+        id: id,
+        character: char
+    };
+
+};
+
 // MV Style Plugin Commands
 KCDev.Mirrors.Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 /**
@@ -1118,17 +1178,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             KCDev.Mirrors.refreshReflectWallCache();
             break;
 
-        case 'setWallReflectMode':
-            if (args[0] in KCDev.Mirrors.wallModes)
-                KCDev.Mirrors.setWallReflectMode(args[0]);
-            break;
-
-        case 'overrideMapReflectSetting':
-            if (args[0] === 'floor') {
-                KCDev.Mirrors.overrideMapSettings(args[1] === 'true', 'unchanged', 'unchanged');
             }
-            else if (args[0] === 'wall') {
-                KCDev.Mirrors.overrideMapSettings('unchanged', args[1] === 'true', 'unchanged');
             }
             else if (args[0] === 'mode') {
                 KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', args[1]);
@@ -1141,9 +1191,6 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            let isActor = false;
-            if (args[0] === 'actor') {
-                isActor = true;
             }
             else if (args[0] === 'event') {
                 isActor = false;
@@ -1164,39 +1211,19 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            /** @type {Game_Character} */
-            let char;
-            if (isActor) {
-                id = KCDev.Mirrors.getRealActorId(id);
-                char = $gameActors.actor(id);
-            }
-            else {
-                if (id === 0) {
-                    id = this.eventId();
-                }
-                char = $gameMap.event(id);
-            }
+            const commonArgs = KCDev.Mirrors.handleCommonMvPluginCommandArgs(command, args, this);
 
-            if (!char) {
-                const c = isActor ? 'actor' : 'event';
-                console.error(`\
-                KC_Mirrors: setReflectImage could not find ${c} with id ${id}
-                Original 2nd argument: ${args[1]}`);
+            if (!commonArgs) {
                 break;
             }
 
             let index = KCDev.Mirrors.tryParseParameter(args[2]);
 
-            if (typeof index !== 'number') {
-                if (index === 'unchanged') {
-                    index = char.reflectIndex();
-                }
-                else {
-                    console.error(`\
-                    KC_Mirrors: setReflectImage received invalid 3rd argument ${args[2]}
+            if (typeof index !== 'number' && index !== 'unchanged') {
+                console.error(`\
+                    KC_Mirrors: ${command} received invalid 3rd argument ${args[2]}
                     Should be a number!`)
-                    break;
-                }
+                break;
             }
 
             let charName = KCDev.Mirrors.tryParseParameter(args[3]);
@@ -1206,13 +1233,13 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             const refArgs = KCDev.Mirrors.getGeneralCommandObj();
-            refArgs.id = id;
+            refArgs.id = commonArgs.id;
             refArgs.index = index;
             refArgs.character = charName;
 
-            const convertedArgs = KCDev.Mirrors.convertChangeReflectArgs(char, refArgs);
+            const convertedArgs = KCDev.Mirrors.convertChangeReflectArgs(commonArgs.character, refArgs);
 
-            if (isActor) {
+            if (commonArgs.isActor) {
                 KCDev.Mirrors.setActorReflect(...convertedArgs);
             }
             else {
