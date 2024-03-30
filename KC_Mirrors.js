@@ -1276,7 +1276,44 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             if (!commonArgs) {
                 break;
             }
-            console.debug(`KC_Mirrors: ${command} is not yet complete!`)
+
+            const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
+            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
+                Valid arguments: 'floor', 'wall', 'all'`);
+                break;
+            }
+
+            const newOpacity = KCDev.Mirrors.tryParseParameter(args[3]);
+            if (typeof newOpacity !== 'number') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 4th argument ${newOpacity}
+                Please enter a number`)
+                break;
+            }
+
+            const genArgs = KCDev.Mirrors.getGeneralCommandObj();
+            genArgs.id = commonArgs.id;
+            if (reflectType === 'floor') {
+                genArgs.reflectFloorOpacity = newOpacity;
+            }
+            else if (reflectType === 'wall') {
+                genArgs.reflectWallOpacity = newOpacity;
+            }
+            else if (reflectType === 'all') {
+                genArgs.reflectFloorOpacity = genArgs.reflectWallOpacity = newOpacity;
+            }
+
+            const convertedArgs = KCDev.Mirrors.convertChangeReflectArgs(commonArgs.character, genArgs);
+
+            if (commonArgs.isActor) {
+                KCDev.Mirrors.setActorReflect(...convertedArgs);
+            }
+            else {
+                KCDev.Mirrors.setEventReflect(...convertedArgs);
+            }
+
             break;
         }
 
