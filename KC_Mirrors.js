@@ -1179,10 +1179,18 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
 
         case 'setWallReflectMode': {
+            if (args.length < 1) {
+                console.error(`KC_Mirrors: ${command} received too few arguments!`);
             }
+
+            const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
+            if (arg0 in KCDev.Mirrors.wallModes) {
+                KCDev.Mirrors.setWallReflectMode(arg0);
             }
-            else if (args[0] === 'mode') {
-                KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', args[1]);
+            else {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid argument ${$arg[0]}
+                Valid arguments: 'event', 'perspective'`)
             }
             break;
         }
