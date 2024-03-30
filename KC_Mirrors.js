@@ -1178,16 +1178,18 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             KCDev.Mirrors.refreshReflectWallCache();
             break;
 
+        case 'setWallReflectMode': {
             }
             }
             else if (args[0] === 'mode') {
                 KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', args[1]);
             }
             break;
+        }
 
-        case 'setReflectImage':
             if (args.length < 3) {
                 console.error('KC_Mirrors: setReflectImage received too few arguments!');
+        case 'overrideMapReflectSetting': {
                 break;
             }
 
@@ -1201,6 +1203,8 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 Should be \'actor\' or \'event\'`);
                 break;
             }
+            break;
+        }
 
             let /** @type {number} */ id = KCDev.Mirrors.tryParseParameter(args[1]);
 
@@ -1208,6 +1212,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 console.error(`\
                 KC_Mirrors: setReflectImage received invalid 2nd argument: ${args[1]}
                 Should be a number!`)
+        case 'setReflectImage': {
                 break;
             }
 
@@ -1245,6 +1250,8 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             else {
                 KCDev.Mirrors.setEventReflect(...convertedArgs);
             }
+            break;
+        }
 
             break;
 
