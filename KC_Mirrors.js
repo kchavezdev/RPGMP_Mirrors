@@ -1325,6 +1325,21 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
         }
 
+        case 'setReflectOffset': {
+            console.debug(`KC_Mirrors: ${command} is not yet complete`);
+            break;
+        }
+
+        case 'setReflectVisible': {
+            console.debug(`KC_Mirrors: ${command} is not yet complete`);
+            break;
+        }
+
+        case 'resetReflect': {
+            console.debug(`KC_Mirrors: ${command} is not yet complete`);
+            break;
+        }
+
         default:
             break;
     };
