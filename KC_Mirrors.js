@@ -842,6 +842,25 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
  */
 
 /**
+ * 
+ * @returns {KCDev.Mirrors.GeneralCommandArgs}
+ */
+KCDev.Mirrors.getGeneralCommandObj = function () {
+    return {id: 0,
+        character: '',
+        index: 'unchanged',
+        reflectFloor: 'unchanged',
+        reflectWall: 'unchanged',
+        reflectFloorOpacity: 'unchanged',
+        reflectWallOpacity: 'unchanged',
+        reflectFloorXOffset: 'unchanged',
+        reflectFloorYOffset: 'unchanged',
+        reflectWallXOffset: 'unchanged',
+        reflectWallYOffset: 'unchanged'
+    };
+};
+
+/**
  * @typedef {Object} KCDev.Mirrors.PluginParams
  * @property {number} zValue
  * @property {number} maxWallDistance
