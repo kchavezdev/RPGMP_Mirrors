@@ -1113,15 +1113,16 @@ KCDev.Mirrors.tryParseParameter = function (param) {
  */
 KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter) {
     let isActor = false;
-    if (args[0] === 'actor') {
+    const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
+    if (arg0 === 'actor') {
         isActor = true;
     }
-    else if (args[0] === 'event') {
+    else if (arg0 === 'event') {
         isActor = false;
     }
     else {
         console.error(`\
-        KC_Mirrors: ${commandName} received invalid 1st argument: ${args[0]} 
+        KC_Mirrors: ${commandName} received invalid 1st argument: ${arg0} 
         Should be \'actor\' or \'event\'`);
         return null;
     }
