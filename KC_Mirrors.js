@@ -885,11 +885,14 @@ KCDev.Mirrors.getGeneralCommandObj = function () {
 KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
 
     // game variable replacements
-    text = text.replace(/\\/g, '\x1b');
-    text = text.replace(/\x1b\x1b/g, '\\');
-    text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => {
-        return $gameVariables.value(args);
-    });
+    const maxVarIterations = 2;
+    for (let i = 0; i < maxVarIterations; i++) {
+        text = text.replace(/\\/g, '\x1b');
+        text = text.replace(/\x1b\x1b/g, '\\');
+        text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => {
+            return $gameVariables.value(args);
+        });
+    }
 
     // game switch replacements
     text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) => {
