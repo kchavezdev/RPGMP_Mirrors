@@ -1135,6 +1135,11 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
 
         case 'setReflectImage':
+            if (args.length < 3) {
+                console.error('KC_Mirrors: setReflectImage received too few arguments!');
+                break;
+            }
+
             let isActor = false;
             if (args[0] === 'actor') {
                 isActor = true;
@@ -1143,17 +1148,75 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 isActor = false;
             }
             else {
-                console.error('KC_Mirrors: setReflection received invalid 1st argument: ' + args[0]);
-                // invalid first arg so break early
+                console.error(`\
+                KC_Mirrors: setReflectImage received invalid 1st argument: ${args[0]} 
+                Should be \'actor\' or \'event\'`);
                 break;
             }
 
+            let /** @type {number} */ id = KCDev.Mirrors.tryParseParameter(args[1]);
 
+            if (typeof id !== 'number') {
+                console.error(`\
+                KC_Mirrors: setReflectImage received invalid 2nd argument: ${args[1]}
+                Should be a number!`)
+                break;
+            }
 
-            let id = KCDev.Mirrors.tryParseParameter(args[1]);
+            /** @type {Game_Character} */
+            let char;
+            if (isActor) {
+                id = KCDev.Mirrors.getRealActorId(id);
+                char = $gameActors.actor(id);
+            }
+            else {
+                if (id === 0) {
+                    id = this.eventId();
+                }
+                char = $gameMap.event(id);
+            }
 
+            if (!char) {
+                const c = isActor ? 'actor' : 'event';
+                console.error(`\
+                KC_Mirrors: setReflectImage could not find ${c} with id ${id}
+                Original 2nd argument: ${args[1]}`);
+                break;
+            }
 
+            let index = KCDev.Mirrors.tryParseParameter(args[2]);
 
+            if (typeof index !== 'number') {
+                if (index === 'unchanged') {
+                    index = char.reflectIndex();
+                }
+                else {
+                    console.error(`\
+                    KC_Mirrors: setReflectImage received invalid 3rd argument ${args[2]}
+                    Should be a number!`)
+                    break;
+                }
+            }
+
+            let charName = KCDev.Mirrors.tryParseParameter(args[3]);
+
+            if (charName === undefined) {
+                charName = '';
+            }
+
+            const refArgs = KCDev.Mirrors.getGeneralCommandObj();
+            refArgs.id = id;
+            refArgs.index = index;
+            refArgs.character = charName;
+
+            const convertedArgs = KCDev.Mirrors.convertChangeReflectArgs(char, refArgs);
+
+            if (isActor) {
+                KCDev.Mirrors.setActorReflect(...convertedArgs);
+            }
+            else {
+                KCDev.Mirrors.setEventReflect(...convertedArgs);
+            }
 
             break;
 
