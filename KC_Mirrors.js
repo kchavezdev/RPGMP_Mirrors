@@ -1130,7 +1130,7 @@ KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter
 
     if (typeof id !== 'number') {
         console.error(`\
-        KC_Mirrors: ${commandName} received invalid 2nd argument: ${args[1]}
+        KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
         Should be a number!`)
         return null;
     }
@@ -1161,7 +1161,6 @@ KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter
         id: id,
         character: char
     };
-
 };
 
 // MV Style Plugin Commands
@@ -1179,8 +1178,12 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
 
         case 'setWallReflectMode': {
-            if (args.length < 1) {
-                console.error(`KC_Mirrors: ${command} received too few arguments!`);
+            const numArgs = 1;
+            if (args.length < numArgs) {
+                console.error(`\
+                KC_Mirrors: ${command} received too few arguments!
+                Expected: ${numArgs}
+                Received: ${args.length}`);
             }
 
             const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
@@ -1189,7 +1192,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
             else {
                 console.error(`\
-                KC_Mirrors: ${command} received invalid argument ${$arg[0]}
+                KC_Mirrors: ${command} received invalid argument ${arg0}
                 Valid arguments: 'event', 'perspective'`)
             }
             break;
@@ -1215,15 +1218,19 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
             else {
                 console.error(`\
-                KC_Mirrors: ${command} received an invalid 1st argument: ${args[0]}
+                KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
                 Valid arguments: 'floor', 'wall', 'mode'`);
             }
             break;
         }
 
         case 'setReflectImage': {
-            if (args.length < 3) {
-                console.error(`KC_Mirrors: ${command} received too few arguments!`);
+            const minArgs = 3;
+            if (args.length < minArgs) {
+                console.error(`\
+                KC_Mirrors: ${command} received too few arguments!
+                Expected: At least ${minArgs}
+                Received: ${args.length}`);
                 break;
             }
 
@@ -1237,7 +1244,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
 
             if (typeof index !== 'number' && index !== 'unchanged') {
                 console.error(`\
-                    KC_Mirrors: ${command} received invalid 3rd argument ${args[2]}
+                    KC_Mirrors: ${command} received invalid 3rd argument ${index}
                     Should be a number!`)
                 break;
             }
