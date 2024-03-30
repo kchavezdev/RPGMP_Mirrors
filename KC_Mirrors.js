@@ -1264,7 +1264,10 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
         }
 
+        case 'setReflectOpacity': {
+
             break;
+        }
 
         default:
             break;
