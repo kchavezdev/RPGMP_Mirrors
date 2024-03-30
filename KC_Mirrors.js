@@ -1215,20 +1215,15 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
             else {
                 console.error(`\
-                KC_Mirrors: setReflectImage received invalid 1st argument: ${args[0]} 
-                Should be \'actor\' or \'event\'`);
-                break;
+                KC_Mirrors: ${command} received an invalid 1st argument: ${args[0]}
+                Valid arguments: 'floor', 'wall', 'mode'`);
             }
             break;
         }
 
-            let /** @type {number} */ id = KCDev.Mirrors.tryParseParameter(args[1]);
-
-            if (typeof id !== 'number') {
-                console.error(`\
-                KC_Mirrors: setReflectImage received invalid 2nd argument: ${args[1]}
-                Should be a number!`)
         case 'setReflectImage': {
+            if (args.length < 3) {
+                console.error(`KC_Mirrors: ${command} received too few arguments!`);
                 break;
             }
 
