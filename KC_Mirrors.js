@@ -1112,8 +1112,8 @@ KCDev.Mirrors.Game_Interpreter_pluginCommand = Game_Interpreter.prototype.plugin
  */
 Game_Interpreter.prototype.pluginCommand = function (command, args) {
     KCDev.Mirrors.Game_Interpreter_pluginCommand.apply(this, arguments);
-    switch(command) {
-       case 'refreshReflectMap':
+    switch (command) {
+        case 'refreshReflectMap':
             KCDev.Mirrors.refreshReflectWallCache();
             break;
 
