@@ -846,7 +846,8 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
  * @returns {KCDev.Mirrors.GeneralCommandArgs}
  */
 KCDev.Mirrors.getGeneralCommandObj = function () {
-    return {id: 0,
+    return {
+        id: 0,
         character: '',
         index: 'unchanged',
         reflectFloor: 'unchanged',
