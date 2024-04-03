@@ -928,7 +928,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
     // Number('') returns 0, which is undesirable
     // parseFloat('123abc') returns 123, which is also not wanted
     // so we have to use both to ensure whitespace is not parsed and characters are not ignored
-    const num = Number(param)
+    const num = Number(param);
     if (num === parseFloat(param)) {
         return num;
     }
@@ -1069,7 +1069,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         // plugin commands
         PluginManager.registerCommand(script, 'changeEventReflect', function (args) {
-            convertVanillaArgs(args)
+            convertVanillaArgs(args);
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
         });
 
@@ -1153,7 +1153,7 @@ KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter
     if (typeof id !== 'number') {
         console.error(`\
         KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
-        Should be a number!`)
+        Should be a number!`);
         return null;
     }
 
@@ -1211,7 +1211,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             else {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid argument ${arg0}
-                Valid arguments: 'event', 'perspective'`)
+                Valid arguments: 'event', 'perspective'`);
             }
             break;
         }
@@ -1257,7 +1257,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             if (typeof index !== 'number' && index !== 'unchanged') {
                 console.error(`\
                     KC_Mirrors: ${command} received invalid 3rd argument ${index}
-                    Should be a number!`)
+                    Should be a number!`);
                 break;
             }
 
@@ -1514,7 +1514,7 @@ KCDev.Mirrors.setActorReflect = function (actorId, reflectChar, reflectIndex, en
     if (realId < 0) return;
     const actor = $gameActors.actor(realId);
     if (actor) {
-        actor.setReflectImage(reflectChar, reflectIndex)
+        actor.setReflectImage(reflectChar, reflectIndex);
         actor.reflectFloorToggle(enableFloor);
         actor.reflectWallToggle(enableWall);
         actor.setReflectFloorOpacity(floorOpacity);
@@ -1621,12 +1621,12 @@ KCDev.Mirrors.overrideMapSettings = function (floorEnabled = 'unchanged', wallEn
     if (mode !== 'unchanged') {
         if (mode === 'map notes') {
             const refMode = 'Reflect_Mode';
-            const metaRefMode = KCDev.Mirrors.findMetaSimple(refMode, $dataMap)
+            const metaRefMode = KCDev.Mirrors.findMetaSimple(refMode, $dataMap);
             mode = (typeof metaRefMode === 'string') ? metaRefMode.toLowerCase().trim() : undefined;
         }
         switch (mode) {
             case 'perspective':
-                $gameMap.setReflectMode(KCDev.Mirrors.wallModes.perspective)
+                $gameMap.setReflectMode(KCDev.Mirrors.wallModes.perspective);
                 break;
 
             case 'event':
@@ -2008,7 +2008,7 @@ KCDev.Mirrors.Game_Event_setupPage = Game_Event.prototype.setupPage;
  */
 Game_Event.prototype.setupPage = function () {
     KCDev.Mirrors.Game_Event_setupPage.apply(this, arguments);
-    KCDev.Mirrors.parseMetaValues(this, this.event(), KCDev.Mirrors.eventDefault)
+    KCDev.Mirrors.parseMetaValues(this, this.event(), KCDev.Mirrors.eventDefault);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2049,7 +2049,7 @@ KCDev.Mirrors.setupMapReflectOptions = function () {
     $gameMap.setReflectWallYOffset(wallOffs[1] || 0);
     switch (reflectMode) {
         case 'PERSPECTIVE':
-            $gameMap.setReflectMode(KCDev.Mirrors.wallModes.perspective)
+            $gameMap.setReflectMode(KCDev.Mirrors.wallModes.perspective);
             break;
 
         case 'EVENT':
