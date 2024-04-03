@@ -1106,6 +1106,27 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
 /**
  * 
+ * @param {string} command 
+ * @param {string[]} args 
+ * @param {number} min 
+ * @param {number} max 
+ */
+KCDev.Mirrors.isNumMvArgsInRange = function (command, args, min, max = min) {
+    if (args.length <= max && args.length >= min) {
+        return true;
+    }
+    else {
+        console.error(`\
+        KC_Mirrors: ${command} received an invalid number of arguments!
+        Expected: ${min === max ? `${min}` : `${min}-${max}`}
+        Received: ${args.length}`);
+
+        return false;
+    }
+};
+
+/**
+ * 
  * @param {string} commandName 
  * @param {string[]} args 
  * @param {Game_Interpreter} interpretter 
