@@ -1354,7 +1354,12 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            
+            if (commonArgs.isActor) {
+                KCDev.Mirrors.resetActorReflectImage(commonArgs.id);
+            }
+            else {
+                KCDev.Mirrors.resetEventReflectImage(commonArgs.id);
+            }
 
             break;
         }
