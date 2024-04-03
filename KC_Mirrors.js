@@ -1200,12 +1200,8 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
 
         case 'setWallReflectMode': {
-            const numArgs = 1;
-            if (args.length < numArgs) {
-                console.error(`\
-                KC_Mirrors: ${command} received too few arguments!
-                Expected: ${numArgs}
-                Received: ${args.length}`);
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
+                break;
             }
 
             const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
@@ -1221,8 +1217,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'overrideMapReflectSetting': {
-            if (args.length < 2) {
-                console.error(`KC_Mirrors: ${command} received too few arguments!`);
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
                 break;
             }
 
@@ -1247,12 +1242,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'setReflectImage': {
-            const minArgs = 3;
-            if (args.length < minArgs) {
-                console.error(`\
-                KC_Mirrors: ${command} received too few arguments!
-                Expected: At least ${minArgs}
-                Received: ${args.length}`);
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 3, 4)) {
                 break;
             }
 
@@ -1294,13 +1284,10 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'setReflectOpacity': {
-            const numArgs = 4;
-            if (args.length < numArgs) {
-                console.error(`KC_Mirrors: ${command} received too few arguments!
-                Expected: ${numArgs}
-                Received: ${args.length}`);
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 4)) {
                 break;
             }
+
             const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
             if (!commonArgs) {
                 break;
