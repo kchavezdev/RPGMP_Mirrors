@@ -1344,7 +1344,18 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'resetReflect': {
-            console.debug(`KC_Mirrors: ${command} is not yet complete`);
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
+                break;
+            }
+
+            const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
+
+            if (!commonArgs) {
+                break;
+            }
+
+            
+
             break;
         }
 
