@@ -1309,25 +1309,13 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            const genArgs = KCDev.Mirrors.getGeneralCommandObj();
-            genArgs.id = commonArgs.id;
             if (reflectType === 'floor') {
-                genArgs.reflectFloorOpacity = newOpacity;
+                commonArgs.setReflectFloorOpacity(newOpacity);
             }
             else if (reflectType === 'wall') {
-                genArgs.reflectWallOpacity = newOpacity;
+                commonArgs.setReflectWallOpacity(newOpacity);
             }
             else if (reflectType === 'all') {
-                genArgs.reflectFloorOpacity = genArgs.reflectWallOpacity = newOpacity;
-            }
-
-            const convertedArgs = KCDev.Mirrors.convertChangeReflectArgs(commonArgs.character, genArgs);
-
-            if (commonArgs.isActor) {
-                KCDev.Mirrors.setActorReflect(...convertedArgs);
-            }
-            else {
-                KCDev.Mirrors.setEventReflect(...convertedArgs);
             }
 
             break;
