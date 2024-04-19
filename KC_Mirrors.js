@@ -1310,12 +1310,14 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             if (reflectType === 'floor') {
-                commonArgs.setReflectFloorOpacity(newOpacity);
+                commonArgs.character.setReflectFloorOpacity(newOpacity);
             }
             else if (reflectType === 'wall') {
-                commonArgs.setReflectWallOpacity(newOpacity);
+                commonArgs.character.setReflectWallOpacity(newOpacity);
             }
             else if (reflectType === 'all') {
+                commonArgs.character.setReflectFloorOpacity(newOpacity);
+                commonArgs.character.setReflectWallOpacity(newOpacity);
             }
 
             break;
