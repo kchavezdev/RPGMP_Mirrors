@@ -263,6 +263,9 @@ SOFTWARE.
  *   | Same as Override Map Settings command
  * 
  * Changelog:
+ *     v1.3.7 - 2024/04/25
+ *         - Fixed issue where events unspawned by GALV_EventSpawnerMZ would
+ *           have their reflections linger
  *     v1.3.6 - 2024/03/09
  *         - Changed Sprite_Reflect initialization for plugin compatibility
  *         - Consolidated Sprite_Reflect and Sprite_Reflect_wall into one class
