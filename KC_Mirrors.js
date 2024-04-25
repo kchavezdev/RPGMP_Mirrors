@@ -2152,6 +2152,22 @@ if (Imported.Galv_EventSpawner) {
 
         KCDev.Mirrors.Spriteset_Map_unspawnEvent.apply(this, arguments);
     };
+
+    KCDev.Mirrors.Spriteset_Map_clearSpawnedEvents = Spriteset_Map.prototype.clearSpawnedEvents;
+    Spriteset_Map.prototype.clearSpawnedEvents = function (clearSaved) {
+        for (let i = 0; i < this._characterSprites.length; i++) {
+            const sprite = this._characterSprites[i];
+            if (sprite._reflectionFloor) {
+                const char = sprite._character;
+                if (char.isSpawnEvent && (clearSaved || !char.isSavedEvent)) {
+                    this._tilemap.removeChild(sprite._reflectionFloor);
+                    this._tilemap.removeChild(sprite._reflectionWall);
+                }
+            }
+        }
+
+        KCDev.Mirrors.Spriteset_Map_clearSpawnedEvents.apply(this, arguments);
+    };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
