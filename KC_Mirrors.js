@@ -32,6 +32,7 @@ SOFTWARE.
  * @orderAfter PluginCommonBase
  * @orderAfter GALV_DiagonalMovementMZ
  * @orderAfter GALV_CharacterFramesMZ
+ * @orderAfter GALV_EventSpawnerMZ
  *
  * @plugindesc [v1.3.6]Add reflections to events and actors.
  *
