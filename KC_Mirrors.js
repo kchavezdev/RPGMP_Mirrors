@@ -33,7 +33,7 @@ SOFTWARE.
  * @orderAfter GALV_DiagonalMovementMZ
  * @orderAfter GALV_CharacterFramesMZ
  *
- * @plugindesc [v1.3.6]Add reflections to events and actors.
+ * @plugindesc [v1.3.7]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
