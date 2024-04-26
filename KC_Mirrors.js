@@ -2143,15 +2143,15 @@ if (Imported.Galv_EventSpawner) {
     KCDev.Mirrors.Spriteset_Map_unspawnEvent = Spriteset_Map.prototype.unspawnEvent;
     Spriteset_Map.prototype.unspawnEvent = function (eventId) {
         
-        const eventToUnspawn = this._characterSprites.find(
-            sprite => sprite._reflectionFloor && 
-                        sprite._character.isSpawnEvent && 
-                        sprite._character._eventId === eventId
-        );
-
-        if (eventToUnspawn) {
-            this._tilemap.removeChild(eventToUnspawn._reflectionFloor);
-            this._tilemap.removeChild(eventToUnspawn._reflectionWall);
+        for (let i = 0; i < this._characterSprites.length; i++) {
+            const sprite = this._characterSprites[i];
+            if (sprite._reflectionFloor) {
+                const char = sprite._character;
+                if (char.isSpawnEvent && char._eventId === eventId) {
+                    this._tilemap.removeChild(sprite._reflectionFloor);
+                    this._tilemap.removeChild(sprite._reflectionWall);
+                }
+            }
         }
 
         KCDev.Mirrors.Spriteset_Map_unspawnEvent.apply(this, arguments);
