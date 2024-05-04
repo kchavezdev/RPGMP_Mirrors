@@ -1324,7 +1324,75 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'setReflectOffset': {
-            console.debug(`KC_Mirrors: ${command} is not yet complete`);
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 5)) {
+                break;
+            }
+
+            const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
+
+            if (!commonArgs) {
+                break;
+            }
+
+            const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
+            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
+                Valid arguments: 'floor', 'wall', 'all'`);
+                break;
+            }
+
+            let axis = KCDev.Mirrors.tryParseParameter(args[3]);
+            if (typeof offset !== 'string') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 4th argument ${reflectType}
+                Valid arguments: 'x', 'y', 'xy'`);
+                break;
+            }
+            axis = axis.toLowerCase();
+            if (axis !== 'x' && axis !== 'y' && axis !== 'xy') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 4th argument ${reflectType}
+                Valid arguments: 'x', 'y', 'xy'`);
+                break;
+            }
+
+            const offset = KCDev.Mirrors.tryParseParameter(args[4]);
+            if (typeof offset !== 'number') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 5th argument ${reflectType}
+                Valid arguments: any number`);
+                break;
+            }
+
+            const char = commonArgs.character;
+
+            if (reflectType === 'floor') {
+                if (axis.includes('x')) {
+                    char.setReflectFloorXOffset(offset);
+                }
+                if (axis.includes('y')) {
+                    char.setReflectFloorYOffset(offset);
+                }
+            }
+            else if (reflectType === 'wall') {
+                if (axis.includes('x')) {
+                    char.setReflectWallXOffset(offset);
+                }
+                if (axis.includes('y')) {
+                    char.setReflectWallYOffset(offset);
+                }
+            }
+            else if (reflectType === 'all') {
+                if (axis.includes('x')) {
+                    char.setReflectFloorXOffset(offset);
+                    char.setReflectWallXOffset(offset);
+                }
+                if (axis.includes('y')) {
+                    char.setReflectFloorYOffset(offset);
+                    char.setReflectWallYOffset(offset);
+                }
+            }
             break;
         }
 
