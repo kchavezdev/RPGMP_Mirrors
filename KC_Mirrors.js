@@ -1329,7 +1329,42 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'setReflectVisible': {
-            console.debug(`KC_Mirrors: ${command} is not yet complete`);
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 4)) {
+                break;
+            }
+
+            const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
+
+            if (!commonArgs) {
+                break;
+            }
+
+            const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
+            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
+                Valid arguments: 'floor', 'wall', 'all'`);
+                break;
+            }
+
+            const reflectEnabled = KCDev.Mirrors.tryParseParameter(args[3]);
+            if (typeof reflectEnabled !== 'boolean') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 4th argument ${reflectType}
+                Valid arguments: 'true', 'false'`);
+            }
+
+            if (reflectType === 'floor') {
+                commonArgs.character.reflectFloorToggle(reflectEnabled);
+            }
+            else if (reflectType === 'wall') {
+                commonArgs.character.reflectWallToggle(reflectEnabled);
+            }
+            else if (reflectType === 'all') {
+                commonArgs.character.reflectFloorToggle(reflectEnabled);
+                commonArgs.character.reflectWallToggle(reflectEnabled);
+            }
+
             break;
         }
 
