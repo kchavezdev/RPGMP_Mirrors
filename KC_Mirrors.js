@@ -1352,6 +1352,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid 4th argument ${reflectType}
                 Valid arguments: 'true', 'false'`);
+                break;
             }
 
             if (reflectType === 'floor') {
