@@ -1241,8 +1241,8 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
         }
 
-        case 'setReflectImage': {
-            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 3, 4)) {
+        case 'setReflectIndex': {
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 3)) {
                 break;
             }
 
@@ -1252,7 +1252,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            let index = KCDev.Mirrors.tryParseParameter(args[2]);
+            const index = KCDev.Mirrors.tryParseParameter(args[2]);
 
             if (typeof index !== 'number' && index !== 'unchanged') {
                 console.error(`\
@@ -1261,25 +1261,32 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            let charName = KCDev.Mirrors.tryParseParameter(args[3]);
+            const char = commonArgs.character;
+
+            char.setReflectImage(char.reflectName(), index);
+            break;
+        }
+
+        case 'setReflectImage': {
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 3)) {
+                break;
+            }
+
+            const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
+
+            if (!commonArgs) {
+                break;
+            }
+
+            let charName = KCDev.Mirrors.tryParseParameter(args[2]);
 
             if (charName === undefined) {
                 charName = '';
             }
 
-            const refArgs = KCDev.Mirrors.getGeneralCommandObj();
-            refArgs.id = commonArgs.id;
-            refArgs.index = index;
-            refArgs.character = charName;
+            const char = commonArgs.character;
 
-            const convertedArgs = KCDev.Mirrors.convertChangeReflectArgs(commonArgs.character, refArgs);
-
-            if (commonArgs.isActor) {
-                KCDev.Mirrors.setActorReflect(...convertedArgs);
-            }
-            else {
-                KCDev.Mirrors.setEventReflect(...convertedArgs);
-            }
+            char.setReflectImage(reflectChar, char.reflectIndex());
             break;
         }
 
