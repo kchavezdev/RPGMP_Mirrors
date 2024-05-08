@@ -276,51 +276,90 @@ SOFTWARE.
  * If an argument is formatted as [choice1/choice2/choice3/etc], then you must
  * choose only one of the options without brackets.
  * 
- * If an argument is formatted as (argument), then it is user-defined, and you
- * should check the plugin description for specifics (this is usually a number
- * or graphic name).
- * 
  * Arguments that end in a ? are OPTIONAL
  * 
- * setReflectImage [actor/event] (id) (character?)
+ * You can use \v[x] and \s[y] as arguments to substitute in the values stored
+ * in game variable x and game switch y, respectively.
+ * 
+ * setReflectImage char_type id character?
  *   * example: setReflectImage actor 1 People2
- *   | Description TBW
- *   | Leave character blank to reset the reflection to the
- *     normal graphic of the character.
+ *   - char_type: [actor/event] Set whether the target is an actor or map event
+ *   - id: ID number of the actor or event
+ *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
+ *       follower, -2 is the second follower, and so on
+ *     + If char_type is 'event,' then 0 is 'this event'
+ *   - character?: Optional argument. This is the character graphic name
+ *   | Leave character blank to reset the reflection graphic name
  * 
- * setReflectIndex [actor/event] (id) (index?)
+ * setReflectIndex char_type id index?
  *   * example: setReflectIndex event 5 1
- *   | Description TBW
+ *   - char_type: [actor/event] Set whether the target is an actor or map event
+ *   - id: ID number of the actor or event
+ *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
+ *       follower, -2 is the second follower, and so on
+ *     + If char_type is 'event,' then 0 is 'this event'
+ *   - index?: Optional argument. Sets the character index (0 is the first)
+ *   | Leave index blank to make it the same as the character.
  * 
- * setReflectVisible [actor/event] (id) [floor/wall/all] [true/false]
+ * setReflectVisible char_type id reflect_type new_visibility
  *   * example: setReflectVisible actor -1 all false
- *   | Description TBW
+ *   - char_type: [actor/event] Set whether the target is an actor or map event
+ *   - id: ID number of the actor or event
+ *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
+ *       follower, -2 is the second follower, and so on
+ *     + If char_type is 'event,' then 0 is 'this event'
+ *   - reflect_type: [floor/wall/all] Determines whether the floor or wall
+ *                   reflection is being modified. 'all' modifies both.
+ *   - new_visibility: Set to true to make reflect_type of reflection visible
+ *                     and to false to make reflect_type of reflection
+ *                     invisible
  * 
- * setReflectOpacity [actor/event] (id) [floor/wall/all] (opacity?)
- *   * example: setReflectOpacity actor 4 255
- *   | Description TBW
- *   | Leaving the opacity argument blank will make the reflection opacity
- *     match the character's opacity
+ * setReflectOpacity char_type id reflect_type opacity?
+ *   * example: setReflectOpacity actor 4 127
+ *   - char_type: [actor/event] Set whether the target is an actor or map event
+ *   - id: ID number of the actor or event
+ *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
+ *       follower, -2 is the second follower, and so on
+ *     + If char_type is 'event,' then 0 is 'this event'
+ *   - reflect_type: [floor/wall/all] Determines whether the floor or wall
+ *                   reflection is being modified. 'all' modifies both.
+ *   - opacity?: Optional argument. Should be a number in range 0-255,
+ *               inclusive
+ *   | Leaving the opacity argument blank will reset the opacity.
  * 
- * setReflectOffset [actor/event] (id) [floor/wall/all] [x/y/xy] (offset)
+ * setReflectOffset char_type id reflect_type axis offset
  *   * example: setReflectOffset event 10 floor y -8
- *   | Description TBW
+ *   - char_type: [actor/event] Set whether the target is an actor or map event
+ *   - id: ID number of the actor or event
+ *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
+ *       follower, -2 is the second follower, and so on
+ *     + If char_type is 'event,' then 0 is 'this event'
+ *   - reflect_type: [floor/wall/all] Determines whether the floor or wall
+ *                   reflection is being modified. 'all' modifies both.
+ *   - offset: A number that the reflection will be offset by. Remember,
+ *             positive x moves to the right, and positive y moves down,
+ *             and the opposites are true
  * 
- * resetReflect [actor/event] (id)
+ * resetReflect char_type id
  *   * example: resetReflect actor 0
- *   | Description TBW
+ *   - char_type: [actor/event] Set whether the target is an actor or map event
+ *   - id: ID number of the actor or event
+ *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
+ *       follower, -2 is the second follower, and so on
+ *     + If char_type is 'event,' then 0 is 'this event'
  * 
- * setWallReflectMode [event/perspective]
+ * setWallReflectMode mode
  *   * example: setWallReflectMode perspective
- *   | Description TBW
+ *   - mode: [perspective/event] Set the map's wall reflection type.
  * 
  * refreshReflectMap
  *   * example: refreshReflectMap
  *   | Forces the wall reflection positions to be rebuilt. Mainly useful if
  *     a plugin is being used that changes map regions at runtime.
  * 
- * setMapReflect [floor/wall/all] [true/false]
+ * setMapReflect reflect_type new_visibility
  *   * example: setMapReflect floor false
+ *   | Description TBW
  * 
  * @param regionsParent
  * @text Regions
