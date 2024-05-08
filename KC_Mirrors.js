@@ -37,6 +37,8 @@ SOFTWARE.
  * @help
  * KC_Mirrors.js
  * 
+ * SCROLL TO BOTTOM FOR MV COMMAND REFERENCES
+ * 
  * This is a plugin that allows the developer to add reflections to actors and 
  * events. This is done by drawing sprites below the map but above the parallax
  * layer. So, to get full usage out of this plugin, you must be using tilesets
@@ -130,7 +132,7 @@ SOFTWARE.
  * 
  * ------------------------------Plugin Note Tags------------------------------
  * 
- * This plugin allows the author to control various aspects of it via note tags.
+ * This plugin allows the author to control aspects of it using note tags.
  * All of these note tags are completely OPTIONAL. Default values will be used
  * if they are not present.
  * 
@@ -166,8 +168,8 @@ SOFTWARE.
  * Map Note Tags:
  * 
  *   | <REFLECT_MODE:[PERSPECTIVE/EVENT]>
- *     | This overrides the perspective option in the plugin parameters for this
- *     | map. This is reset upon leaving and re-entering the map.
+ *     | This overrides the perspective option in the plugin parameters for
+ *     | this map. This is reset upon leaving and re-entering the map.
  * 
  * Shared Character Note Tags:
  * 
@@ -201,7 +203,7 @@ SOFTWARE.
  *     | Uses the character sheet with the specified filename for this actor's
  *     | reflection. Index can be set seperately with REFLECT_INDEX.
  * 
- * ------------------------------Plugin Commands------------------------------
+ * ----------------------------MZ Plugin Commands------------------------------
  * 
  * Change Event Reflection
  *   | Change the reflection parameters of a specified event. These changes
@@ -218,8 +220,9 @@ SOFTWARE.
  *   | Sets this actor's reflection graphic to their normal top view graphic.
  * 
  * Set Wall Reflection Mode
- *   | Sets the wall reflection mode by changing the wall reflection mode variable
- *   | defined in the plugin parameters. Does nothing if that parameter is 0.
+ *   | Sets the wall reflection mode by changing the wall reflection mode
+ *   | variable defined in the plugin parameters.
+ *   | Does nothing if said parameter is 0.
  * 
  * Refresh Wall Reflections
  *   | Refreshes the wall reflection positions on the current map. Useful if
@@ -227,10 +230,10 @@ SOFTWARE.
  * 
  * Override Map Settings
  *   | Overrides reflection settings for the current map. This can be used to
- *   | quickly disable all reflections or change the perspective mode temporarily.
- *   | All changes are lost upon leaving and re-entering the map.
+ *   | quickly disable all reflections or change the perspective mode
+ *   | temporarily. All changes are lost upon leaving and re-entering the map.
  * 
- * ---------------------------Plugin Script Calls---------------------------
+ * ----------------------------Plugin Script Calls-----------------------------
  * 
  * The script calls for this plugin are as follows.
  * 
@@ -240,23 +243,29 @@ SOFTWARE.
  * 
  * The commands are as follows:
  * 
- * setEventReflect(event_id, reflection_filename, reflection_index, floor_enabled, wall_enabled, floor_opacity, wall_opacity, floor_x_offset, floor_y_offset, wall_x_offset, wall_y_offset)
- *   | Same as Change Event Reflection command
+ * setEventReflect(event_id, reflection_filename, reflection_index,
+ *                 floor_enabled, wall_enabled, floor_opacity,
+ *                 wall_opacity, floor_x_offset, floor_y_offset,
+ *                 wall_x_offset, wall_y_offset)
+ *   | Same as Change Event Reflection command (MZ)
  * 
  * resetEventReflectImage(event_id)
- *   | Same as Match Event Reflection command
+ *   | Same as Match Event Reflection command (MZ)
  * 
- * setActorReflect(actor_id, reflection_filename, reflection_index, floor_enabled, wall_enabled, floor_opacity, wall_opacity, floor_x_offset, floor_y_offset, wall_x_offset, wall_y_offset)
- *   | Same as Change Actor Reflection command
+ * setActorReflect(actor_id, reflection_filename, reflection_index,
+ *                 floor_enabled, wall_enabled, floor_opacity,
+ *                 wall_opacity, floor_x_offset, floor_y_offset,
+ *                 wall_x_offset, wall_y_offset)
+ *   | Same as Change Actor Reflection command (MZ)
  * 
  * resetActorReflectImage(actor_id)
- *   | Same as Match Actor Reflection command
+ *   | Same as Match Actor Reflection command (MZ)
  * 
  * setWallReflectMode(mode)
- *   | Same as Set Wall Reflection Mode command
+ *   | Same as Set Wall Reflection Mode command (MZ)
  * 
  * refreshReflectWallCache()
- *   | Same as Refresh Wall Reflections command
+ *   | Same as Refresh Wall Reflections command (MZ)
  * 
  * overrideMapSettings(floorEnabled, wallEnabled, mode)
  *   | Same as Override Map Settings command
