@@ -282,6 +282,7 @@ SOFTWARE.
  * in game variable x and game switch y, respectively.
  * 
  * setReflectImage char_type id character?
+ *   | Change the character reflection graphic.
  *   * example: setReflectImage actor 1 People2
  *   - char_type: [actor/event] Set whether the target is an actor or map event
  *   - id: ID number of the actor or event
@@ -292,6 +293,8 @@ SOFTWARE.
  *   | Leave character blank to reset the reflection graphic name
  * 
  * setReflectIndex char_type id index?
+ *   | Change the reflection's character ID. 0 is the top left in spritesheets
+ *     not prefixed with $.
  *   * example: setReflectIndex event 5 1
  *   - char_type: [actor/event] Set whether the target is an actor or map event
  *   - id: ID number of the actor or event
@@ -302,6 +305,7 @@ SOFTWARE.
  *   | Leave index blank to make it the same as the character.
  * 
  * setReflectVisible char_type id reflect_type new_visibility
+ *   | Simple on/off set for reflection visibility.
  *   * example: setReflectVisible actor -1 all false
  *   - char_type: [actor/event] Set whether the target is an actor or map event
  *   - id: ID number of the actor or event
@@ -315,6 +319,7 @@ SOFTWARE.
  *                     invisible
  * 
  * setReflectOpacity char_type id reflect_type opacity?
+ *   | Set reflection opacity.
  *   * example: setReflectOpacity actor 4 127
  *   - char_type: [actor/event] Set whether the target is an actor or map event
  *   - id: ID number of the actor or event
@@ -328,6 +333,7 @@ SOFTWARE.
  *   | Leaving the opacity argument blank will reset the opacity.
  * 
  * setReflectOffset char_type id reflect_type axis offset
+ *   | Set character reflection offset. This is added to the map offset.
  *   * example: setReflectOffset event 10 floor y -8
  *   - char_type: [actor/event] Set whether the target is an actor or map event
  *   - id: ID number of the actor or event
@@ -341,6 +347,8 @@ SOFTWARE.
  *             and the opposites are true
  * 
  * resetReflect char_type id
+ *   | Reset a characters reflections to the current character graphic
+ *     and index.
  *   * example: resetReflect actor 0
  *   - char_type: [actor/event] Set whether the target is an actor or map event
  *   - id: ID number of the actor or event
@@ -349,17 +357,20 @@ SOFTWARE.
  *     + If char_type is 'event,' then 0 is 'this event'
  * 
  * setWallReflectMode mode
+ *   | Set wall reflection mode as described in plugin parameters section.
  *   * example: setWallReflectMode perspective
  *   - mode: [perspective/event] Set the map's wall reflection type.
  * 
  * refreshReflectMap
- *   * example: refreshReflectMap
  *   | Forces the wall reflection positions to be rebuilt. Mainly useful if
  *     a plugin is being used that changes map regions at runtime.
+ *   * example: refreshReflectMap
  * 
  * setMapReflect reflect_type new_visibility
+ *   | Enable or disable reflection types for the entire map.
+ *     Disabling reflections takes priority over individual character settings.
+ *     Enabling reflections does NOT take priority over individual settings.
  *   * example: setMapReflect floor false
- *   | Description TBW
  * 
  * @param regionsParent
  * @text Regions
