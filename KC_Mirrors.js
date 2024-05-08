@@ -270,6 +270,58 @@ SOFTWARE.
  * overrideMapSettings(floorEnabled, wallEnabled, mode)
  *   | Same as Override Map Settings command (MZ)
  * 
+ * ----------------------------MV Plugin Commands------------------------------
+ * Note that all of these commands are case sensitive unless otherwise noted.
+ * 
+ * If an argument is formatted as [choice1/choice2/choice3/etc], then you must
+ * choose only one of the options without brackets.
+ * 
+ * If an argument is formatted as (argument), then it is user-defined, and you
+ * should check the plugin description for specifics (this is usually a number
+ * or graphic name).
+ * 
+ * Arguments that end in a ? are OPTIONAL
+ * 
+ * setReflectImage [actor/event] (id) (character?)
+ *   * example: setReflectImage actor 1 People2
+ *   | Description TBW
+ *   | Leave character blank to reset the reflection to the
+ *     normal graphic of the character.
+ * 
+ * setReflectIndex [actor/event] (id) (index)
+ *   * example: setReflectIndex event 5 1
+ *   | Description TBW
+ * 
+ * setReflectVisible [actor/event] (id) [floor/wall/all] [true/false]
+ *   * example: setReflectVisible actor -1 all false
+ *   | Description TBW
+ * 
+ * setReflectOpacity [actor/event] (id) [floor/wall/all] (opacity?)
+ *   * example: setReflectOpacity actor 4 255
+ *   | Description TBW
+ *   | Leaving the opacity argument blank will make the reflection opacity
+ *     match the character's opacity
+ * 
+ * setReflectOffset [actor/event] (id) [floor/wall/all] [x/y/xy] (offset)
+ *   * example: setReflectOffset event 10 floor y -8
+ *   | Description TBW
+ * 
+ * resetReflect [actor/event] (id)
+ *   * example: resetReflect actor 0
+ *   | Description TBW
+ * 
+ * setWallReflectMode [event/perspective]
+ *   * example: setWallReflectMode perspective
+ *   | Description TBW
+ * 
+ * refreshReflectMap
+ *   * example: refreshReflectMap
+ *   | Forces the wall reflection positions to be rebuilt. Mainly useful if
+ *     a plugin is being used that changes map regions at runtime.
+ * 
+ * setMapReflect [floor/wall/all] [true/false]
+ *   * example: setMapReflect floor false
+ * 
  * @param regionsParent
  * @text Regions
  * 
