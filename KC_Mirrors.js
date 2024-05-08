@@ -1299,7 +1299,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             let newOpacity = undefined;
-            if (args.length < 4) {
+            if (args.length > 3) {
                 newOpacity = KCDev.Mirrors.tryParseParameter(args[3]);
                 if (typeof newOpacity !== 'number') {
                     if (newOpacity === 'undefined') {
