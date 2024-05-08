@@ -288,7 +288,7 @@ SOFTWARE.
  *   | Leave character blank to reset the reflection to the
  *     normal graphic of the character.
  * 
- * setReflectIndex [actor/event] (id) (index)
+ * setReflectIndex [actor/event] (id) (index?)
  *   * example: setReflectIndex event 5 1
  *   | Description TBW
  * 
@@ -1242,13 +1242,17 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            const index = KCDev.Mirrors.tryParseParameter(args[2]);
+            let index = -1;
+            
+            if (args.length > 1) {
+                index = KCDev.Mirrors.tryParseParameter(args[2]);
 
-            if (typeof index !== 'number' && index !== 'unchanged') {
-                console.error(`\
-                    KC_Mirrors: ${command} received invalid 3rd argument ${index}
-                    Should be a number!`);
-                break;
+                if (typeof index !== 'number' && index !== 'unchanged') {
+                    console.error(`\
+                        KC_Mirrors: ${command} received invalid 3rd argument ${index}
+                        Should be a number!`);
+                    break;
+                }
             }
 
             const char = commonArgs.character;
