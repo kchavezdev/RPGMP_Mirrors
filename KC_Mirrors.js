@@ -1213,6 +1213,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid argument ${arg0}
                 Valid arguments: 'event', 'perspective'`);
+                break;
             }
             break;
         }
