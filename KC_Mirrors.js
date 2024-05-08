@@ -1301,7 +1301,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'setReflectOpacity': {
-            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 4)) {
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 3, 4)) {
                 break;
             }
 
@@ -1318,16 +1318,19 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            let newOpacity = KCDev.Mirrors.tryParseParameter(args[3]);
-            if (typeof newOpacity !== 'number') {
-                if (newOpacity === 'undefined') {
-                    newOpacity = undefined;
-                }
-                else {
-                    console.error(`\
-                        KC_Mirrors: ${command} received invalid 4th argument ${newOpacity}
-                        Please enter a number or 'undefined'`)
-                    break;
+            let newOpacity = undefined;
+            if (args.length < 4) {
+                newOpacity = KCDev.Mirrors.tryParseParameter(args[3]);
+                if (typeof newOpacity !== 'number') {
+                    if (newOpacity === 'undefined') {
+                        newOpacity = undefined;
+                    }
+                    else {
+                        console.error(`\
+                            KC_Mirrors: ${command} received invalid 4th argument ${newOpacity}
+                            Please enter a number or 'undefined'`)
+                        break;
+                    }
                 }
             }
 
