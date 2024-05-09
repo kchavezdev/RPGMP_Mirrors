@@ -372,6 +372,29 @@ SOFTWARE.
  *     Enabling reflections does NOT take priority over individual settings.
  *   * example: setMapReflect floor false
  * 
+ * --------------------MV Plugin Commands Quick Reference----------------------
+ * 
+ * See above section for details. This is just a list of commands and
+ * their arguments. Arguments ending in ? are optional.
+ * 
+ * setReflectImage char_type id char_graphic_name?
+ * 
+ * setReflectIndex char_type id index?
+ * 
+ * setReflectVisible char_type id reflect_type is_visibile
+ * 
+ * setReflectOpacity char_type id reflect_type opacity?
+ * 
+ * setReflectOffset char_type id reflect_type axis offset
+ * 
+ * resetReflect char_type id
+ * 
+ * setWallReflectMode mode
+ * 
+ * refreshReflectMap
+ * 
+ * setMapReflect reflect_type is_visible
+ * 
  * @param regionsParent
  * @text Regions
  * 
