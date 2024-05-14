@@ -1254,7 +1254,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
         }
 
         case 'setWallReflectMode': {
-            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 1)) {
                 break;
             }
 
@@ -1268,6 +1268,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 Valid arguments: 'event', 'perspective'`);
                 break;
             }
+            
             break;
         }
 
