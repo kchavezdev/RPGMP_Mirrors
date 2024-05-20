@@ -1253,25 +1253,6 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
         }
 
-        case 'setWallReflectMode': {
-            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 1)) {
-                break;
-            }
-
-            const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
-            if (arg0 in KCDev.Mirrors.wallModes) {
-                KCDev.Mirrors.setWallReflectMode(arg0);
-            }
-            else {
-                console.error(`\
-                KC_Mirrors: ${command} received invalid argument ${arg0}
-                Valid arguments: 'event', 'perspective'`);
-                break;
-            }
-            
-            break;
-        }
-
         case 'setMapReflect': {
             if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
                 break;
