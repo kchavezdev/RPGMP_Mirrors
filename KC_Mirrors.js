@@ -1253,7 +1253,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
         }
 
-        case 'setMapReflect': {
+        case 'forceMapReflect': {
             if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
                 break;
             }
