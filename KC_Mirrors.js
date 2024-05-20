@@ -2690,7 +2690,7 @@ KCDev.Mirrors.sortWallSpritesByY = function (charSprites) {
 // START FilterControllerMZ Extension                                                                         //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if (window.Filter_Controller) {
+if (window.Filter_Controller && Utils.RPGMAKER_NAME === 'MZ') {
     const Type = Filter_Controller.targetType;
     const targetGetter = Filter_Controller.targetGetter;
 
