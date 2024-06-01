@@ -356,9 +356,10 @@ SOFTWARE.
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
  * 
- * setWallReflectMode mode
- *   | Set wall reflection mode as described in plugin parameters section.
- *   * example: setWallReflectMode perspective
+ * forceWallReflectMode mode
+ *   | Set the current map's wall reflection mode regardless of default setting
+ *     and map notes.
+ *   * example: forceWallReflectMode perspective
  *   - mode: [perspective/event] Set the map's wall reflection type.
  * 
  * refreshReflectMap
@@ -389,7 +390,7 @@ SOFTWARE.
  * 
  * resetReflect char_type id
  * 
- * setWallReflectMode mode
+ * forceWallReflectMode mode
  * 
  * refreshReflectMap
  * 
