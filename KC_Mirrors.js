@@ -1868,7 +1868,7 @@ Game_CharacterBase.prototype.setReflectImage = function (filename = '', index = 
  * @returns {string}
  */
 Game_CharacterBase.prototype.reflectName = function () {
-    return this._reflectName;
+    return this._reflectName || '';
 };
 
 /**
@@ -1877,7 +1877,7 @@ Game_CharacterBase.prototype.reflectName = function () {
  * @returns {number}
  */
 Game_CharacterBase.prototype.reflectIndex = function () {
-    return this._reflectIndex;
+    return this._reflectIndex || -1;
 };
 
 /**
@@ -2305,7 +2305,14 @@ KCDev.Mirrors.Game_Map_refresh = Game_Map.prototype.refresh;
  */
 Game_Map.prototype.refresh = function () {
     KCDev.Mirrors.Game_Map_refresh.apply(this, arguments);
-    KCDev.Mirrors.setupMapReflectOptions();
+    if (!$gameMap._reflectMode) {
+        KCDev.Mirrors.setupMapReflectOptions();
+        for (const event of $gameMap.events()) {
+            if (event && !event._reflectName) {
+                KCDev.Mirrors.parseMetaValues(event, event.event(), KCDev.Mirrors.eventDefault, false);
+            }
+        }
+    }
 };
 
 KCDev.Mirrors.Game_Map_setup = Game_Map.prototype.setup;
@@ -2679,6 +2686,25 @@ KCDev.Mirrors.sortWallSpritesByY = function (charSprites) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Spriteset_Map edits                                                                                    //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// START DataManager Edits                                                                                    //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+KCDev.Mirrors.DataManager_extractSaveContents = DataManager.extractSaveContents;
+
+DataManager.extractSaveContents = function () {
+    KCDev.Mirrors.DataManager_extractSaveContents.apply(this, arguments);
+    for (const actor of $gameActors._data) {
+        if (actor && !actor._reflectName) {
+            KCDev.Mirrors.parseMetaValues(actor, $dataActors[actor.actorId()], KCDev.Mirrors.actorDefault, true);
+        }
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// END DataManager edits                                                                                      //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
