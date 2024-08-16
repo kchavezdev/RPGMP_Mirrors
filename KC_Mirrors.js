@@ -1515,6 +1515,44 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
 
             break;
         }
+        
+        case 'setMapReflect': {
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
+                break;
+            }
+
+            /** @type {string} */
+            let arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
+            if (typeof arg0 !== 'string') {
+                console.error(`\
+                    KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
+                    Valid arguments: 'wall', 'floor', 'all`);
+            }
+
+            arg0 = arg0.toLowerCase();
+
+            if (arg0 !== 'wall' && arg0 !== 'floor' && arg0 !== 'all') {
+                console.error(`\
+                    KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
+                    Valid arguments: 'wall', 'floor', 'all`);
+            }
+
+            const arg1 = KCDev.Mirrors.tryParseParameter(args[1]);
+
+            if (typeof arg1 !== 'boolean') {
+                console.error(`\
+                KC_Mirrors: ${command} received an invalid 2nd argument: ${arg1}
+                Valid arguments: 'true', 'false'`);
+                break;
+            }
+
+            const isWallOn = (arg0 === 'wall' || arg0 === 'all');
+            const isFloorOn = (arg0 === 'floor' || arg0 === 'all');
+
+            KCDev.Mirrors.overrideMapSettings(isFloorOn, isWallOn, 'unchanged');
+
+            break;
+        }
 
         default:
             break;
