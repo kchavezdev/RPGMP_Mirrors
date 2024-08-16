@@ -31,6 +31,7 @@ SOFTWARE.
  * @orderAfter PluginCommonBase
  * @orderAfter GALV_DiagonalMovementMZ
  * @orderAfter GALV_CharacterFramesMZ
+ * @orderAfter GALV_EventSpawnerMZ
  *
  * @plugindesc [v1.4]Add reflections to events and actors.
  *
@@ -2827,6 +2828,42 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
         KCDev.Mirrors.setReflectFrame_GalvDM.apply(this, arguments);
 
         r._character._diagDir = tmpDiagDir;
+    };
+}
+
+if (Imported.Galv_EventSpawner) {
+
+    KCDev.Mirrors.Spriteset_Map_unspawnEvent = Spriteset_Map.prototype.unspawnEvent;
+    Spriteset_Map.prototype.unspawnEvent = function (eventId) {
+        
+        for (let i = 0; i < this._characterSprites.length; i++) {
+            const sprite = this._characterSprites[i];
+            if (sprite._reflectionFloor) {
+                const char = sprite._character;
+                if (char.isSpawnEvent && char._eventId === eventId) {
+                    this._tilemap.removeChild(sprite._reflectionFloor);
+                    this._tilemap.removeChild(sprite._reflectionWall);
+                }
+            }
+        }
+
+        KCDev.Mirrors.Spriteset_Map_unspawnEvent.apply(this, arguments);
+    };
+
+    KCDev.Mirrors.Spriteset_Map_clearSpawnedEvents = Spriteset_Map.prototype.clearSpawnedEvents;
+    Spriteset_Map.prototype.clearSpawnedEvents = function (clearSaved) {
+        for (let i = 0; i < this._characterSprites.length; i++) {
+            const sprite = this._characterSprites[i];
+            if (sprite._reflectionFloor) {
+                const char = sprite._character;
+                if (char.isSpawnEvent && (clearSaved || !char.isSavedEvent)) {
+                    this._tilemap.removeChild(sprite._reflectionFloor);
+                    this._tilemap.removeChild(sprite._reflectionWall);
+                }
+            }
+        }
+
+        KCDev.Mirrors.Spriteset_Map_clearSpawnedEvents.apply(this, arguments);
     };
 }
 
