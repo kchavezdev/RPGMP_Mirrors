@@ -2293,14 +2293,3 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Galv Plugins Compatibility                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Apparently, having a lot of events with the "@" property name slows down property access times a lot
-KCDev.Mirrors.DataManager_correctDataErrors = DataManager.correctDataErrors;
-DataManager.correctDataErrors = function () {
-    KCDev.Mirrors.DataManager_correctDataErrors.apply(this, arguments);
-    $gameMap?.events().forEach(e => {
-        if (e["@"]) {
-            delete e["@"];
-        }
-    });
-};
