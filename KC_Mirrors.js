@@ -1401,7 +1401,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             let axis = KCDev.Mirrors.tryParseParameter(args[3]);
-            if (typeof offset !== 'string') {
+            if (typeof axis !== 'string') {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid 4th argument ${reflectType}
                 Valid arguments: 'x', 'y', 'xy'`);
@@ -1410,7 +1410,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             axis = axis.toLowerCase();
             if (axis !== 'x' && axis !== 'y' && axis !== 'xy') {
                 console.error(`\
-                KC_Mirrors: ${command} received invalid 4th argument ${reflectType}
+                KC_Mirrors: ${command} received invalid 5th argument ${reflectType}
                 Valid arguments: 'x', 'y', 'xy'`);
                 break;
             }
