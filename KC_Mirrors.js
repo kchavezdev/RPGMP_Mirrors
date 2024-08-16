@@ -342,6 +342,7 @@ SOFTWARE.
  *     + If char_type is 'event,' then 0 is 'this event'
  *   - reflect_type: [floor/wall/all] Determines whether the floor or wall
  *                   reflection is being modified. 'all' modifies both.
+ *   - axis: [x/y/xy] Which axis to modify. xy affects x and y.
  *   - offset: A number that the reflection will be offset by. Remember,
  *             positive x moves to the right, and positive y moves down,
  *             and the opposites are true
