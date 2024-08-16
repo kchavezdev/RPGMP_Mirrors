@@ -383,7 +383,7 @@ SOFTWARE.
  * 
  * setReflectIndex char_type id index?
  * 
- * setReflectVisible char_type id reflect_type is_visibile
+ * setReflectVisible char_type id reflect_type is_visible
  * 
  * setReflectOpacity char_type id reflect_type opacity?
  * 
