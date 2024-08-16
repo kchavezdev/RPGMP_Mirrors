@@ -1260,48 +1260,22 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             break;
         }
 
-        case 'forceMapReflect': {
-            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
+        case 'forceWallReflectMode': {
+
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 1)) {
                 break;
             }
 
             const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
-            const arg1 = KCDev.Mirrors.tryParseParameter(args[1]);
 
-            if (arg0 === 'mode') {
-                if (!arg1 in KCDev.Mirrors.wallModes) {
-                    console.error(`\
-                    KC_Mirrors: ${command} received an invalid 2nd argument: ${arg1}
-                    Valid arguments: 'perspective', 'event'`);
-                    break;
-                }
-
-                KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', arg1);
-
+            if (!(arg0 in KCDev.Mirrors.wallModes)) {
+                console.error(`\
+                KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
+                Valid arguments: 'perspective', 'event'`);
+                break;
             }
-            else {
-                if (typeof arg1 !== 'boolean' && arg1 !== 'default') {
-                    console.error(`\
-                    KC_Mirrors: ${command} received an invalid 2nd argument: ${arg1}
-                    Valid arguments: 'true', 'false'`);
-                    break;
-                }
-    
-                if (arg0 === 'floor') {
-                    KCDev.Mirrors.overrideMapSettings(arg1, 'unchanged', 'unchanged');
-                }
-                else if (arg0 === 'wall') {
-                    KCDev.Mirrors.overrideMapSettings('unchanged', arg1, 'unchanged');
-                }
-                else if (arg0 === 'all') {
-                    KCDev.Mirrors.overrideMapSettings(arg1, arg1, 'unchanged');
-                }
-                else {
-                    console.error(`\
-                    KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
-                    Valid arguments: 'floor', 'wall'`);
-                }
-            }
+
+            KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', arg0);
 
             break;
         }
