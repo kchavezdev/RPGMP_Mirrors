@@ -765,11 +765,13 @@ SOFTWARE.
  * 
  */
 
+// @ts-ignore
 var Imported = Imported || {};
 Imported.KC_Mirrors = true;
 
 // A general namespace for all of my plugins
 
+// @ts-ignore
 var KCDev = KCDev || {};
 
 KCDev.Mirrors = {};
@@ -790,9 +792,9 @@ KCDev.Mirrors.useZFightFix = false;
 KCDev.Mirrors.reflectWallPositions = new Map();
 KCDev.Mirrors.currMapId = -1;
 /** @type {Set<number>} */
-KCDev.Mirrors.wallRegions = null;
+KCDev.Mirrors.wallRegions;
 /** @type {Set<number>} */
-KCDev.Mirrors.noReflectRegions = null;
+KCDev.Mirrors.noReflectRegions;
 
 KCDev.Mirrors.wallModes = {};
 KCDev.Mirrors.wallModes.perspective = 0;
@@ -801,7 +803,7 @@ KCDev.Mirrors.wallModes.event = 1;
 /**
  * 
  * @param {string} str 
- * @param {{meta: Record<string,string>}} target 
+ * @param {{meta: any}} target 
  * @returns 
  */
 KCDev.Mirrors.findMetaSimple = function (str, target) {
@@ -817,6 +819,9 @@ KCDev.Mirrors.findMetaSimple = function (str, target) {
  */
 KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isActor = false) {
 
+    /** 
+     * @param {string} str
+     */
     const findMetaSimple = function (str) {
         return KCDev.Mirrors.findMetaSimple(str, target);
     };
@@ -945,7 +950,7 @@ KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
         text = text.replace(/\\/g, '\x1b');
         text = text.replace(/\x1b\x1b/g, '\\');
         text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => {
-            return $gameVariables.value(args);
+            return $gameVariables.value(args).toString();
         });
     }
 
