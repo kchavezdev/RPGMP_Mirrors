@@ -1329,7 +1329,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
 
             const char = commonArgs.character;
 
-            char.setReflectImage(reflectChar, char.reflectIndex());
+            char.setReflectImage(charName, char.reflectIndex());
             break;
         }
 
