@@ -951,7 +951,7 @@ KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
 
     // game switch replacements
     text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) => {
-        return $gameSwitches(args) ? 'true' : 'false';
+        return $gameSwitches.value(args) ? 'true' : 'false';
     });
 
     if (event) {
