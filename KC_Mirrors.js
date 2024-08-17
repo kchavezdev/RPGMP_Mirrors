@@ -2811,6 +2811,36 @@ if (Imported.Galv_CharacterFrames) {
         // restore original character values
         r._character._cframes = tmpCFrames;
     };
+
+    // hacky speedup
+    // basically, hitting "load game" to a map with many reflections chugs otherwise on MZ
+    // this seems to be related to property access times?
+    // not entirely sure, but this fixes the slow down and shouldn't conflict with other plugins?
+    if (!JsonEx._cleanMetaData) {
+
+        // ported from MV
+        JsonEx._cleanMetadata = function (object) {
+            if (!object) return;
+
+            delete object['@'];
+
+            if (typeof object === 'object') {
+                Object.keys(object).forEach(function (key) {
+                    var value = object[key];
+                    if (typeof value === 'object') {
+                        JsonEx._cleanMetadata(value);
+                    }
+                });
+            }
+        };
+
+        KCDev.Mirrors.JsonEx_parse = JsonEx.parse;
+        JsonEx.parse = function (s) {
+            const obj = KCDev.Mirrors.JsonEx_parse.apply(this, arguments);
+            JsonEx._cleanMetadata(obj)
+            return obj;
+        };
+    }
 }
 
 if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
