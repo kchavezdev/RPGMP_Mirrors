@@ -77,9 +77,10 @@ SOFTWARE.
  * reflections on a per-map and per-character basis.
  * 
  * As of version 1.3.5, this plugin is compatible with GALV_DiagonalMovementMZ
- * and GALV_CharacterFramesMZ. Note that you will see visual oddities if you
- * set a reflection spritesheet with a non-matching number of character
- * frames.
+ * and GALV_CharacterFramesMZ. Note that you will see visual oddities if your
+ * reflection spritesheet has a different number of frames than the character
+ * it is parented to (e.g. the character has 5 frames but the spritesheet only
+ * has 3).
  * 
  * -----------------------------Plugin Parameters-----------------------------
  * 
