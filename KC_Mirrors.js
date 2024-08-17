@@ -2433,6 +2433,13 @@ Sprite_Character.prototype.createReflectionSprites = function () {
  * Handles the creation of, refreshes for, and updates to both reflection sprites
  */
 Sprite_Character.prototype.updateReflectionSprite = function () {
+
+    // don't create reflection sprites until there is a parent
+    // fixes incompatibility with GALV_EventSpawner (MV)
+    if (!this.parent) {
+        return;
+    }
+
     if (!this._reflectionFloor) {
         this.createReflectionSprites();
     }
