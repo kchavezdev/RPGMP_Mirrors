@@ -2785,7 +2785,7 @@ if (Imported.Galv_CharacterFrames) {
     KCDev.Mirrors.Sprite_Reflect_refreshGraphic_GalvCF = KCDev.Mirrors.Sprite_Reflect.prototype.refreshGraphic;
     KCDev.Mirrors.Sprite_Reflect.prototype.refreshGraphic = function () {
         KCDev.Mirrors.Sprite_Reflect_refreshGraphic_GalvCF.apply(this, arguments);
-        const cf = this._characterName.match(Galv.CF.regex);
+        const cf = this._characterName.match(Galv.CF.regex || /%\((\d+)\)/);
         if (cf) {
             this._cframes = Number(cf[1]);
         }
