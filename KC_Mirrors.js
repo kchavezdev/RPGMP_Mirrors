@@ -69,7 +69,7 @@ SOFTWARE.
  * <Filter:REFLECT#1,reflection-w,CharReflectionsFloor> and
  * <SetFilter:REFLECT#1,0,0,5,30,100,1,1>, only the floor reflections would
  * have a "wavy" effect; this would be useful to simulate the appearance of
- * water for example.
+ * water for example. This feature is MZ EXCLUSIVE.
  * 
  * Also as of version 1.3.0, reflections can be offset by arbitrary numbers
  * of pixels using the <REFLECT_FLOOR_OFFSETS:[x],[y]> and 
