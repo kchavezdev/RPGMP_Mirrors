@@ -1128,6 +1128,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
             for (const prop in args) {
                 args[prop] = KCDev.Mirrors.tryParseParameter(args[prop]);
             }
+            return args;
         }
 
         // plugin commands
