@@ -1906,7 +1906,7 @@ Game_CharacterBase.prototype.reflectIndex = function () {
  * @param {boolean} reflect True if wall reflection is on, false otherwise
  */
 Game_CharacterBase.prototype.reflectWallToggle = function (reflect = !this.reflectWall()) {
-    this._reflectWall = reflect;
+    this._reflectWall = !!reflect;
 };
 
 /**
@@ -1924,7 +1924,7 @@ Game_CharacterBase.prototype.reflectWall = function () {
  * @param {boolean} reflect True if floor reflection is on, false otherwise
  */
 Game_CharacterBase.prototype.reflectFloorToggle = function (reflect = !this.reflectFloor()) {
-    this._reflectFloor = reflect;
+    this._reflectFloor = !!reflect;
 };
 
 /**
