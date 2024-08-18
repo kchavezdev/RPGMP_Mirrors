@@ -1124,6 +1124,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
         if (Utils.RPGMAKER_NAME !== 'MZ') return;
 
         function convertVanillaArgs(args) {
+            args = JsonEx.makeDeepCopy(args);
             for (const prop in args) {
                 args[prop] = KCDev.Mirrors.tryParseParameter(args[prop]);
             }
@@ -1131,12 +1132,12 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         // plugin commands
         PluginManager.registerCommand(script, 'changeEventReflect', function (args) {
-            convertVanillaArgs(args);
+            args = convertVanillaArgs(args);
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
         });
 
         PluginManager.registerCommand(script, 'changeActorReflect', function (args) {
-            convertVanillaArgs(args);
+            args = convertVanillaArgs(args);
             const actorId = KCDev.Mirrors.getRealActorId(args.id);
             const actor = $gameActors.actor(actorId);
             args.id = actorId;
@@ -1144,10 +1145,12 @@ KCDev.Mirrors.tryParseParameter = function (param) {
         });
 
         PluginManager.registerCommand(script, 'resetEventReflect', function (args) {
+            args = convertVanillaArgs(args);
             KCDev.Mirrors.resetEventReflectImage.call(this, Number(args.id) || this.eventId());
         });
 
         PluginManager.registerCommand(script, 'resetActorReflect', function (args) {
+            args = convertVanillaArgs(args);
             KCDev.Mirrors.resetActorReflectImage.call(this, Number(args.id));
         });
 
@@ -1156,10 +1159,12 @@ KCDev.Mirrors.tryParseParameter = function (param) {
         });
 
         PluginManager.registerCommand(script, 'setWallReflectMode', function (args) {
+            args = convertVanillaArgs(args);
             KCDev.Mirrors.setWallReflectMode(args.mode);
         });
 
         PluginManager.registerCommand(script, 'overrideMapSettings', function (args) {
+            args = convertVanillaArgs(args);
             KCDev.Mirrors.overrideMapSettings(args.reflectFloor, args.reflectWall, args.mode);
         });
     }
