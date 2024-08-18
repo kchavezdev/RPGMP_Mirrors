@@ -2325,10 +2325,10 @@ KCDev.Mirrors.Game_Map_refresh = Game_Map.prototype.refresh;
  */
 Game_Map.prototype.refresh = function () {
     KCDev.Mirrors.Game_Map_refresh.apply(this, arguments);
-    if (!$gameMap._reflectMode) {
+    if ($gameMap._reflectMode === undefined) {
         KCDev.Mirrors.setupMapReflectOptions();
         for (const event of $gameMap.events()) {
-            if (event && !event._reflectName) {
+            if (event && event._reflectName === undefined) {
                 KCDev.Mirrors.parseMetaValues(event, event.event(), KCDev.Mirrors.eventDefault, false);
             }
         }
@@ -2724,7 +2724,7 @@ KCDev.Mirrors.DataManager_extractSaveContents = DataManager.extractSaveContents;
 DataManager.extractSaveContents = function () {
     KCDev.Mirrors.DataManager_extractSaveContents.apply(this, arguments);
     for (const actor of $gameActors._data) {
-        if (actor && !actor._reflectName) {
+        if (actor && actor._reflectName === undefined) {
             KCDev.Mirrors.parseMetaValues(actor, $dataActors[actor.actorId()], KCDev.Mirrors.actorDefault, true);
         }
     }
