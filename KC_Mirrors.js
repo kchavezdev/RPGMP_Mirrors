@@ -952,20 +952,20 @@ KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
     for (let i = 0; i < maxVarIterations; i++) {
         text = text.replace(/\\/g, '\x1b');
         text = text.replace(/\x1b\x1b/g, '\\');
-        text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => {
-            return $gameVariables.value(args).toString();
-        });
+        text = text.replace(/\x1bV\[(\d+)\]/gi, (substring, args) => 
+            $gameVariables.value(args)
+        );
     }
 
     // game switch replacements
-    text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) => {
-        return $gameSwitches.value(args) ? 'true' : 'false';
-    });
+    text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) => 
+        $gameSwitches.value(args) ? 'true' : 'false'
+    );
 
     if (event) {
-        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (substring, args) => {
-            return $gameSelfSwitches.value([event._mapId, event._eventId, args.toUpperCase()]) ? 'true' : 'false';
-        });
+        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (substring, args) => 
+            $gameSelfSwitches.value([event._mapId, event._eventId, args.toUpperCase()]) ? 'true' : 'false'
+        );
     }
 
     text = text.replace(/\x1b/g, '\\');
