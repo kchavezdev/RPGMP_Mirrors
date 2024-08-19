@@ -810,7 +810,8 @@ KCDev.Mirrors.wallModes.event = 1;
  * @returns 
  */
 KCDev.Mirrors.findMetaSimple = function (str, target) {
-    return target.meta[str] || target.meta[str.toLowerCase()] || target.meta[str.toUpperCase()];
+    if (!target || !target.meta || !str) return undefined;
+    return KCDev.Mirrors.tryParseParameter(target.meta[str] || target.meta[str.toLowerCase()] || target.meta[str.toUpperCase()]);
 };
 
 /**
