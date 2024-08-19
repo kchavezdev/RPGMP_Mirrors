@@ -2496,8 +2496,9 @@ Sprite_Character.prototype.updateReflectWall = function () {
     const /**@type {KCDev.Mirrors.Sprite_Reflect} */ r = this._reflectionWall;
 
     const char = this._character;
-    const charX = this._character.x;
-    const charY = this._character.y;
+    // need to floor for compatibility with certain pixel movement plugins
+    const charX = Math.floor(this._character.x);
+    const charY = Math.floor(this._character.y);
     const o = char.reflectWallOpacity();
 
     r.visible = $gameMap.reflectWall() && char.reflectWall() && !KCDev.Mirrors.noReflectRegions.has($gameMap.regionId(charX, charY)) && ((o === undefined && !char.isTransparent()) || o);
