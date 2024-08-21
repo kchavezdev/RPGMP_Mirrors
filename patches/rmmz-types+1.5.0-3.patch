@@ -1,0 +1,10 @@
+diff --git a/node_modules/rmmz-types/lib/index.d.ts b/node_modules/rmmz-types/lib/index.d.ts
+index de73580..979ec37 100644
+--- a/node_modules/rmmz-types/lib/index.d.ts
++++ b/node_modules/rmmz-types/lib/index.d.ts
+@@ -6,4 +6,5 @@ export * from "./core"
+ export * from "./managers"
+ export * from "./objects"
+ export * from "./scenes"
++export * from "./sprites"
+ export * from "./windows"
