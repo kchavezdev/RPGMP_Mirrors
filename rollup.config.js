@@ -10,6 +10,7 @@ const pluginHeader = readFileSync('src/plugin_header.ts');
 export default {
   input: 'src/KC_Mirrors.ts',
   output: {
+    name: 'KCDev.Mirrors',
     format: 'iife',
     sourcemap: true,
     interop: 'esModule',
