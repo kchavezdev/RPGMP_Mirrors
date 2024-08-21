@@ -9,8 +9,11 @@ declare module 'rmmz-types' {
 // ensure namespace object is in global scope
 declare global {
     var KCDev: any
+    var Imported: any
 }
 window.KCDev = window.KCDev || {};
+Imported = Imported || {};
+Imported.KC_Mirrors = true;
 
 namespace KCDev {
     export namespace Mirrors {
