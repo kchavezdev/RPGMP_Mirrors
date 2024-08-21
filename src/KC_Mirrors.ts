@@ -26,8 +26,6 @@ namespace KCDev {
             name?: string
             /** Index of the character graphic. Starts at 0. */
             index?: number
-            /** Whether the reflection sprite needs to be refreshed */
-            needsRefresh: boolean
         }
         export interface ICharacterDefault {
             isWallEnabled: boolean
@@ -151,13 +149,11 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
             offset: {x: 0, y: 0},
             angle: 0,
             visible: false,
-            needsRefresh: true
         },
         floor: {
             offset: {x: 0, y: 0},
             angle: 0,
             visible: false,
-            needsRefresh: true
         }
     };
 };
