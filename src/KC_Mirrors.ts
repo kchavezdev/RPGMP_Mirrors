@@ -1,4 +1,4 @@
-import { $gameMap, Game_CharacterBase, Game_Vehicle } from "rmmz-types"
+import { $gameMap, Game_CharacterBase, Game_Vehicle, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -124,7 +124,8 @@ export namespace Mirrors {
     }
     export var Aliases = {
         Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
-        Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers
+        Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers,
+        Sprite_Character_prototype_update: Sprite_Character.prototype.update
     }
 }
 
@@ -181,4 +182,9 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
 Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
     $.Aliases.Game_CharacterBase_prototype_initMembers.apply(this, arguments);
     this.initReflectionProperties();
+};
+
+Sprite_Character.prototype.update = function (this: Sprite_Character) {
+    $.Aliases.Sprite_Character_prototype_update.apply(this, arguments);
+    this.updateReflections();
 };
