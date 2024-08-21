@@ -160,7 +160,14 @@ declare module 'rmmz-types' {
     }
 
     interface Sprite_Character {
-
+        _reflections: {
+            floor: $.ICharacterGraphic,
+            wall: $.ICharacterGraphic
+        }
+        updateReflections: () => void
+        updateReflectionFloor: () => void
+        updateReflectionWall: () => void
+        refreshReflectionIfNeeded: (spriteInfo: $.ICharacterGraphic, charInfo: $.ICharacterGraphic) => void
     }
 }
 
