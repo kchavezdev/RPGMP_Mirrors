@@ -1,13 +1,12 @@
 // rollup.config.js
 import typescript from '@rollup/plugin-typescript';
 
-import externalGlobals from 'rollup-plugin-external-globals';
-
 import { readFileSync } from 'fs';
 
 const pluginHeader = readFileSync('src/plugin_header.ts');
 
 export default {
+  external: ['rmmz-types'],
   input: 'src/KC_Mirrors.ts',
   output: {
     name: 'KCDev.Mirrors',
@@ -20,7 +19,10 @@ export default {
       constBindings: true,
       arrowFunctions: true
     },
+    globals: {
+      'rmmz-types': 'window'
+    }
   },
-  plugins: [typescript(), externalGlobals({ 'rmmz-types': 'window' })]
+  plugins: [typescript()]
 };
 
