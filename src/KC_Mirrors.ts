@@ -36,16 +36,17 @@ namespace KCDev {
             PERSPECTIVE = 1,
             EVENT = 2
         }
-        export abstract class PluginParameters {
-            static zValue: number = -1
-            static wallReflectType: WallReflectMode = WallReflectMode.PERSPECTIVE
-            static wallReflectVar: number = 0
-            static actorDefault: ICharacterDefault = { isWallEnabled: true, isFloorEnabled: true }
-            static eventDefault: ICharacterDefault = { isWallEnabled: false, isFloorEnabled: false }
-            static isPerspectiveYsortEnabled: boolean = false
+        // exporting these as vars would restrict declaring
+        export var PluginParameters = {
+            zValue: -1,
+            wallReflectType: WallReflectMode.PERSPECTIVE,
+            wallReflectVar: 0,
+            actorDefault: { isWallEnabled: true, isFloorEnabled: true } as ICharacterDefault,
+            eventDefault: { isWallEnabled: false, isFloorEnabled: false } as ICharacterDefault,
+            isPerspectiveYsortEnabled: false
         }
-        export abstract class Aliases {
-            static Game_CharacterBase_prototype_update = Game_CharacterBase.prototype.update
+        export var Aliases = {
+            Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update
         }
     }
 }
