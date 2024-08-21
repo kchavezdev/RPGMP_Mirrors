@@ -18,16 +18,22 @@ Imported.KC_Mirrors = true;
 namespace KCDev {
     export namespace Mirrors {
         export interface IReflectionProperties {
+            /** Opacity of the graphic, ranges from 0-255 */
+            opacity?: number
+            /** Offset in pixels of this reflection. */
+            offset: {x: number, y: number}
+            /** Angle offset of this reflection in degrees. */
+            angle: number,
+            /** Whether this reflection is visible. */
+            visible: boolean
+        }
+        export interface ICharacterReflectionProperties extends IReflectionProperties {
             /** File name of the character graphic. */
             name?: string
             /** Index of the character graphic. Starts at 0. */
             index?: number
-            /** Opacity of the graphic, ranges from 0-255 */
-            opacity?: number
-            /** Offset in pixels of this reflection. */
-            offset: { x: number, y: number }
-            /** Angle offset of this reflection in degrees. */
-            angle: number
+            /** Whether the reflection sprite needs to be refreshed */
+            needsRefresh: boolean
         }
         export interface ICharacterDefault {
             isWallEnabled: boolean
