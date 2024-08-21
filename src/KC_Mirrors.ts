@@ -1,11 +1,5 @@
 import { $gameMap, Game_CharacterBase } from "rmmz-types"
 
-declare module 'rmmz-types' {
-    interface Game_CharacterBase {
-        _reflectionProperties: { wall: $.IReflectionProperties, floor: $.IReflectionProperties }
-    }
-}
-
 // ensure namespace object is in global scope
 declare global {
     var KCDev: any
@@ -138,6 +132,13 @@ namespace KCDev {
 }
 
 import $ = KCDev.Mirrors;
+
+declare module 'rmmz-types' {
+    interface Game_CharacterBase {
+        _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
+        initReflectionProperties: () => void
+    }
+}
 
 Game_CharacterBase.prototype.update = function (this: Game_CharacterBase) {
     $.Aliases.Game_CharacterBase_prototype_update.apply(this, arguments);
