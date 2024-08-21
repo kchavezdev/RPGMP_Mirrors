@@ -19,3 +19,4 @@ namespace KCDev {
     }
 }
 
+import $ = KCDev.Mirrors;
