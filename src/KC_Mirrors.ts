@@ -126,7 +126,8 @@ namespace KCDev {
 
         }
         export var Aliases = {
-            Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update
+            Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
+            Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers
         }
     }
 }
@@ -142,4 +143,26 @@ declare module 'rmmz-types' {
 
 Game_CharacterBase.prototype.update = function (this: Game_CharacterBase) {
     $.Aliases.Game_CharacterBase_prototype_update.apply(this, arguments);
+};
+
+Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_CharacterBase) {
+    this._reflectionProperties = {
+        wall: {
+            offset: {x: 0, y: 0},
+            angle: 0,
+            visible: false,
+            needsRefresh: true
+        },
+        floor: {
+            offset: {x: 0, y: 0},
+            angle: 0,
+            visible: false,
+            needsRefresh: true
+        }
+    };
+};
+
+Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
+    $.Aliases.Game_CharacterBase_prototype_initMembers.apply(this, arguments);
+    this.initReflectionProperties();
 };
