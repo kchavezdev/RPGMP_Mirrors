@@ -36,7 +36,6 @@ namespace KCDev {
             PERSPECTIVE = 1,
             EVENT = 2
         }
-        // exporting these as vars would restrict declaring
         export var PluginParameters = {
             zValue: -1,
             wallReflectType: WallReflectMode.PERSPECTIVE,
