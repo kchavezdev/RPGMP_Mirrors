@@ -143,22 +143,6 @@ declare module 'rmmz-types' {
         initReflectionProperties: () => void
     }
 
-    interface Game_Player {
-        refresh: () => void
-    }
-
-    interface Game_Follower {
-        refresh: () => void
-    }
-
-    interface Game_Vehicle {
-        refresh: () => void
-    }
-
-    interface Game_Event {
-        refresh: () => void
-    }
-
     interface Sprite_Character {
         _reflections: {
             floor: $.ICharacterGraphic,
