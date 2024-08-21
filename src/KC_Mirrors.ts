@@ -1,4 +1,4 @@
-import { $gameMap, Game_CharacterBase } from "rmmz-types"
+import { $gameMap, Game_CharacterBase, Game_Vehicle } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -133,9 +133,32 @@ namespace KCDev {
 import $ = KCDev.Mirrors;
 
 declare module 'rmmz-types' {
+
+    // @ts-expect-error: Game_Actor incorrectly extends Game_Battler
+    interface Game_Actor {
+        _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
+        initReflectionProperties: () => void
+    }
+
     interface Game_CharacterBase {
         _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
         initReflectionProperties: () => void
+    }
+
+    interface Game_Player {
+        refresh: () => void
+    }
+
+    interface Game_Follower {
+        refresh: () => void
+    }
+
+    interface Game_Vehicle {
+        refresh: () => void
+    }
+
+    interface Game_Event {
+        refresh: () => void
     }
 }
 
