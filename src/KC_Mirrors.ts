@@ -184,6 +184,15 @@ Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
     this.initReflectionProperties();
 };
 
+Sprite_Character.prototype.updateReflections = function (this: Sprite_Character) {
+    // immediately return if this sprite doesn't have a parent
+    // this is needed for compatibility with Galv_EventSpawner
+    if (!this.parent) return;
+
+    
+
+};
+
 Sprite_Character.prototype.update = function (this: Sprite_Character) {
     $.Aliases.Sprite_Character_prototype_update.apply(this, arguments);
     this.updateReflections();
