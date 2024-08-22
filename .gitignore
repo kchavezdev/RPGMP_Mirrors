@@ -2,6 +2,9 @@ dev/*
 .DS_Store
 build/
 
+# VSCode
+.vscode/
+
 # Logs
 logs
 *.log
