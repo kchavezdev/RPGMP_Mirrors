@@ -4,7 +4,8 @@
   "description": "Add reflections to sprites in RPG Maker MV/MZ",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "postinstall": "patch-package"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,12 @@
     "rollup": "^4.21.0",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4"
+  },
+  "overrides": {
+    "rmmz-types": {
+      "localforage": "~1.7.3",
+      "pixi.js": "~5.2.4"
+    }
   },
   "type": "module"
 }
