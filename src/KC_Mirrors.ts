@@ -1,4 +1,4 @@
-import { $gameMap, Game_CharacterBase, Game_Vehicle, Sprite_Character } from "rmmz-types"
+import { $gameMap, Game_CharacterBase, Game_Vehicle, Sprite, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -24,6 +24,9 @@ export namespace Mirrors {
         angle: number,
         /** Whether this reflection is visible. */
         visible: boolean
+    }
+    export interface IReflectionSprite extends ICharacterGraphic {
+        sprite: Sprite
     }
     export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
     export interface ICharacterDefault {
