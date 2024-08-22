@@ -152,6 +152,7 @@ declare module 'rmmz-types' {
             floor: $.IReflectionSprite,
             wall: $.IReflectionSprite
         }
+        createReflectionSprites: () => void
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
         updateReflectionWall: () => void
@@ -185,6 +186,21 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
 Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
     $.Aliases.Game_CharacterBase_prototype_initMembers.apply(this, arguments);
     this.initReflectionProperties();
+};
+
+Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Character) {
+    this._reflections = {
+        floor: {
+            name: '',
+            index: -1,
+            sprite: new Sprite(this.bitmap)
+        },
+        wall: {
+            name: '',
+            index: -1,
+            sprite: new Sprite(this.bitmap)
+        }
+    }
 };
 
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
