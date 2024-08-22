@@ -31,8 +31,8 @@
   },
   "overrides": {
     "rmmz-types": {
-      "localforage": "~1.7.3",
-      "pixi.js": "~5.2.4"
+      "localforage": "1.7.3",
+      "pixi.js": "5.2.4"
     }
   },
   "type": "module"
