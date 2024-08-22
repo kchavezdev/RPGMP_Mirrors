@@ -17,7 +17,7 @@ export namespace Mirrors {
     }
     export interface IReflectionProperties {
         /** Opacity of the graphic, ranges from 0-255 */
-        opacity?: number
+        opacity: number
         /** Offset in pixels of this reflection. */
         offset: { x: number, y: number }
         /** Angle offset of this reflection in degrees. */
@@ -173,6 +173,7 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
         wall: {
             name: '',
             index: -1,
+            opacity: -1,
             offset: { x: 0, y: 0 },
             angle: 0,
             visible: false,
@@ -180,6 +181,7 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
         floor: {
             name: '',
             index: -1,
+            opacity: -1,
             offset: { x: 0, y: 0 },
             angle: 0,
             visible: false,
