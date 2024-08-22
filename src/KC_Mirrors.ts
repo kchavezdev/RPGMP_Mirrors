@@ -1,4 +1,4 @@
-import { $gameMap, Game_CharacterBase, Game_Vehicle, Sprite, Sprite_Character } from "rmmz-types"
+import { $gameMap, Game_CharacterBase, Game_Vehicle, ImageManager, Sprite, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -152,11 +152,15 @@ declare module 'rmmz-types' {
             floor: $.IReflectionSprite,
             wall: $.IReflectionSprite
         }
+        isReflectionMatchingBitmap: (reflection: $.IReflectionSprite) => boolean
         createReflectionSprites: () => void
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
         updateReflectionWall: () => void
-        refreshReflectionIfNeeded: (spriteInfo: $.ICharacterGraphic, charInfo: $.ICharacterGraphic) => void
+        updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void
+        /** Update common properties of reflection sprites */
+        updateReflectionCommon: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void,
+        refreshReflectionIfNeeded: (spriteReflect: $.ICharacterGraphic, charReflect: $.ICharacterGraphic) => void
     }
 }
 
@@ -201,6 +205,29 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
             sprite: new Sprite(this.bitmap)
         }
     }
+};
+
+Sprite_Character.prototype.isReflectionMatchingBitmap = function (reflection) {
+    return reflection.name === '';
+};
+
+Sprite_Character.prototype.updateReflectionBitmap = function (spriteReflect, charReflect) {
+    if (spriteReflect.name !== charReflect.name || spriteReflect.index !== charReflect.index) {
+        spriteReflect.name = charReflect.name;
+        spriteReflect.index = charReflect.index;
+
+        if (!this.isReflectionMatchingBitmap(spriteReflect)) {
+            spriteReflect.sprite.bitmap = ImageManager.loadCharacter(spriteReflect.name);
+        }
+    }
+
+    if (this.isReflectionMatchingBitmap(spriteReflect) && spriteReflect.sprite.bitmap !== this.bitmap) {
+        spriteReflect.sprite.bitmap = this.bitmap;
+    }
+};
+
+Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Character, spriteReflect, charReflect) {
+    this.updateReflectionBitmap(spriteReflect, charReflect);
 };
 
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
