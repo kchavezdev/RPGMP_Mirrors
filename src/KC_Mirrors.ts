@@ -208,7 +208,9 @@ Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Char
     // this is needed for compatibility with Galv_EventSpawner
     if (!this.parent) return;
 
-    
+    if (!this._reflections) {
+        this.createReflectionSprites();
+    }
 
 };
 
