@@ -149,7 +149,7 @@ declare module 'rmmz-types' {
             floor: $.ICharacterGraphic,
             wall: $.ICharacterGraphic
         }
-        updateReflections: () => void
+        updateReflectionSprites: () => void
         updateReflectionFloor: () => void
         updateReflectionWall: () => void
         refreshReflectionIfNeeded: (spriteInfo: $.ICharacterGraphic, charInfo: $.ICharacterGraphic) => void
@@ -184,7 +184,7 @@ Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
     this.initReflectionProperties();
 };
 
-Sprite_Character.prototype.updateReflections = function (this: Sprite_Character) {
+Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
     // immediately return if this sprite doesn't have a parent
     // this is needed for compatibility with Galv_EventSpawner
     if (!this.parent) return;
