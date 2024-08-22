@@ -157,10 +157,10 @@ declare module 'rmmz-types' {
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
         updateReflectionWall: () => void
-        updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void
+        updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterReflectionProperties) => void
         /** Update common properties of reflection sprites */
-        updateReflectionCommon: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void,
-        refreshReflectionIfNeeded: (spriteReflect: $.ICharacterGraphic, charReflect: $.ICharacterGraphic) => void
+        updateReflectionCommon: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterReflectionProperties) => void,
+        refreshReflectionIfNeeded: (spriteReflect: $.ICharacterGraphic, charReflect: $.ICharacterReflectionProperties) => void
     }
 }
 
