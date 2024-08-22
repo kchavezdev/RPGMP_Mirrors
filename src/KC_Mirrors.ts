@@ -157,8 +157,7 @@ declare module 'rmmz-types' {
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
         updateReflectionWall: () => void
-        updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterReflectionProperties) => void
-        /** Update common properties of reflection sprites */
+        updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void
         updateReflectionCommon: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterReflectionProperties) => void,
         refreshReflectionIfNeeded: (spriteReflect: $.ICharacterGraphic, charReflect: $.ICharacterReflectionProperties) => void
     }
@@ -207,6 +206,8 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
             sprite: new Sprite(this.bitmap)
         }
     }
+    this._reflections.floor.sprite.z = -1;
+    this._reflections.wall.sprite.z = -1;
 };
 
 Sprite_Character.prototype.isReflectionMatchingBitmap = function (reflection) {
@@ -229,7 +230,22 @@ Sprite_Character.prototype.updateReflectionBitmap = function (spriteReflect, cha
 };
 
 Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Character, spriteReflect, charReflect) {
+    const reflectSprite = spriteReflect.sprite;
+
+    reflectSprite.visible = charReflect.visible;
+    
+    if (!reflectSprite.visible) return; // don't update sprite at all if it's not visible
+
     this.updateReflectionBitmap(spriteReflect, charReflect);
+
+    reflectSprite.opacity = charReflect.opacity < 0 ? this._character.opacity() : charReflect.opacity;
+    reflectSprite.rotation = this.rotation + charReflect.rotation;
+    reflectSprite.x = this.x + charReflect.offset.x;
+    reflectSprite.y = this.y + charReflect.offset.y;
+    reflectSprite._blendColor = this._blendColor;
+    reflectSprite._blendMode = this._blendMode;
+    reflectSprite.scale.x = this.scale.x;
+    reflectSprite.scale.y = this.scale.y;
 };
 
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
@@ -240,6 +256,9 @@ Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Char
     if (!this._reflections) {
         this.createReflectionSprites();
     }
+
+    this.updateReflectionCommon(this._reflections.floor, this._character._reflectionProperties.floor);
+    this.updateReflectionCommon(this._reflections.wall, this._character._reflectionProperties.wall);
 
 };
 
