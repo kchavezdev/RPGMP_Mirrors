@@ -214,5 +214,5 @@ Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Char
 
 Sprite_Character.prototype.update = function (this: Sprite_Character) {
     $.Aliases.Sprite_Character_prototype_update.apply(this, arguments);
-    this.updateReflections();
+    this.updateReflectionSprites();
 };
