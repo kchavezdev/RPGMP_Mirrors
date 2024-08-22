@@ -1,4 +1,4 @@
-import { $gameMap, Game_CharacterBase, Game_Vehicle, ImageManager, Sprite, Sprite_Character } from "rmmz-types"
+import { $gameMap, Bitmap, Game_CharacterBase, Game_Vehicle, ImageManager, Sprite, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -26,7 +26,8 @@ export namespace Mirrors {
         visible: boolean
     }
     export interface IReflectionSprite extends ICharacterGraphic {
-        sprite: Sprite
+        sprite: Sprite_Character_Reflection,
+        isBigCharacter: boolean
     }
     export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
     export interface ICharacterDefault {
@@ -125,6 +126,11 @@ export namespace Mirrors {
 
 
     }
+    export class Sprite_Character_Reflection extends Sprite_Character {
+        public update(): void {
+            // intentionally stubbed
+        }
+    }
     export var Aliases = {
         Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
         Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers,
@@ -153,13 +159,15 @@ declare module 'rmmz-types' {
             wall: $.IReflectionSprite
         }
         isReflectionMatchingBitmap: (reflection: $.IReflectionSprite) => boolean
+        isReflectionMatchingIndex: (reflection: $.IReflectionSprite) => boolean
+        isReflectionMatching: (reflection: $.IReflectionSprite) => boolean
         createReflectionSprites: () => void
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
+        updateReflectionFrame: (reflection: $.IReflectionSprite) => void
         updateReflectionWall: () => void
         updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void
-        updateReflectionCommon: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterReflectionProperties) => void,
-        refreshReflectionIfNeeded: (spriteReflect: $.ICharacterGraphic, charReflect: $.ICharacterReflectionProperties) => void
+        updateReflectionCommon: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterReflectionProperties) => void
     }
 }
 
@@ -183,7 +191,7 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
             opacity: -1,
             offset: { x: 0, y: 0 },
             rotation: 0,
-            visible: false,
+            visible: true,
         }
     };
 };
@@ -198,26 +206,40 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
         floor: {
             name: '',
             index: -1,
-            sprite: new Sprite(this.bitmap)
+            sprite: new $.Sprite_Character_Reflection(this._character),
+            isBigCharacter: false
         },
         wall: {
             name: '',
             index: -1,
-            sprite: new Sprite(this.bitmap)
+            sprite: new $.Sprite_Character_Reflection(this._character),
+            isBigCharacter: false
         }
     }
-    this._reflections.floor.sprite.z = -1;
-    this._reflections.wall.sprite.z = -1;
+    for (const prop in this._reflections) {
+        const sprite = this._reflections[prop].sprite as Sprite;
+        sprite.z = 1
+        this.parent.addChild(sprite);
+    }
 };
 
 Sprite_Character.prototype.isReflectionMatchingBitmap = function (reflection) {
     return reflection.name === '';
 };
 
+Sprite_Character.prototype.isReflectionMatchingIndex = function (reflection) {
+    return reflection.index < 0;
+};
+
+Sprite_Character.prototype.isReflectionMatching = function (this: Sprite_Character, reflection) {
+    return this.isReflectionMatchingBitmap(reflection) && this.isReflectionMatchingIndex(reflection);
+};
+
 Sprite_Character.prototype.updateReflectionBitmap = function (spriteReflect, charReflect) {
     if (spriteReflect.name !== charReflect.name || spriteReflect.index !== charReflect.index) {
         spriteReflect.name = charReflect.name;
         spriteReflect.index = charReflect.index;
+        spriteReflect.sprite._isBigCharacter = ImageManager.isBigCharacter(charReflect.name);
 
         if (!this.isReflectionMatchingBitmap(spriteReflect)) {
             spriteReflect.sprite.bitmap = ImageManager.loadCharacter(spriteReflect.name);
@@ -226,6 +248,13 @@ Sprite_Character.prototype.updateReflectionBitmap = function (spriteReflect, cha
 
     if (this.isReflectionMatchingBitmap(spriteReflect) && spriteReflect.sprite.bitmap !== this.bitmap) {
         spriteReflect.sprite.bitmap = this.bitmap;
+    }
+};
+
+/** Need this to avoid unecessarily calling certain setter functions. */
+function setPropIfNonMatching<T>(obj1: T, obj2: T, propertyName: keyof T) {
+    if (obj1[propertyName] !== obj2[propertyName]) {
+        obj1[propertyName] = obj2[propertyName];
     }
 };
 
@@ -246,6 +275,29 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     reflectSprite._blendMode = this._blendMode;
     reflectSprite.scale.x = this.scale.x;
     reflectSprite.scale.y = this.scale.y;
+
+    // anchor is 0,0 if we set it every update
+    setPropIfNonMatching(reflectSprite.anchor, this.anchor, 'x');
+    setPropIfNonMatching(reflectSprite.anchor, this.anchor, 'y');
+};
+
+Sprite_Character.prototype.updateReflectionFrame = function (this: Sprite_Character, reflection, flipDirection = false) {
+    const character = this._character;
+    
+    
+};
+
+Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Character) {
+    const reflection = this._reflections.floor;
+    reflection.sprite.rotation += Math.PI;
+    reflection.sprite.scale.x *= -1;
+
+    if (this.isReflectionMatching(reflection)) {
+        reflection.sprite.setFrame(this._frame.x, this._frame.y, this._frame.height, this._frame.width);
+    }
+    else {
+        this.updateReflectionFrame(reflection);
+    }
 };
 
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
@@ -259,7 +311,7 @@ Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Char
 
     this.updateReflectionCommon(this._reflections.floor, this._character._reflectionProperties.floor);
     this.updateReflectionCommon(this._reflections.wall, this._character._reflectionProperties.wall);
-
+    this.updateReflectionFloor();
 };
 
 Sprite_Character.prototype.update = function (this: Sprite_Character) {
