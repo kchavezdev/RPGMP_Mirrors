@@ -20,8 +20,8 @@ export namespace Mirrors {
         opacity: number
         /** Offset in pixels of this reflection. */
         offset: { x: number, y: number }
-        /** Angle offset of this reflection in degrees. */
-        angle: number,
+        /** Rotation offset of this reflection in radians. */
+        rotation: number,
         /** Whether this reflection is visible. */
         visible: boolean
     }
@@ -175,7 +175,7 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
             index: -1,
             opacity: -1,
             offset: { x: 0, y: 0 },
-            angle: 0,
+            rotation: 0,
             visible: false,
         },
         floor: {
@@ -183,7 +183,7 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
             index: -1,
             opacity: -1,
             offset: { x: 0, y: 0 },
-            angle: 0,
+            rotation: 0,
             visible: false,
         }
     };
