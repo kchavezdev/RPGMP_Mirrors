@@ -166,7 +166,7 @@ declare module 'rmmz-types' {
         updateReflectionFrame: (reflection: $.IReflectionSprite) => void
         updateReflectionWall: () => void
         updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void
-        updateReflectionCommon: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterReflectionProperties) => void
+        updateReflectionCommon: (reflectionKey: 'wall' | 'floor') => void
     }
 }
 
@@ -268,7 +268,9 @@ function setPropIfNonMatching<T>(obj1: T, obj2: T, propertyName: keyof T) {
     }
 };
 
-Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Character, spriteReflect, charReflect) {
+Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Character, key) {
+    const spriteReflect = this._reflections[key];
+    const charReflect = this._character._reflectionProperties[key];
     const reflectSprite = spriteReflect.sprite;
 
     reflectSprite.visible = charReflect.visible && this.visible;
@@ -353,8 +355,8 @@ Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Char
         this.createReflectionSprites();
     }
 
-    this.updateReflectionCommon(this._reflections.floor, this._character._reflectionProperties.floor);
-    this.updateReflectionCommon(this._reflections.wall, this._character._reflectionProperties.wall);
+    this.updateReflectionCommon('floor');
+    this.updateReflectionCommon('wall');
     this.updateReflectionFloor();
 };
 
