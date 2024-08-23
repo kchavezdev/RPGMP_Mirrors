@@ -320,6 +320,7 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
     reflection.sprite.rotation += Math.PI;
     reflection.sprite.scale.x *= -1;
 
+    // if the reflection matches, we can skip recalculating the frame
     if (this.isReflectionMatching(reflection)) {
         reflection.sprite.setFrame(this._frame.x, this._frame.y, this._frame.height, this._frame.width);
     }
