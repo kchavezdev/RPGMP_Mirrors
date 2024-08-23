@@ -72,7 +72,6 @@ export namespace Mirrors {
         isPerspectiveYsortEnabled: false,
         maxWallDistance: 20
     }
-
     /**
      * Provides speedy lookups for wall regions by pre-emptively computing
      * the closest wall region for every tile on the map.
@@ -190,7 +189,7 @@ declare module 'rmmz-types' {
         createReflectionSprites: () => void
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
-        updateReflectionFrame: (reflection: $.IReflectionSprite) => void
+        updateReflectionFrame: (reflection: $.IReflectionSprite, isFlipped?: boolean) => void
         updateReflectionWall: () => void
         updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void
         updateReflectionCommon: (reflectionKey: 'wall' | 'floor') => void
