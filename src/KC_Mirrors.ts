@@ -156,10 +156,16 @@ export namespace Mirrors {
             // intentionally stubbed
         }
     }
+    export var wallHelper: WallReflectionHelper
     export var Aliases = {
         Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
         Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers,
+        Game_Actor_prototype_initMembers: Game_Actor.prototype.initMembers,
         Sprite_Character_prototype_update: Sprite_Character.prototype.update
+    }
+    export var mapDefaults: {
+        wall: IReflectionProperties,
+        floor: IReflectionProperties
     }
 }
 
@@ -176,6 +182,13 @@ declare module 'rmmz-types' {
     interface Game_CharacterBase {
         _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
         initReflectionProperties: () => void
+    }
+
+    interface Game_Map {
+        _reflectionProperties: {
+            floor: $.IReflectionProperties
+            wall: $.IReflectionProperties & { mode: $.WallReflectMode }
+        }
     }
 
     interface Sprite_Character {
@@ -283,9 +296,11 @@ function setPropIfNonMatching<T>(obj1: T, obj2: T, propertyName: keyof T) {
 Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Character, key) {
     const spriteReflect = this._reflections[key];
     const charReflect = this._character._reflectionProperties[key];
+    const mapReflect = $gameMap._reflectionProperties[key];
+
     const reflectSprite = spriteReflect.sprite;
 
-    reflectSprite.visible = charReflect.visible && this.visible;
+    reflectSprite.visible = charReflect.visible && this.visible && mapReflect.visible;
 
     if (!reflectSprite.visible) return; // don't update sprite at all if it's not visible
 
