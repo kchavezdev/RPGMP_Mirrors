@@ -322,6 +322,7 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
     const reflection = this._reflections.floor;
     reflection.sprite.rotation += Math.PI;
     reflection.sprite.scale.x *= -1;
+    reflection.sprite.y += this._character.jumpHeight();
 
     // if the reflection matches, we can skip recalculating the frame
     if (this.isReflectionMatching(reflection)) {
@@ -335,7 +336,7 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
     // immediately return if this sprite doesn't have a parent
     // this is needed for compatibility with Galv_EventSpawner
-    // return if there are no reflection properties to avoid crashing on loading a game without reflections
+    // also a general safety check
     if (!this.parent || !this._character._reflectionProperties) return;
 
     if (!this._reflections) {
