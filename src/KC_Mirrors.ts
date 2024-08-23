@@ -26,8 +26,7 @@ export namespace Mirrors {
         visible: boolean
     }
     export interface IReflectionSprite extends ICharacterGraphic {
-        sprite: Sprite_Character_Reflection,
-        isBigCharacter: boolean
+        sprite: Sprite_Character_Reflection
     }
     export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
     export interface ICharacterDefault {
@@ -206,14 +205,12 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
         floor: {
             name: '',
             index: -1,
-            sprite: new $.Sprite_Character_Reflection(this._character),
-            isBigCharacter: false
+            sprite: new $.Sprite_Character_Reflection(this._character)
         },
         wall: {
             name: '',
             index: -1,
-            sprite: new $.Sprite_Character_Reflection(this._character),
-            isBigCharacter: false
+            sprite: new $.Sprite_Character_Reflection(this._character)
         }
     }
     for (const prop in this._reflections) {
