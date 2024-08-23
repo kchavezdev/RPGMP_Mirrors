@@ -1,4 +1,4 @@
-import { $gameMap, Bitmap, Game_CharacterBase, Game_Vehicle, ImageManager, Sprite, Sprite_Character } from "rmmz-types"
+import { $gameMap, Bitmap, Game_Actor, Game_CharacterBase, Game_Vehicle, ImageManager, JsonEx, Sprite, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
