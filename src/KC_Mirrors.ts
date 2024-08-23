@@ -322,7 +322,10 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
     const reflection = this._reflections.floor;
     reflection.sprite.rotation += Math.PI;
     reflection.sprite.scale.x *= -1;
-    reflection.sprite.y += this._character.jumpHeight();
+    // 1st jump height gets reflection to floor
+    // 2nd makes the reflection also "jump"
+    // that's why we multiply by a factor
+    reflection.sprite.y += this._character.jumpHeight() * 2;
 
     // if the reflection matches, we can skip recalculating the frame
     if (this.isReflectionMatching(reflection)) {
