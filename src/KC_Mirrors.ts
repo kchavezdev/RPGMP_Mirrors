@@ -235,19 +235,29 @@ Sprite_Character.prototype.isReflectionMatching = function (this: Sprite_Charact
     return this.isReflectionMatchingBitmap(reflection) && this.isReflectionMatchingIndex(reflection);
 };
 
-Sprite_Character.prototype.updateReflectionBitmap = function (spriteReflect, charReflect) {
-    if (spriteReflect.name !== charReflect.name || spriteReflect.index !== charReflect.index) {
+Sprite_Character.prototype.updateReflectionBitmap = function (this: Sprite_Character, spriteReflect, charReflect) {
+    if (spriteReflect.name !== charReflect.name) {
         spriteReflect.name = charReflect.name;
-        spriteReflect.index = charReflect.index;
-        spriteReflect.sprite._isBigCharacter = ImageManager.isBigCharacter(charReflect.name);
+        spriteReflect.sprite._characterName = charReflect.name || this._character.characterName();
+        spriteReflect.sprite._isBigCharacter = ImageManager.isBigCharacter(spriteReflect.sprite._characterName);
+        spriteReflect.sprite._characterName = spriteReflect.name || this._character.characterName();
 
         if (!this.isReflectionMatchingBitmap(spriteReflect)) {
             spriteReflect.sprite.bitmap = ImageManager.loadCharacter(spriteReflect.name);
         }
     }
 
+    if (spriteReflect.index !== charReflect.index) {
+        spriteReflect.index = charReflect.index;
+        spriteReflect.sprite._characterIndex = charReflect.index < 1 ? this._characterIndex : charReflect.index;
+    }
+
     if (this.isReflectionMatchingBitmap(spriteReflect) && spriteReflect.sprite.bitmap !== this.bitmap) {
         spriteReflect.sprite.bitmap = this.bitmap;
+    }
+
+    if (this._character !== spriteReflect.sprite._character) {
+        spriteReflect.sprite.setCharacter(this._character);
     }
 };
 
@@ -262,7 +272,7 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     const reflectSprite = spriteReflect.sprite;
 
     reflectSprite.visible = charReflect.visible;
-    
+
     if (!reflectSprite.visible) return; // don't update sprite at all if it's not visible
 
     this.updateReflectionBitmap(spriteReflect, charReflect);
@@ -283,8 +293,29 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
 
 Sprite_Character.prototype.updateReflectionFrame = function (this: Sprite_Character, reflection, flipDirection = false) {
     const character = this._character;
-    
-    
+    const sprite = reflection.sprite;
+
+    // store these values
+    const tempCharIndex = character._characterIndex;
+    const tempCharName = character._characterName;
+    const tempCharDir = character._direction;
+
+    // load in reflection parameters
+    character._characterName = sprite._characterName;
+    character._characterIndex = sprite._characterIndex;
+    if (flipDirection) character._direction = character.reverseDir(tempCharDir);
+
+    // set the frame
+    const pw = sprite.patternWidth();
+    const ph = sprite.patternHeight();
+    const sx = (sprite.characterBlockX() + sprite.characterPatternX()) * pw;
+    const sy = (sprite.characterBlockY() + sprite.characterPatternY()) * ph;
+    sprite.setFrame(sx, sy, pw, ph);
+
+    // restore character properties
+    sprite._character._characterIndex = tempCharIndex;
+    sprite._character._characterName = tempCharName;
+    sprite._character._direction = tempCharDir;
 };
 
 Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Character) {
