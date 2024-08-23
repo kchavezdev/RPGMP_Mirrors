@@ -41,9 +41,36 @@ export namespace Mirrors {
         zValue: -1,
         wallReflectType: WallReflectMode.PERSPECTIVE,
         wallReflectVar: 0,
-        actorDefault: { isWallEnabled: true, isFloorEnabled: true } as ICharacterDefault,
-        eventDefault: { isWallEnabled: false, isFloorEnabled: false } as ICharacterDefault,
-        isPerspectiveYsortEnabled: false
+        actorDefault: {
+            wall: {
+                opacity: -1,
+                offset: { x: 0, y: 0 },
+                rotation: 0,
+                visible: true
+            } as IReflectionProperties,
+            floor: {
+                opacity: -1,
+                offset: { x: 0, y: 0 },
+                rotation: 0,
+                visible: false
+            } as IReflectionProperties
+        },
+        eventDefault: { 
+            wall: {
+                opacity: -1,
+                offset: { x: 0, y: 0 },
+                rotation: 0,
+                visible: true
+            } as IReflectionProperties,
+            floor: {
+                opacity: -1,
+                offset: { x: 0, y: 0 },
+                rotation: 0,
+                visible: false
+            } as IReflectionProperties
+         },
+        isPerspectiveYsortEnabled: false,
+        maxWallDistance: 20
     }
 
     /**
@@ -179,22 +206,8 @@ Game_CharacterBase.prototype.update = function (this: Game_CharacterBase) {
 
 Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_CharacterBase) {
     this._reflectionProperties = {
-        wall: {
-            name: '',
-            index: -1,
-            opacity: -1,
-            offset: { x: 0, y: 0 },
-            rotation: 0,
-            visible: false,
-        },
-        floor: {
-            name: '',
-            index: -1,
-            opacity: -1,
-            offset: { x: 0, y: 0 },
-            rotation: 0,
-            visible: true,
-        }
+        wall: JsonEx.makeDeepCopy($.PluginParameters.eventDefault.wall),
+        floor: JsonEx.makeDeepCopy($.PluginParameters.eventDefault.floor)
     };
 };
 
