@@ -215,7 +215,7 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
     }
     for (const prop in this._reflections) {
         const sprite = this._reflections[prop].sprite as Sprite;
-        sprite.z = 1
+        sprite.z = $.PluginParameters.zValue;
         this.parent.addChild(sprite);
     }
 };
