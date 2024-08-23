@@ -320,6 +320,9 @@ Sprite_Character.prototype.updateReflectionFrame = function (this: Sprite_Charac
 
 Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Character) {
     const reflection = this._reflections.floor;
+
+    if (!reflection.sprite.visible) return;
+
     reflection.sprite.rotation += Math.PI;
     reflection.sprite.scale.x *= -1;
     // 1st jump height gets reflection to floor
@@ -334,6 +337,10 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
     else {
         this.updateReflectionFrame(reflection);
     }
+};
+
+Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Character) {
+
 };
 
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
