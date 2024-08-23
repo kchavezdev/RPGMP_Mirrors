@@ -342,7 +342,29 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
 };
 
 Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Character) {
+    const reflection = this._reflections.wall;
 
+    if (!reflection.sprite.visible) return;
+
+    const charX = this._character.x;
+    const charY = this._character.y;
+    const wallY = $.wallHelper.getWallY(charX, charY);
+
+    if (wallY < 0) {
+        reflection.sprite.visible = false;
+        return;
+    }
+
+    const distance = this.y - wallY;
+
+    if (distance > $.PluginParameters.maxWallDistance) {
+        reflection.sprite.visible = false;
+        return;
+    }
+
+    const tileHeight = $gameMap.tileHeight();
+
+    this.updateReflectionFrame(reflection, true);
 };
 
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
