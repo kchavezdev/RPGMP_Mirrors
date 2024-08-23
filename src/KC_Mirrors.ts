@@ -268,7 +268,7 @@ function setPropIfNonMatching<T>(obj1: T, obj2: T, propertyName: keyof T) {
 Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Character, spriteReflect, charReflect) {
     const reflectSprite = spriteReflect.sprite;
 
-    reflectSprite.visible = charReflect.visible;
+    reflectSprite.visible = charReflect.visible && this.visible;
 
     if (!reflectSprite.visible) return; // don't update sprite at all if it's not visible
 
