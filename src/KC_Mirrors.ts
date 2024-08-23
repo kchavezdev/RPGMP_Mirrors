@@ -172,6 +172,9 @@ declare module 'rmmz-types' {
 
 Game_CharacterBase.prototype.update = function (this: Game_CharacterBase) {
     $.Aliases.Game_CharacterBase_prototype_update.apply(this, arguments);
+    if (!this._reflectionProperties) {
+        this.initReflectionProperties();
+    }
 };
 
 Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_CharacterBase) {
@@ -332,7 +335,8 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
     // immediately return if this sprite doesn't have a parent
     // this is needed for compatibility with Galv_EventSpawner
-    if (!this.parent) return;
+    // return if there are no reflection properties to avoid crashing on loading a game without reflections
+    if (!this.parent || !this._character._reflectionProperties) return;
 
     if (!this._reflections) {
         this.createReflectionSprites();
