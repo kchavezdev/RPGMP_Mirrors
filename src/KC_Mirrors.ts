@@ -55,7 +55,7 @@ export namespace Mirrors {
                 visible: false
             } as IReflectionProperties
         },
-        eventDefault: { 
+        eventDefault: {
             wall: {
                 opacity: -1,
                 offset: { x: 0, y: 0 },
@@ -68,7 +68,7 @@ export namespace Mirrors {
                 rotation: 0,
                 visible: false
             } as IReflectionProperties
-         },
+        },
         isPerspectiveYsortEnabled: false,
         maxWallDistance: 20
     }
