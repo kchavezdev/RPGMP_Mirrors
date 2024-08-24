@@ -230,6 +230,24 @@ Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
     this.initReflectionProperties();
 };
 
+Game_Map.prototype.setupReflectionProperties = function (this: Game_Map) {
+    this._reflectionProperties = {
+        'floor': {
+            offset: { x: 0, y: 0 },
+            opacity: 0,
+            rotation: 0,
+            visible: true
+        },
+        'wall': {
+            offset: { x: 0, y: 0 },
+            opacity: 0,
+            rotation: 0,
+            visible: true,
+            mode: $.WallReflectMode.PERSPECTIVE
+        }
+    };
+};
+
 Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Character) {
     this._reflections = {
         floor: {
