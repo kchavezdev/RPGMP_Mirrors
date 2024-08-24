@@ -26,3 +26,29 @@ index de73580..979ec37 100644
  export * from "./scenes"
 +export * from "./sprites"
  export * from "./windows"
+diff --git a/node_modules/rmmz-types/lib/objects/Game_Actor.d.ts b/node_modules/rmmz-types/lib/objects/Game_Actor.d.ts
+index cc77d85..ce3735c 100644
+--- a/node_modules/rmmz-types/lib/objects/Game_Actor.d.ts
++++ b/node_modules/rmmz-types/lib/objects/Game_Actor.d.ts
+@@ -98,7 +98,7 @@ export declare class Game_Actor extends Game_Battler {
+   isWtypeEquipped(wtypeId: WeaponType): boolean
+   refresh(): void
+   hide(): void
+-  isActor(): boolean
++  isActor(): this is Game_Actor
+   friendsUnit(): import("./Game_Party").Game_Party
+   opponentsUnit(): import("./Game_Troop").Game_Troop
+   index(): number
+diff --git a/node_modules/rmmz-types/lib/objects/Game_Enemy.d.ts b/node_modules/rmmz-types/lib/objects/Game_Enemy.d.ts
+index a0bd9db..7827f03 100644
+--- a/node_modules/rmmz-types/lib/objects/Game_Enemy.d.ts
++++ b/node_modules/rmmz-types/lib/objects/Game_Enemy.d.ts
+@@ -15,7 +15,7 @@ export declare class Game_Enemy extends Game_Battler {
+   constructor(enemyId: EnemyID, x: number, y: number)
+   initMembers(): void
+   setup(enemyId: EnemyID, x: number, y: number): void
+-  isEnemy(): boolean
++  isEnemy(): this is Game_Enemy
+   friendsUnit(): import("./Game_Troop").Game_Troop
+   opponentsUnit(): import("./Game_Party").Game_Party
+   index(): number
