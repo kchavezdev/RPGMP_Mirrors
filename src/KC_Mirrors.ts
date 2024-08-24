@@ -438,7 +438,7 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
 
         const wallScale = (1 - (distance - 1) / $.PluginParameters.maxWallDistance).clamp(0, 1);
 
-        reflection.sprite.scale.x *= wallScale;
+        reflection.sprite.scale.x *= -wallScale;
         reflection.sprite.scale.y *= wallScale;
         reflection.sprite.y -= this._character.jumpHeight() * wallScale;
     }
