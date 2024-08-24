@@ -1,4 +1,4 @@
-import { $gameMap, Bitmap, Game_Actor, Game_CharacterBase, Game_Vehicle, ImageManager, JsonEx, Sprite, Sprite_Character } from "rmmz-types"
+import { $gameMap, Bitmap, Game_Actor, Game_CharacterBase, Game_Map, Game_Vehicle, ImageManager, JsonEx, Sprite, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -161,6 +161,8 @@ export namespace Mirrors {
         Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
         Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers,
         Game_Actor_prototype_initMembers: Game_Actor.prototype.initMembers,
+        Game_Map_prototype_update: Game_Map.prototype.update,
+        Game_Map_prototype_setup: Game_Map.prototype.setup,
         Sprite_Character_prototype_update: Sprite_Character.prototype.update
     }
     export var mapDefaults: {
