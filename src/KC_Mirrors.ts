@@ -52,7 +52,7 @@ export namespace Mirrors {
                 opacity: -1,
                 offset: { x: 0, y: 0 },
                 rotation: 0,
-                visible: false
+                visible: true
             } as IReflectionProperties
         },
         eventDefault: {
@@ -60,7 +60,7 @@ export namespace Mirrors {
                 opacity: -1,
                 offset: { x: 0, y: 0 },
                 rotation: 0,
-                visible: true
+                visible: false
             } as IReflectionProperties,
             floor: {
                 opacity: -1,
