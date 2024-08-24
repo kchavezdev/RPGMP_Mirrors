@@ -280,8 +280,10 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
         }
     }
     for (const prop in this._reflections) {
-        const sprite = this._reflections[prop].sprite as Sprite;
+        const sprite = this._reflections[prop].sprite as $.Sprite_Character_Reflection;
         sprite.z = $.PluginParameters.zValue;
+        sprite._characterIndex = this._character._characterIndex;
+        sprite._characterName = this._character._characterName;
         this.parent.addChild(sprite);
     }
 };
