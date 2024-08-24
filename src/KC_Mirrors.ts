@@ -253,6 +253,13 @@ Game_Map.prototype.setup = function (this: Game_Map, mapId) {
     this.setupReflectionProperties();
 };
 
+Game_Map.prototype.update = function (this: Game_Map, sceneActive) {
+    $.Aliases.Game_Map_prototype_update.call(this, arguments);
+    if (!this._reflectionProperties) {
+        this.setupReflectionProperties();
+    }
+};
+
 Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Character) {
     this._reflections = {
         floor: {
