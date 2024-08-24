@@ -422,7 +422,7 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
         return;
     }
 
-    const distance = this.y - wallY;
+    const distance = this._character._realY - wallY;
 
     if (distance > $.PluginParameters.maxWallDistance) {
         reflection.sprite.visible = false;
