@@ -248,6 +248,11 @@ Game_Map.prototype.setupReflectionProperties = function (this: Game_Map) {
     };
 };
 
+Game_Map.prototype.setup = function (this: Game_Map, mapId) {
+    $.Aliases.Game_Map_prototype_setup.call(this, arguments);
+    this.setupReflectionProperties();
+};
+
 Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Character) {
     this._reflections = {
         floor: {
