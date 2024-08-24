@@ -310,8 +310,8 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     opacity += mapReflect.opacity;
     if (opacity !== reflectSprite.opacity) reflectSprite.opacity = opacity;
     reflectSprite.rotation = this.rotation + charReflect.rotation + mapReflect.rotation;
-    reflectSprite.x = this.x + charReflect.offset.x;
-    reflectSprite.y = this.y + charReflect.offset.y;
+    reflectSprite.x = this.x + charReflect.offset.x + mapReflect.offset.x;
+    reflectSprite.y = this.y + charReflect.offset.y + mapReflect.offset.y;
     setPropIfNonMatching(reflectSprite, this, '_blendColor');
     setPropIfNonMatching(reflectSprite, this, 'blendMode');
     reflectSprite.scale.x = this.scale.x;
