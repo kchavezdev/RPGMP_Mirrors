@@ -57,17 +57,21 @@ export namespace Mirrors {
         },
         eventDefault: {
             wall: {
+                name: '',
+                index: -1,
                 opacity: -1,
                 offset: { x: 0, y: 0 },
                 rotation: 0,
                 visible: false
-            } as IReflectionProperties,
+            } as ICharacterReflectionProperties,
             floor: {
+                name: '',
+                index: -1,
                 opacity: -1,
                 offset: { x: 0, y: 0 },
                 rotation: 0,
                 visible: false
-            } as IReflectionProperties
+            } as ICharacterReflectionProperties
         },
         isPerspectiveYsortEnabled: false,
         maxWallDistance: 20
