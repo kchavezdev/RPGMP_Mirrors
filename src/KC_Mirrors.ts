@@ -175,7 +175,6 @@ import $ = Mirrors;
 
 declare module 'rmmz-types' {
 
-    // @ts-expect-error: Game_Actor incorrectly extends Game_Battler
     interface Game_Actor {
         _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
         initReflectionProperties: () => void
