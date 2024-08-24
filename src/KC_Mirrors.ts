@@ -191,6 +191,7 @@ declare module 'rmmz-types' {
             floor: $.IReflectionProperties
             wall: $.IReflectionProperties & { mode: $.WallReflectMode }
         }
+        setupReflectionProperties: () => void
     }
 
     interface Sprite_Character {
