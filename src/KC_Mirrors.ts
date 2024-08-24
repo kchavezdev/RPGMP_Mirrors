@@ -173,6 +173,8 @@ export namespace Mirrors {
 
 import $ = Mirrors;
 
+$.wallHelper = new $.WallReflectionHelper([1]);
+
 declare module 'rmmz-types' {
 
     interface Game_Actor {
@@ -425,6 +427,19 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
 
     const tileHeight = $gameMap.tileHeight();
 
+    if ($gameMap._reflectionProperties.wall.mode === $.WallReflectMode.PERSPECTIVE) {
+        reflection.sprite.y = this.y - tileHeight * distance - distance;
+
+        const wallScale = (1 - (distance - 1) / $.PluginParameters.maxWallDistance).clamp(0, 1);
+
+        reflection.sprite.scale.x *= wallScale;
+        reflection.sprite.scale.y *= wallScale;
+        reflection.sprite.y -= this._character.jumpHeight() * wallScale;
+    }
+    else {
+        reflection.sprite.y = this.y - tileHeight * distance * 2 + tileHeight - this._character.jumpHeight();
+    }
+
     this.updateReflectionFrame(reflection, true);
 };
 
@@ -441,6 +456,7 @@ Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Char
     this.updateReflectionCommon('floor');
     this.updateReflectionCommon('wall');
     this.updateReflectionFloor();
+    this.updateReflectionWall();
 };
 
 Sprite_Character.prototype.update = function (this: Sprite_Character) {
