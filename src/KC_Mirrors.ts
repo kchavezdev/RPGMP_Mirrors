@@ -401,6 +401,8 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
     // that's why we multiply by a factor
     reflection.sprite.y += this._character.jumpHeight() * 2;
 
+    // TODO: HANDLE TILEMAP CHARS
+
     // if the reflection matches, we can skip recalculating the frame
     if (this.isReflectionMatching(reflection)) {
         reflection.sprite.setFrame(this._frame.x, this._frame.y, this._frame.height, this._frame.width);
