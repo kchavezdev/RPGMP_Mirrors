@@ -450,7 +450,7 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
         reflection.sprite.y = this.y - tileHeight * distance * 2 + tileHeight - this._character.jumpHeight();
     }
 
-    if (this.isReflectionMatchingBitmap(reflection) && this._tileId) {
+    if (this.isReflectionTile(reflection)) {
         reflection.sprite.setFrame(this._frame.x, this._frame.y, this._frame.height, this._frame.width);
     }
     else {
