@@ -359,7 +359,7 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     reflectSprite.y = this.y + charReflect.offset.y + mapReflect.offset.y;
     reflectSprite._blendColor = this._blendColor;
     reflectSprite._blendMode = this._blendMode;
-    reflectSprite.scale.x = this.isReflectionTile(reflection) ? this.scale.x : -this.scale.x;
+    reflectSprite.scale.x = -this.scale.x;
     reflectSprite.scale.y = this.scale.y;
 
     // anchor is 0,0 if we set it every update
@@ -406,7 +406,7 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
     reflection.sprite.y += this._character.jumpHeight() * 2;
 
     // if the reflection matches, we can skip recalculating the frame
-    if (this.isReflectionMatching(reflection)) {
+    if (this.isReflectionMatching(reflection) || this.isReflectionTile(reflection)) {
         reflection.sprite.setFrame(this._frame.x, this._frame.y, this._frame.height, this._frame.width);
     }
     else {
@@ -442,7 +442,7 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
 
         const wallScale = (1 - (distance - 1) / $.PluginParameters.maxWallDistance).clamp(0, 1);
 
-        reflection.sprite.scale.x *= -wallScale;
+        reflection.sprite.scale.x *= wallScale;
         reflection.sprite.scale.y *= wallScale;
         reflection.sprite.y -= this._character.jumpHeight() * wallScale;
     }
@@ -451,6 +451,7 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
     }
 
     if (this.isReflectionTile(reflection)) {
+        reflection.sprite.scale.x *= -1;
         reflection.sprite.setFrame(this._frame.x, this._frame.y, this._frame.height, this._frame.width);
     }
     else {
