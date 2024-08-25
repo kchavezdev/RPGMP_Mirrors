@@ -207,6 +207,7 @@ declare module 'rmmz-types' {
         isReflectionMatchingBitmap: (reflection: $.IReflectionSprite) => boolean
         isReflectionMatchingIndex: (reflection: $.IReflectionSprite) => boolean
         isReflectionMatching: (reflection: $.IReflectionSprite) => boolean
+        isReflectionTile: (reflection: $.IReflectionSprite) => boolean
         createReflectionSprites: () => void
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
@@ -300,6 +301,10 @@ Sprite_Character.prototype.isReflectionMatching = function (this: Sprite_Charact
     return this.isReflectionMatchingBitmap(reflection) && this.isReflectionMatchingIndex(reflection);
 };
 
+Sprite_Character.prototype.isReflectionTile = function (this: Sprite_Character, reflection) {
+    return !!this._tileId && this.isReflectionMatchingBitmap(reflection);
+};
+
 Sprite_Character.prototype.updateReflectionBitmap = function (this: Sprite_Character, spriteReflect, charReflect) {
     if (spriteReflect.name !== charReflect.name) {
         spriteReflect.name = charReflect.name;
@@ -314,7 +319,7 @@ Sprite_Character.prototype.updateReflectionBitmap = function (this: Sprite_Chara
 
     if (spriteReflect.index !== charReflect.index) {
         spriteReflect.index = charReflect.index;
-        spriteReflect.sprite._characterIndex = charReflect.index < 1 ? this._characterIndex : charReflect.index;
+        spriteReflect.sprite._characterIndex = charReflect.index < 0 ? this._characterIndex : charReflect.index;
     }
 
     if (this.isReflectionMatchingBitmap(spriteReflect) && spriteReflect.sprite.bitmap !== this.bitmap) {
@@ -334,17 +339,17 @@ function setPropIfNonMatching<T>(obj1: T, obj2: T, propertyName: keyof T) {
 };
 
 Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Character, key) {
-    const spriteReflect = this._reflections[key];
+    const reflection = this._reflections[key];
     const charReflect = this._character._reflectionProperties[key];
     const mapReflect = $gameMap._reflectionProperties[key];
 
-    const reflectSprite = spriteReflect.sprite;
+    const reflectSprite = reflection.sprite;
 
     reflectSprite.visible = charReflect.visible && this.visible && mapReflect.visible;
 
     if (!reflectSprite.visible) return; // don't update sprite at all if it's not visible
 
-    this.updateReflectionBitmap(spriteReflect, charReflect);
+    this.updateReflectionBitmap(reflection, charReflect);
 
     let opacity = charReflect.opacity < 0 ? this._character.opacity() : charReflect.opacity;
     opacity += mapReflect.opacity;
@@ -354,7 +359,7 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     reflectSprite.y = this.y + charReflect.offset.y + mapReflect.offset.y;
     reflectSprite._blendColor = this._blendColor;
     reflectSprite._blendMode = this._blendMode;
-    reflectSprite.scale.x = this.scale.x;
+    reflectSprite.scale.x = this.isReflectionTile(reflection) ? this.scale.x : -this.scale.x;
     reflectSprite.scale.y = this.scale.y;
 
     // anchor is 0,0 if we set it every update
@@ -395,13 +400,10 @@ Sprite_Character.prototype.updateReflectionFloor = function (this: Sprite_Charac
     if (!reflection.sprite.visible) return;
 
     reflection.sprite.rotation += Math.PI;
-    reflection.sprite.scale.x *= -1;
     // 1st jump height gets reflection to floor
     // 2nd makes the reflection also "jump"
     // that's why we multiply by a factor
     reflection.sprite.y += this._character.jumpHeight() * 2;
-
-    // TODO: HANDLE TILEMAP CHARS
 
     // if the reflection matches, we can skip recalculating the frame
     if (this.isReflectionMatching(reflection)) {
