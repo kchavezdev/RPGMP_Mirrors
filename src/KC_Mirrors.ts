@@ -314,9 +314,13 @@ Game_Map.prototype.initReflectionProperties = function (this: Game_Map) {
     };
 };
 
+Game_Map.prototype.initialize = function (this: Game_Map) {
+    $.Aliases.Game_Map_prototype_initialize.apply(this, arguments);
+    this.initReflectionProperties();
+}
+
 Game_Map.prototype.setup = function (this: Game_Map, mapId) {
     $.Aliases.Game_Map_prototype_setup.call(this, arguments);
-    this.initReflectionProperties();
 };
 
 Game_Map.prototype.update = function (this: Game_Map, sceneActive) {
