@@ -176,6 +176,10 @@ export var mapDefaults: {
     wall: IReflectionProperties,
     floor: IReflectionProperties
 };
+export var noReflectRegions = {
+    wall: new Set<number>(),
+    floor: new Set<number>()
+};
 
 wallHelper = new WallReflectionHelper([1]);
 
@@ -404,10 +408,11 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     const reflection = this._reflections[key];
     const charReflect = this._character._reflectionProperties[key];
     const mapReflect = $gameMap._reflectionProperties[key];
+    const noReflect = noReflectRegions[key];
 
     const reflectSprite = reflection.sprite;
 
-    reflectSprite.visible = charReflect.visible && this.visible && mapReflect.visible;
+    reflectSprite.visible = charReflect.visible && this.visible && mapReflect.visible && !noReflect.has(this._character.regionId());
 
     if (!reflectSprite.visible) return; // don't update sprite at all if it's not visible
 
