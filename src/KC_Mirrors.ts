@@ -26,7 +26,7 @@ export interface IReflectionProperties {
     visible: boolean
 }
 export interface IReflectionSprite extends ICharacterGraphic {
-    sprite: Sprite_Character_Reflection
+    sprite: Sprite_CharacterReflection
 }
 export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
 export enum WallReflectMode {
@@ -344,7 +344,7 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
         }
     }
     for (const prop in this._reflections) {
-        const sprite = this._reflections[prop].sprite as Sprite_Character_Reflection;
+        const sprite = this._reflections[prop].sprite as Sprite_CharacterReflection;
         sprite.z = PluginParameters.zValue;
         sprite._characterIndex = this._character._characterIndex;
         sprite._characterName = this._character._characterName;
