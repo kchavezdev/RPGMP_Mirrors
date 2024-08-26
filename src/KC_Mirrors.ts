@@ -423,6 +423,7 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     reflectSprite._blendMode = this._blendMode;
     reflectSprite.scale.x = -this.scale.x;
     reflectSprite.scale.y = this.scale.y;
+    reflectSprite.filters = this.filters;
 
     // anchor is 0,0 if we set it every update
     setPropIfNonMatching(reflectSprite.anchor, this.anchor, 'x');
