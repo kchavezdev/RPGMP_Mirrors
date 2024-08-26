@@ -155,7 +155,7 @@ export class WallReflectionHelper {
 
 
 }
-export class Sprite_Character_Reflection extends Sprite_Character {
+export class Sprite_CharacterReflection extends Sprite_Character {
     public update(): void {
         // intentionally stubbed
     }
@@ -335,12 +335,12 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
         floor: {
             name: '',
             index: -1,
-            sprite: new Sprite_Character_Reflection(this._character)
+            sprite: new Sprite_CharacterReflection(this._character)
         },
         wall: {
             name: '',
             index: -1,
-            sprite: new Sprite_Character_Reflection(this._character)
+            sprite: new Sprite_CharacterReflection(this._character)
         }
     }
     for (const prop in this._reflections) {
