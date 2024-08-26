@@ -74,7 +74,11 @@ export var PluginParameters = {
         } as ICharacterReflectionProperties
     },
     isPerspectiveYsortEnabled: false,
-    maxWallDistance: 20
+    maxWallDistance: 20,
+    noReflectRegions: {
+        wall: new Set<number>(),
+        floor: new Set<number>()
+    }
 };
 /**
  * Provides speedy lookups for wall regions by pre-emptively computing
@@ -408,7 +412,7 @@ Sprite_Character.prototype.updateReflectionCommon = function (this: Sprite_Chara
     const reflection = this._reflections[key];
     const charReflect = this._character._reflectionProperties[key];
     const mapReflect = $gameMap._reflectionProperties[key];
-    const noReflect = noReflectRegions[key];
+    const noReflect = PluginParameters.noReflectRegions[key];
 
     const reflectSprite = reflection.sprite;
 
