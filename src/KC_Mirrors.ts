@@ -1,4 +1,4 @@
-import { $gameMap, Bitmap, Game_Actor, Game_CharacterBase, Game_Map, Game_Vehicle, ImageManager, JsonEx, Sprite, Sprite_Character } from "rmmz-types"
+import { $gameMap, $gameParty, $gamePlayer, Bitmap, Game_Actor, Game_CharacterBase, Game_Follower, Game_Map, Game_Player, Game_Vehicle, ImageManager, JsonEx, Sprite, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -164,6 +164,8 @@ export namespace Mirrors {
     export var Aliases = {
         Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
         Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers,
+        Game_Player_prototype_refresh: Game_Player.prototype.refresh,
+        Game_Follower_prototype_refresh: Game_Follower.prototype.refresh,
         Game_Actor_prototype_initMembers: Game_Actor.prototype.initMembers,
         Game_Map_prototype_update: Game_Map.prototype.update,
         Game_Map_prototype_setup: Game_Map.prototype.setup,
@@ -189,6 +191,14 @@ declare module 'rmmz-types' {
     interface Game_CharacterBase {
         _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
         initReflectionProperties: () => void
+    }
+
+    interface Game_Player {
+        refreshReflection: () => void
+    }
+
+    interface Game_Follower {
+        refreshReflection: () => void
     }
 
     interface Game_Map {
@@ -235,6 +245,42 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
 Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
     $.Aliases.Game_CharacterBase_prototype_initMembers.apply(this, arguments);
     this.initReflectionProperties();
+};
+
+Game_Player.prototype.refreshReflection = function (this: Game_Player) {
+    const actor = $gameParty.leader();
+    if (actor && actor._reflectionProperties) {
+        Object.assign(this._reflectionProperties.floor, actor._reflectionProperties.floor);
+        Object.assign(this._reflectionProperties.wall, actor._reflectionProperties.wall);
+    }
+};
+
+Game_Player.prototype.refresh = function (this: Game_Player) {
+    $.Aliases.Game_Player_prototype_refresh.apply(this, arguments);
+    this.refreshReflection();
+};
+
+Game_Follower.prototype.refreshReflection = function (this: Game_Follower) {
+    if (this.isVisible()) {
+        const actor = this.actor();
+        if (actor && actor._reflectionProperties) {
+            Object.assign(this._reflectionProperties.floor, actor._reflectionProperties.floor);
+            Object.assign(this._reflectionProperties.wall, actor._reflectionProperties.wall);
+        }
+    }
+    else {
+        this._reflectionProperties.floor.name = '';
+        this._reflectionProperties.floor.index = -1;
+        this._reflectionProperties.floor.visible = false;
+        this._reflectionProperties.wall.name = '';
+        this._reflectionProperties.wall.index = -1;
+        this._reflectionProperties.wall.visible = false;
+    }
+};
+
+Game_Follower.prototype.refresh = function (this: Game_Follower) {
+    $.Aliases.Game_Follower_prototype_refresh.apply(this, arguments);
+    this.refreshReflection();
 };
 
 Game_Actor.prototype.initReflectionProperties = function (this: Game_Actor) {
