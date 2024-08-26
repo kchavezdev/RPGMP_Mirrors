@@ -29,10 +29,6 @@ export namespace Mirrors {
         sprite: Sprite_Character_Reflection
     }
     export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
-    export interface ICharacterDefault {
-        isWallEnabled: boolean
-        isFloorEnabled: boolean
-    }
     export enum WallReflectMode {
         PERSPECTIVE = 1,
         EVENT = 2
