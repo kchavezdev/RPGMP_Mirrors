@@ -371,9 +371,8 @@ Sprite_Character.prototype.isReflectionTile = function (this: Sprite_Character, 
 Sprite_Character.prototype.updateReflectionBitmap = function (this: Sprite_Character, spriteReflect, charReflect) {
     if (spriteReflect.name !== charReflect.name) {
         spriteReflect.name = charReflect.name;
-        spriteReflect.sprite._characterName = charReflect.name || this._character.characterName();
-        spriteReflect.sprite._isBigCharacter = ImageManager.isBigCharacter(spriteReflect.sprite._characterName);
         spriteReflect.sprite._characterName = spriteReflect.name || this._character.characterName();
+        spriteReflect.sprite._isBigCharacter = ImageManager.isBigCharacter(spriteReflect.sprite._characterName);
 
         if (!this.isReflectionMatchingBitmap(spriteReflect)) {
             spriteReflect.sprite.bitmap = ImageManager.loadCharacter(spriteReflect.name);
