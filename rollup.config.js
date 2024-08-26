@@ -9,7 +9,7 @@ export default {
   external: ['rmmz-types'],
   input: 'src/KC_Mirrors.ts',
   output: {
-    name: 'KCDev',
+    name: 'KCDev.Mirrors',
     format: 'iife',
     sourcemap: true,
     interop: 'esModule',

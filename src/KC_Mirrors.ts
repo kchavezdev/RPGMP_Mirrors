@@ -8,189 +8,186 @@ declare global {
 window.Imported = window.Imported || {};
 window.Imported.KC_Mirrors = true;
 
-export namespace Mirrors {
-    export interface ICharacterGraphic {
-        /** File name of the character graphic. */
-        name: string
-        /** Index of the character graphic. Starts at 0. */
-        index: number
+
+export interface ICharacterGraphic {
+    /** File name of the character graphic. */
+    name: string
+    /** Index of the character graphic. Starts at 0. */
+    index: number
+}
+export interface IReflectionProperties {
+    /** Opacity of the graphic, ranges from 0-255 */
+    opacity: number
+    /** Offset in pixels of this reflection. */
+    offset: { x: number, y: number }
+    /** Rotation offset of this reflection in radians. */
+    rotation: number,
+    /** Whether this reflection is visible. */
+    visible: boolean
+}
+export interface IReflectionSprite extends ICharacterGraphic {
+    sprite: Sprite_Character_Reflection
+}
+export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
+export enum WallReflectMode {
+    PERSPECTIVE = 1,
+    EVENT = 2
+}
+export var PluginParameters = {
+    zValue: -1,
+    wallReflectType: WallReflectMode.PERSPECTIVE,
+    wallReflectVar: 0,
+    actorDefault: {
+        wall: {
+            name: '',
+            index: -1,
+            opacity: -1,
+            offset: { x: 0, y: 0 },
+            rotation: 0,
+            visible: true
+        } as ICharacterReflectionProperties,
+        floor: {
+            name: '',
+            index: -1,
+            opacity: -1,
+            offset: { x: 0, y: 0 },
+            rotation: 0,
+            visible: true
+        } as ICharacterReflectionProperties
+    },
+    eventDefault: {
+        wall: {
+            name: '',
+            index: -1,
+            opacity: -1,
+            offset: { x: 0, y: 0 },
+            rotation: 0,
+            visible: false
+        } as ICharacterReflectionProperties,
+        floor: {
+            name: '',
+            index: -1,
+            opacity: -1,
+            offset: { x: 0, y: 0 },
+            rotation: 0,
+            visible: false
+        } as ICharacterReflectionProperties
+    },
+    isPerspectiveYsortEnabled: false,
+    maxWallDistance: 20
+}
+/**
+ * Provides speedy lookups for wall regions by pre-emptively computing
+ * the closest wall region for every tile on the map.
+ */
+export class WallReflectionHelper {
+
+    private _xCoordsToWallYCoords: Map<number, number[]>
+
+    /** Regions that wall reflections will appear on. */
+    private _regions: Set<number>
+
+    /** ID of the map the current cache was built for. */
+    private _mapId: number
+
+    public constructor(wallReflectRegions: number[]) {
+        this.initialize(wallReflectRegions);
     }
-    export interface IReflectionProperties {
-        /** Opacity of the graphic, ranges from 0-255 */
-        opacity: number
-        /** Offset in pixels of this reflection. */
-        offset: { x: number, y: number }
-        /** Rotation offset of this reflection in radians. */
-        rotation: number,
-        /** Whether this reflection is visible. */
-        visible: boolean
+
+    public initialize(wallReflectRegions: number[]) {
+        this._xCoordsToWallYCoords = new Map();
+        this._regions = new Set(wallReflectRegions);
+        this._mapId = -1;
     }
-    export interface IReflectionSprite extends ICharacterGraphic {
-        sprite: Sprite_Character_Reflection
-    }
-    export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
-    export enum WallReflectMode {
-        PERSPECTIVE = 1,
-        EVENT = 2
-    }
-    export var PluginParameters = {
-        zValue: -1,
-        wallReflectType: WallReflectMode.PERSPECTIVE,
-        wallReflectVar: 0,
-        actorDefault: {
-            wall: {
-                name: '',
-                index: -1,
-                opacity: -1,
-                offset: { x: 0, y: 0 },
-                rotation: 0,
-                visible: true
-            } as ICharacterReflectionProperties,
-            floor: {
-                name: '',
-                index: -1,
-                opacity: -1,
-                offset: { x: 0, y: 0 },
-                rotation: 0,
-                visible: true
-            } as ICharacterReflectionProperties
-        },
-        eventDefault: {
-            wall: {
-                name: '',
-                index: -1,
-                opacity: -1,
-                offset: { x: 0, y: 0 },
-                rotation: 0,
-                visible: false
-            } as ICharacterReflectionProperties,
-            floor: {
-                name: '',
-                index: -1,
-                opacity: -1,
-                offset: { x: 0, y: 0 },
-                rotation: 0,
-                visible: false
-            } as ICharacterReflectionProperties
-        },
-        isPerspectiveYsortEnabled: false,
-        maxWallDistance: 20
-    }
-    /**
-     * Provides speedy lookups for wall regions by pre-emptively computing
-     * the closest wall region for every tile on the map.
-     */
-    export class WallReflectionHelper {
 
-        private _xCoordsToWallYCoords: Map<number, number[]>
+    public rebuildCache() {
+        this._xCoordsToWallYCoords.clear();
 
-        /** Regions that wall reflections will appear on. */
-        private _regions: Set<number>
+        this._mapId = $gameMap.mapId();
 
-        /** ID of the map the current cache was built for. */
-        private _mapId: number
+        /**
+         * Building the map this was ensures that each row is
+         * sorted starting from the southernmost tiles to the
+         * northernmost tiles. This lets us skip searching
+         * the whole array during lookups.
+         */
+        for (let i = $gameMap.width() - 1; i >= 0; i--) {
+            for (let j = $gameMap.height() - 1; j >= 0; j--) {
+                const regionId = $gameMap.regionId(i, j);
 
-        public constructor(wallReflectRegions: number[]) {
-            this.initialize(wallReflectRegions);
-        }
+                if (this._regions.has(regionId)) {
+                    const yArr = this._xCoordsToWallYCoords.get(i) || [];
 
-        public initialize(wallReflectRegions: number[]) {
-            this._xCoordsToWallYCoords = new Map();
-            this._regions = new Set(wallReflectRegions);
-            this._mapId = -1;
-        }
+                    yArr.push(j);
 
-        public rebuildCache() {
-            this._xCoordsToWallYCoords.clear();
-
-            this._mapId = $gameMap.mapId();
-
-            /**
-             * Building the map this was ensures that each row is
-             * sorted starting from the southernmost tiles to the
-             * northernmost tiles. This lets us skip searching
-             * the whole array during lookups.
-             */
-            for (let i = $gameMap.width() - 1; i >= 0; i--) {
-                for (let j = $gameMap.height() - 1; j >= 0; j--) {
-                    const regionId = $gameMap.regionId(i, j);
-
-                    if (this._regions.has(regionId)) {
-                        const yArr = this._xCoordsToWallYCoords.get(i) || [];
-
-                        yArr.push(j);
-
-                        this._xCoordsToWallYCoords.set(i, yArr);
-                    }
+                    this._xCoordsToWallYCoords.set(i, yArr);
                 }
             }
         }
+    }
 
-        /**
-         * Returns the y coordinate of the closest wall reflection tile
-         * to the north of the passed in x and y coordinates.
-         * 
-         * Returns -1 if there is no wall reflection for this x and y.
+    /**
+     * Returns the y coordinate of the closest wall reflection tile
+     * to the north of the passed in x and y coordinates.
+     * 
+     * Returns -1 if there is no wall reflection for this x and y.
+     */
+    public getWallY(x: number, y: number) {
+        if ($gameMap.mapId() !== this._mapId) {
+            this.rebuildCache();
+        }
+
+        x = Math.floor(x);
+        y = Math.floor(y);
+
+        const column = this._xCoordsToWallYCoords.get(x);
+
+        /* last element is always the northernmost, so if y is above
+         * even that, then none of the candidates are valid
          */
-        public getWallY(x: number, y: number) {
-            if ($gameMap.mapId() !== this._mapId) {
-                this.rebuildCache();
-            }
-
-            x = Math.floor(x);
-            y = Math.floor(y);
-
-            const column = this._xCoordsToWallYCoords.get(x);
-
-            /* last element is always the northernmost, so if y is above
-             * even that, then none of the candidates are valid
-             */
-            if (column && y >= column[column.length - 1]) {
-                const wallY = column.find(wallYCandidate => wallYCandidate <= y);
-                if (wallY !== undefined) return wallY;
-            }
-
-            return -1;
+        if (column && y >= column[column.length - 1]) {
+            const wallY = column.find(wallYCandidate => wallYCandidate <= y);
+            if (wallY !== undefined) return wallY;
         }
 
+        return -1;
+    }
 
-    }
-    export class Sprite_Character_Reflection extends Sprite_Character {
-        public update(): void {
-            // intentionally stubbed
-        }
-    }
-    export var wallHelper: WallReflectionHelper
-    export var Aliases = {
-        Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
-        Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers,
-        Game_Player_prototype_refresh: Game_Player.prototype.refresh,
-        Game_Follower_prototype_refresh: Game_Follower.prototype.refresh,
-        Game_Actor_prototype_initMembers: Game_Actor.prototype.initMembers,
-        Game_Map_prototype_update: Game_Map.prototype.update,
-        Game_Map_prototype_setup: Game_Map.prototype.setup,
-        Game_Map_prototype_initialize: Game_Map.prototype.initialize,
-        Sprite_Character_prototype_update: Sprite_Character.prototype.update
-    }
-    export var mapDefaults: {
-        wall: IReflectionProperties,
-        floor: IReflectionProperties
+
+}
+export class Sprite_Character_Reflection extends Sprite_Character {
+    public update(): void {
+        // intentionally stubbed
     }
 }
+export var wallHelper: WallReflectionHelper
+export var Aliases = {
+    Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
+    Game_CharacterBase_prototype_initMembers: Game_CharacterBase.prototype.initMembers,
+    Game_Player_prototype_refresh: Game_Player.prototype.refresh,
+    Game_Follower_prototype_refresh: Game_Follower.prototype.refresh,
+    Game_Actor_prototype_initMembers: Game_Actor.prototype.initMembers,
+    Game_Map_prototype_update: Game_Map.prototype.update,
+    Game_Map_prototype_setup: Game_Map.prototype.setup,
+    Game_Map_prototype_initialize: Game_Map.prototype.initialize,
+    Sprite_Character_prototype_update: Sprite_Character.prototype.update
+}
+export var mapDefaults: {
+    wall: IReflectionProperties,
+    floor: IReflectionProperties
+}
 
-import $ = Mirrors;
-
-$.wallHelper = new $.WallReflectionHelper([1]);
+wallHelper = new WallReflectionHelper([1]);
 
 declare module 'rmmz-types' {
 
     interface Game_Actor {
-        _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
+        _reflectionProperties: { wall: ICharacterReflectionProperties, floor: ICharacterReflectionProperties }
         initReflectionProperties: () => void
     }
 
     interface Game_CharacterBase {
-        _reflectionProperties: { wall: $.ICharacterReflectionProperties, floor: $.ICharacterReflectionProperties }
+        _reflectionProperties: { wall: ICharacterReflectionProperties, floor: ICharacterReflectionProperties }
         initReflectionProperties: () => void
     }
 
@@ -204,33 +201,33 @@ declare module 'rmmz-types' {
 
     interface Game_Map {
         _reflectionProperties: {
-            floor: $.IReflectionProperties
-            wall: $.IReflectionProperties & { mode: $.WallReflectMode }
+            floor: IReflectionProperties
+            wall: IReflectionProperties & { mode: WallReflectMode }
         }
         initReflectionProperties: () => void
     }
 
     interface Sprite_Character {
         _reflections: {
-            floor: $.IReflectionSprite,
-            wall: $.IReflectionSprite
+            floor: IReflectionSprite,
+            wall: IReflectionSprite
         }
-        isReflectionMatchingBitmap: (reflection: $.IReflectionSprite) => boolean
-        isReflectionMatchingIndex: (reflection: $.IReflectionSprite) => boolean
-        isReflectionMatching: (reflection: $.IReflectionSprite) => boolean
-        isReflectionTile: (reflection: $.IReflectionSprite) => boolean
+        isReflectionMatchingBitmap: (reflection: IReflectionSprite) => boolean
+        isReflectionMatchingIndex: (reflection: IReflectionSprite) => boolean
+        isReflectionMatching: (reflection: IReflectionSprite) => boolean
+        isReflectionTile: (reflection: IReflectionSprite) => boolean
         createReflectionSprites: () => void
         updateReflectionSprites: () => void
         updateReflectionFloor: () => void
-        updateReflectionFrame: (reflection: $.IReflectionSprite, isFlipped?: boolean) => void
+        updateReflectionFrame: (reflection: IReflectionSprite, isFlipped?: boolean) => void
         updateReflectionWall: () => void
-        updateReflectionBitmap: (spriteReflect: $.IReflectionSprite, charReflect: $.ICharacterGraphic) => void
+        updateReflectionBitmap: (spriteReflect: IReflectionSprite, charReflect: ICharacterGraphic) => void
         updateReflectionCommon: (reflectionKey: 'wall' | 'floor') => void
     }
 }
 
 Game_CharacterBase.prototype.update = function (this: Game_CharacterBase) {
-    $.Aliases.Game_CharacterBase_prototype_update.apply(this, arguments);
+    Aliases.Game_CharacterBase_prototype_update.apply(this, arguments);
     if (!this._reflectionProperties) {
         this.initReflectionProperties();
     }
@@ -238,13 +235,13 @@ Game_CharacterBase.prototype.update = function (this: Game_CharacterBase) {
 
 Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_CharacterBase) {
     this._reflectionProperties = {
-        wall: JsonEx.makeDeepCopy($.PluginParameters.eventDefault.wall),
-        floor: JsonEx.makeDeepCopy($.PluginParameters.eventDefault.floor)
+        wall: JsonEx.makeDeepCopy(PluginParameters.eventDefault.wall),
+        floor: JsonEx.makeDeepCopy(PluginParameters.eventDefault.floor)
     };
 };
 
 Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
-    $.Aliases.Game_CharacterBase_prototype_initMembers.apply(this, arguments);
+    Aliases.Game_CharacterBase_prototype_initMembers.apply(this, arguments);
     this.initReflectionProperties();
 };
 
@@ -257,7 +254,7 @@ Game_Player.prototype.refreshReflection = function (this: Game_Player) {
 };
 
 Game_Player.prototype.refresh = function (this: Game_Player) {
-    $.Aliases.Game_Player_prototype_refresh.apply(this, arguments);
+    Aliases.Game_Player_prototype_refresh.apply(this, arguments);
     this.refreshReflection();
 };
 
@@ -280,19 +277,19 @@ Game_Follower.prototype.refreshReflection = function (this: Game_Follower) {
 };
 
 Game_Follower.prototype.refresh = function (this: Game_Follower) {
-    $.Aliases.Game_Follower_prototype_refresh.apply(this, arguments);
+    Aliases.Game_Follower_prototype_refresh.apply(this, arguments);
     this.refreshReflection();
 };
 
 Game_Actor.prototype.initReflectionProperties = function (this: Game_Actor) {
     this._reflectionProperties = {
-        wall: JsonEx.makeDeepCopy($.PluginParameters.actorDefault.wall),
-        floor: JsonEx.makeDeepCopy($.PluginParameters.actorDefault.floor)
+        wall: JsonEx.makeDeepCopy(PluginParameters.actorDefault.wall),
+        floor: JsonEx.makeDeepCopy(PluginParameters.actorDefault.floor)
     };
 };
 
 Game_Actor.prototype.initMembers = function (this: Game_Actor) {
-    $.Aliases.Game_Actor_prototype_initMembers.apply(this, arguments);
+    Aliases.Game_Actor_prototype_initMembers.apply(this, arguments);
     this.initReflectionProperties();
 };
 
@@ -309,22 +306,22 @@ Game_Map.prototype.initReflectionProperties = function (this: Game_Map) {
             opacity: 0,
             rotation: 0,
             visible: true,
-            mode: $.WallReflectMode.PERSPECTIVE
+            mode: WallReflectMode.PERSPECTIVE
         }
     };
 };
 
 Game_Map.prototype.initialize = function (this: Game_Map) {
-    $.Aliases.Game_Map_prototype_initialize.apply(this, arguments);
+    Aliases.Game_Map_prototype_initialize.apply(this, arguments);
     this.initReflectionProperties();
 }
 
 Game_Map.prototype.setup = function (this: Game_Map, mapId) {
-    $.Aliases.Game_Map_prototype_setup.call(this, arguments);
+    Aliases.Game_Map_prototype_setup.call(this, arguments);
 };
 
 Game_Map.prototype.update = function (this: Game_Map, sceneActive) {
-    $.Aliases.Game_Map_prototype_update.call(this, arguments);
+    Aliases.Game_Map_prototype_update.call(this, arguments);
     if (!this._reflectionProperties) {
         this.initReflectionProperties();
     }
@@ -338,17 +335,17 @@ Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Char
         floor: {
             name: '',
             index: -1,
-            sprite: new $.Sprite_Character_Reflection(this._character)
+            sprite: new Sprite_Character_Reflection(this._character)
         },
         wall: {
             name: '',
             index: -1,
-            sprite: new $.Sprite_Character_Reflection(this._character)
+            sprite: new Sprite_Character_Reflection(this._character)
         }
     }
     for (const prop in this._reflections) {
-        const sprite = this._reflections[prop].sprite as $.Sprite_Character_Reflection;
-        sprite.z = $.PluginParameters.zValue;
+        const sprite = this._reflections[prop].sprite as Sprite_Character_Reflection;
+        sprite.z = PluginParameters.zValue;
         sprite._characterIndex = this._character._characterIndex;
         sprite._characterName = this._character._characterName;
         this.parent.addChild(sprite);
@@ -487,7 +484,7 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
 
     const charX = this._character.x;
     const charY = this._character.y;
-    const wallY = $.wallHelper.getWallY(charX, charY);
+    const wallY = wallHelper.getWallY(charX, charY);
 
     if (wallY < 0) {
         reflection.sprite.visible = false;
@@ -496,17 +493,17 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
 
     const distance = this._character._realY - wallY;
 
-    if (distance > $.PluginParameters.maxWallDistance) {
+    if (distance > PluginParameters.maxWallDistance) {
         reflection.sprite.visible = false;
         return;
     }
 
     const tileHeight = $gameMap.tileHeight();
 
-    if ($gameMap._reflectionProperties.wall.mode === $.WallReflectMode.PERSPECTIVE) {
+    if ($gameMap._reflectionProperties.wall.mode === WallReflectMode.PERSPECTIVE) {
         reflection.sprite.y = this.y - tileHeight * distance - distance;
 
-        const wallScale = (1 - (distance - 1) / $.PluginParameters.maxWallDistance).clamp(0, 1);
+        const wallScale = (1 - (distance - 1) / PluginParameters.maxWallDistance).clamp(0, 1);
 
         reflection.sprite.scale.x *= wallScale;
         reflection.sprite.scale.y *= wallScale;
@@ -539,6 +536,6 @@ Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Char
 };
 
 Sprite_Character.prototype.update = function (this: Sprite_Character) {
-    $.Aliases.Sprite_Character_prototype_update.apply(this, arguments);
+    Aliases.Sprite_Character_prototype_update.apply(this, arguments);
     this.updateReflectionSprites();
 };
