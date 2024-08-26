@@ -14,7 +14,7 @@ export interface ICharacterGraphic {
     name: string
     /** Index of the character graphic. Starts at 0. */
     index: number
-}
+};
 export interface IReflectionProperties {
     /** Opacity of the graphic, ranges from 0-255 */
     opacity: number
@@ -24,15 +24,15 @@ export interface IReflectionProperties {
     rotation: number,
     /** Whether this reflection is visible. */
     visible: boolean
-}
+};
 export interface IReflectionSprite extends ICharacterGraphic {
     sprite: Sprite_CharacterReflection
-}
+};
 export type ICharacterReflectionProperties = ICharacterGraphic & IReflectionProperties
 export enum WallReflectMode {
     PERSPECTIVE = 1,
     EVENT = 2
-}
+};
 export var PluginParameters = {
     zValue: -1,
     wallReflectType: WallReflectMode.PERSPECTIVE,
@@ -75,7 +75,7 @@ export var PluginParameters = {
     },
     isPerspectiveYsortEnabled: false,
     maxWallDistance: 20
-}
+};
 /**
  * Provides speedy lookups for wall regions by pre-emptively computing
  * the closest wall region for every tile on the map.
@@ -154,12 +154,12 @@ export class WallReflectionHelper {
     }
 
 
-}
+};
 export class Sprite_CharacterReflection extends Sprite_Character {
     public update(): void {
         // intentionally stubbed
     }
-}
+};
 export var wallHelper: WallReflectionHelper
 export var Aliases = {
     Game_CharacterBase_prototype_update: Game_CharacterBase.prototype.update,
@@ -171,11 +171,11 @@ export var Aliases = {
     Game_Map_prototype_setup: Game_Map.prototype.setup,
     Game_Map_prototype_initialize: Game_Map.prototype.initialize,
     Sprite_Character_prototype_update: Sprite_Character.prototype.update
-}
+};
 export var mapDefaults: {
     wall: IReflectionProperties,
     floor: IReflectionProperties
-}
+};
 
 wallHelper = new WallReflectionHelper([1]);
 
