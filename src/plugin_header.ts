@@ -5,6 +5,7 @@
  * @orderAfter GALV_DiagonalMovementMZ
  * @orderAfter GALV_CharacterFramesMZ
  * @orderAfter GALV_EventSpawnerMZ
+ * @orderAfter QMovement
  *
  * @plugindesc [v2.0.0]Add reflections to events and actors.
  *
