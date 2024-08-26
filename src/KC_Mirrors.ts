@@ -331,6 +331,9 @@ Game_Map.prototype.update = function (this: Game_Map, sceneActive) {
 };
 
 Sprite_Character.prototype.createReflectionSprites = function (this: Sprite_Character) {
+
+    if (!this.parent) return;
+
     this._reflections = {
         floor: {
             name: '',
@@ -523,10 +526,7 @@ Sprite_Character.prototype.updateReflectionWall = function (this: Sprite_Charact
 };
 
 Sprite_Character.prototype.updateReflectionSprites = function (this: Sprite_Character) {
-    // immediately return if this sprite doesn't have a parent
-    // this is needed for compatibility with Galv_EventSpawner
-    // also a general safety check
-    if (!this.parent || !this._character._reflectionProperties) return;
+    if (!this._character._reflectionProperties) return;
 
     if (!this._reflections) {
         this.createReflectionSprites();
