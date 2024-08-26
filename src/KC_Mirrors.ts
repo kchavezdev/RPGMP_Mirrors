@@ -78,8 +78,9 @@ export var PluginParameters = {
             opacity: 0,
             offset: { x: 0, y: 0 },
             rotation: 0,
-            visible: true
-        } as IReflectionProperties,
+            visible: true,
+            mode: WallReflectMode.PERSPECTIVE
+        } as IReflectionProperties & { mode: WallReflectMode },
         floor: {
             opacity: 0,
             offset: { x: 0, y: 0 },
