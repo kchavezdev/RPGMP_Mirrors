@@ -169,6 +169,7 @@ export namespace Mirrors {
         Game_Actor_prototype_initMembers: Game_Actor.prototype.initMembers,
         Game_Map_prototype_update: Game_Map.prototype.update,
         Game_Map_prototype_setup: Game_Map.prototype.setup,
+        Game_Map_prototype_initialize: Game_Map.prototype.initialize,
         Sprite_Character_prototype_update: Sprite_Character.prototype.update
     }
     export var mapDefaults: {
@@ -206,7 +207,7 @@ declare module 'rmmz-types' {
             floor: $.IReflectionProperties
             wall: $.IReflectionProperties & { mode: $.WallReflectMode }
         }
-        setupReflectionProperties: () => void
+        initReflectionProperties: () => void
     }
 
     interface Sprite_Character {
@@ -295,7 +296,7 @@ Game_Actor.prototype.initMembers = function (this: Game_Actor) {
     this.initReflectionProperties();
 };
 
-Game_Map.prototype.setupReflectionProperties = function (this: Game_Map) {
+Game_Map.prototype.initReflectionProperties = function (this: Game_Map) {
     this._reflectionProperties = {
         'floor': {
             offset: { x: 0, y: 0 },
@@ -315,13 +316,13 @@ Game_Map.prototype.setupReflectionProperties = function (this: Game_Map) {
 
 Game_Map.prototype.setup = function (this: Game_Map, mapId) {
     $.Aliases.Game_Map_prototype_setup.call(this, arguments);
-    this.setupReflectionProperties();
+    this.initReflectionProperties();
 };
 
 Game_Map.prototype.update = function (this: Game_Map, sceneActive) {
     $.Aliases.Game_Map_prototype_update.call(this, arguments);
     if (!this._reflectionProperties) {
-        this.setupReflectionProperties();
+        this.initReflectionProperties();
     }
 };
 
