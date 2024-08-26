@@ -73,6 +73,20 @@ export var PluginParameters = {
             visible: false
         } as ICharacterReflectionProperties
     },
+    mapDefault: {
+        wall: {
+            opacity: 0,
+            offset: { x: 0, y: 0 },
+            rotation: 0,
+            visible: true
+        } as IReflectionProperties,
+        floor: {
+            opacity: 0,
+            offset: { x: 0, y: 0 },
+            rotation: 0,
+            visible: true
+        } as IReflectionProperties
+    },
     isPerspectiveYsortEnabled: false,
     maxWallDistance: 20,
     noReflectRegions: {
@@ -175,10 +189,6 @@ export var Aliases = {
     Game_Map_prototype_setup: Game_Map.prototype.setup,
     Game_Map_prototype_initialize: Game_Map.prototype.initialize,
     Sprite_Character_prototype_update: Sprite_Character.prototype.update
-};
-export var mapDefaults: {
-    wall: IReflectionProperties,
-    floor: IReflectionProperties
 };
 export var noReflectRegions = {
     wall: new Set<number>(),
@@ -303,19 +313,8 @@ Game_Actor.prototype.initMembers = function (this: Game_Actor) {
 
 Game_Map.prototype.initReflectionProperties = function (this: Game_Map) {
     this._reflectionProperties = {
-        'floor': {
-            offset: { x: 0, y: 0 },
-            opacity: 0,
-            rotation: 0,
-            visible: true
-        },
-        'wall': {
-            offset: { x: 0, y: 0 },
-            opacity: 0,
-            rotation: 0,
-            visible: true,
-            mode: WallReflectMode.PERSPECTIVE
-        }
+        'floor': JsonEx.makeDeepCopy(PluginParameters.mapDefault.floor),
+        'wall': JsonEx.makeDeepCopy(PluginParameters.mapDefault.wall)
     };
 };
 
