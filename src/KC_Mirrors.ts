@@ -39,17 +39,21 @@ export namespace Mirrors {
         wallReflectVar: 0,
         actorDefault: {
             wall: {
+                name: '',
+                index: -1,
                 opacity: -1,
                 offset: { x: 0, y: 0 },
                 rotation: 0,
                 visible: true
-            } as IReflectionProperties,
+            } as ICharacterReflectionProperties,
             floor: {
+                name: '',
+                index: -1,
                 opacity: -1,
                 offset: { x: 0, y: 0 },
                 rotation: 0,
                 visible: true
-            } as IReflectionProperties
+            } as ICharacterReflectionProperties
         },
         eventDefault: {
             wall: {
@@ -231,6 +235,13 @@ Game_CharacterBase.prototype.initReflectionProperties = function (this: Game_Cha
 Game_CharacterBase.prototype.initMembers = function (this: Game_CharacterBase) {
     $.Aliases.Game_CharacterBase_prototype_initMembers.apply(this, arguments);
     this.initReflectionProperties();
+};
+
+Game_Actor.prototype.initReflectionProperties = function (this: Game_Actor) {
+    this._reflectionProperties = {
+        wall: JsonEx.makeDeepCopy($.PluginParameters.actorDefault.wall),
+        floor: JsonEx.makeDeepCopy($.PluginParameters.actorDefault.floor)
+    };
 };
 
 Game_Map.prototype.setupReflectionProperties = function (this: Game_Map) {
