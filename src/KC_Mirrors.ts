@@ -190,11 +190,6 @@ export var Aliases = {
     Game_Map_prototype_initialize: Game_Map.prototype.initialize,
     Sprite_Character_prototype_update: Sprite_Character.prototype.update
 };
-export var noReflectRegions = {
-    wall: new Set<number>(),
-    floor: new Set<number>()
-};
-
 wallHelper = new WallReflectionHelper([1]);
 
 declare module 'rmmz-types' {
