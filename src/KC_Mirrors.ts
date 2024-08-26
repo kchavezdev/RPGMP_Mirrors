@@ -290,6 +290,11 @@ Game_Actor.prototype.initReflectionProperties = function (this: Game_Actor) {
     };
 };
 
+Game_Actor.prototype.initMembers = function (this: Game_Actor) {
+    $.Aliases.Game_Actor_prototype_initMembers.apply(this, arguments);
+    this.initReflectionProperties();
+};
+
 Game_Map.prototype.setupReflectionProperties = function (this: Game_Map) {
     this._reflectionProperties = {
         'floor': {
