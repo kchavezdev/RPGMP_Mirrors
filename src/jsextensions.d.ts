@@ -36,7 +36,7 @@ interface Number {
      * @param max The upper boundary (excluded).
      * @returns A random integer.
      */
-    randomInt(max): number
+    randomInt(max: number): number
     /**
      * Returns a number whose value is limited to the given range.
      * 
@@ -51,14 +51,14 @@ interface Number {
      * @param n The divisor.
      * @returns a modulo value.
      */
-    mod(n): number
+    mod(n: number): number
     /**
      * Makes a number string with leading zeros.
      * 
      * @param length The length of the output string.
      * @returns A string with leading zeros.
      */
-    padZero(length): string
+    padZero(length: number): string
 }
 
 interface String {
@@ -69,7 +69,7 @@ interface String {
      * @returns True if the string contains a given string.
      * @deprecated includes() should be used instead.
      */
-    contains(string): boolean
+    contains(string: string): boolean
     /**
      * Replaces %1, %2 and so on in the string to the arguments.
      * 
@@ -83,5 +83,5 @@ interface String {
      * @param length The length of the output string.
      * @returns A string with leading zeros.
      */
-    padZero(length): string
+    padZero(length: number): string
 }
