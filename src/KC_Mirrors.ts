@@ -29,6 +29,39 @@ export function convertEscapeCharacters(text: string, event?: Game_Event) {
     return text;
 };
 
+export function tryParseParameter (param: any) {
+    if (typeof param !== 'string') return param;
+
+    // first try parsing as an object
+    try {
+        return JsonEx.parse(param);
+    } catch (error) {
+
+    }
+
+    param = convertEscapeCharacters(param);
+
+    // this ensures param JUST has numbers in it
+    // Number('') returns 0, which is undesirable
+    // parseFloat('123abc') returns 123, which is also not wanted
+    // so we have to use both to ensure whitespace is not parsed and characters are not ignored
+    const num = Number(param);
+    if (num === parseFloat(param)) {
+        return num;
+    }
+
+    if (param === 'true') {
+        return true;
+    }
+
+    if (param === 'false') {
+        return false;
+    }
+
+    // if those failed, it's probably a string so leave alone
+    return param;
+};
+
 export interface ICharacterGraphic {
     /** File name of the character graphic. */
     name: string
