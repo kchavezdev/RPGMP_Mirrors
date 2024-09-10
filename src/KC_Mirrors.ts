@@ -1,4 +1,4 @@
-import { $gameMap, $gameParty, $gamePlayer, Bitmap, Game_Actor, Game_CharacterBase, Game_Follower, Game_Map, Game_Player, Game_Vehicle, ImageManager, JsonEx, Sprite, Sprite_Character } from "rmmz-types"
+import { $gameMap, $gameParty, $gamePlayer, $gameSelfSwitches, $gameSwitches, $gameVariables, Bitmap, Game_Actor, Game_CharacterBase, Game_Event, Game_Follower, Game_Map, Game_Player, Game_Vehicle, ImageManager, JsonEx, Sprite, Sprite_Character } from "rmmz-types"
 
 // ensure namespace object is in global scope
 declare global {
@@ -8,6 +8,26 @@ declare global {
 window.Imported = window.Imported || {};
 window.Imported.KC_Mirrors = true;
 
+export function convertEscapeCharacters(text: string, event?: Game_Event) {
+    // game variable replacements
+    const maxVarIterations = 2;
+    for (let i = 0; i < maxVarIterations; i++) {
+        text = text.replace(/\\/g, '\x1b');
+        text = text.replace(/\x1b\x1b/g, '\\');
+        text = text.replace(/\x1bV\[(\d+)\]/gi, (_, args) => $gameVariables.value(args).toString());
+    }
+
+    // game switch replacements
+    text = text.replace(/\x1bS\[(\d+)\]/gi, (_, args) => $gameSwitches.value(args) ? 'true' : 'false');
+
+    if (event) {
+        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (_, args) => $gameSelfSwitches.value([event._mapId, event._eventId, args.toUpperCase()]) ? 'true' : 'false');
+    }
+
+    text = text.replace(/\x1b/g, '\\');
+
+    return text;
+};
 
 export interface ICharacterGraphic {
     /** File name of the character graphic. */
