@@ -27,7 +27,7 @@ SOFTWARE.
 /*:
  * @author K. Chavez 
  * @url https://github.com/kchavezdev/RPGMP_Mirrors
- * @target MZ
+ * @target MZ MV
  * @orderAfter PluginCommonBase
  * @orderAfter GALV_DiagonalMovementMZ
  * @orderAfter GALV_DiagonalMovement
