@@ -37,7 +37,7 @@ SOFTWARE.
  * @orderAfter GALV_EventSpawner
  * @orderAfter QMovement
  *
- * @plugindesc [v1.4.2]Add reflections to events and actors.
+ * @plugindesc [v1.4.3]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
