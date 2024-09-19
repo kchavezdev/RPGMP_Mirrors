@@ -37,12 +37,27 @@ SOFTWARE.
  * @orderAfter GALV_EventSpawner
  * @orderAfter QMovement
  *
- * @plugindesc [v1.4.2]Add reflections to events and actors.
+ * @plugindesc [v1.4.3]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
  * 
  * SCROLL TO BOTTOM FOR MV COMMAND REFERENCES
+ * 
+ * ----------------------------Compatibility Notes-----------------------------
+ * 
+ * If you're using any of the following plugins, KC_Mirrors should be placed
+ * BELOW them in the plugin manager.
+ *   - PluginCommonBase
+ *   - GALV_DiagonalMovement
+ *   - GALV_DiagonalMovementMZ
+ *   - GALV_CharacterFrames
+ *   - ​GALV_CharacterFramesMZ
+ *   - GALV_EventSpawner
+ *   - GALV_EventSpawnerMZ
+ *   - QMovement
+ * 
+ * ----------------------------General Information-----------------------------
  * 
  * This is a plugin that allows the developer to add reflections to actors and 
  * events. This is done by drawing sprites below the map but above the parallax
@@ -2836,7 +2851,7 @@ if (Imported.Galv_CharacterFrames) {
     // basically, hitting "load game" to a map with many reflections chugs otherwise on MZ
     // this seems to be related to property access times?
     // not entirely sure, but this fixes the slow down and shouldn't conflict with other plugins?
-    if (!JsonEx._cleanMetaData) {
+    if (!JsonEx._cleanMetaData && Utils.RPGMAKER_NAME === 'MZ') {
 
         // ported from MV
         JsonEx._cleanMetadata = function (object) {
