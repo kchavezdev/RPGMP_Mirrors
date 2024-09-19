@@ -2836,7 +2836,7 @@ if (Imported.Galv_CharacterFrames) {
     // basically, hitting "load game" to a map with many reflections chugs otherwise on MZ
     // this seems to be related to property access times?
     // not entirely sure, but this fixes the slow down and shouldn't conflict with other plugins?
-    if (!JsonEx._cleanMetaData) {
+    if (!JsonEx._cleanMetaData && Utils.RPGMAKER_NAME === 'MZ') {
 
         // ported from MV
         JsonEx._cleanMetadata = function (object) {
