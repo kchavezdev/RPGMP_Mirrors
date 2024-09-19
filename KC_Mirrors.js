@@ -44,6 +44,21 @@ SOFTWARE.
  * 
  * SCROLL TO BOTTOM FOR MV COMMAND REFERENCES
  * 
+ * ----------------------------Compatibility Notes-----------------------------
+ * 
+ * If you're using any of the following plugins, KC_Mirrors should be placed
+ * BELOW them in the plugin manager.
+ *   - PluginCommonBase
+ *   - GALV_DiagonalMovement
+ *   - GALV_DiagonalMovementMZ
+ *   - GALV_CharacterFrames
+ *   - ​GALV_CharacterFramesMZ
+ *   - GALV_EventSpawner
+ *   - GALV_EventSpawnerMZ
+ *   - QMovement
+ * 
+ * ----------------------------General Information-----------------------------
+ * 
  * This is a plugin that allows the developer to add reflections to actors and 
  * events. This is done by drawing sprites below the map but above the parallax
  * layer. So, to get full usage out of this plugin, you must be using tilesets
