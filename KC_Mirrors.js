@@ -450,7 +450,14 @@ SOFTWARE.
  * @desc Default setting for map events.
  * @type struct<defaults>
  * @parent defaultParent
- * @default{"reflectFloor":"false","reflectWall":"false"}
+ * @default {"reflectFloor":"false","reflectWall":"false"}
+ * 
+ * @param vehicleDefault
+ * @text Vehicles
+ * @desc Default setting for vehicles.
+ * @type struct<defaults>
+ * @parent defaultParent
+ * @default {"reflectFloor":"true","reflectWall":"true"}
  * 
  * @param advancedOptsParent
  * @text Other Options
@@ -526,6 +533,7 @@ SOFTWARE.
  * @command changeEventReflect
  * @text Change Event Reflection
  * @desc Change the reflection graphic of an event. Changes are reset on map reload. 
+ * 
  * @arg id
  * @text Event ID
  * @type text
@@ -708,6 +716,101 @@ SOFTWARE.
  * @desc Specify the actor to change. 0 refers to the current party leader and negatives refer to followers in order.
  * @default 0
  * 
+ * @command changeVehicleReflect
+ * @text Change Vehicle Reflection
+ * @desc Change the reflection graphic of a vehicle.
+ * 
+ * @arg id
+ * @text Vehicle Name
+ * @type combo
+ * @desc Specify the vehicle to change the graphic of.
+ * @option boat
+ * @option ship
+ * @option airship
+ * 
+ * @arg character
+ * @text Character File
+ * @desc Specify the new character file name. Keep empty to leave this unchanged.
+ * @type file
+ * @dir img/characters/
+ * 
+ * @arg index
+ * @text Character Index
+ * @desc Index to use in the new graphic. Keep empty to leave this unchanged.
+ * @type text
+ * 
+ * @arg reflectFloorOpacity
+ * @text Floor Opacity
+ * @desc Set the floor reflection's opacity by entering a number 0-255. -1 sets reflection to follow parent character's opacity.
+ * @type combo
+ * @option unchanged
+ * @option -1
+ * @default unchanged
+ * 
+ * @arg reflectWallOpacity
+ * @text Wall Opacity
+ * @desc Set the wall reflection's opacity by entering a number 0-255. -1 sets reflection to follow parent character's opacity.
+ * @type combo
+ * @option unchanged
+ * @option -1
+ * @default unchanged
+ * 
+ * @arg reflectFloor
+ * @text Enable Floor Reflection
+ * @type select
+ * @option Enable
+ * @value true
+ * @option Disable
+ * @value false
+ * @option Unchanged
+ * @value unchanged
+ * @default unchanged
+ * 
+ * @arg reflectWall
+ * @text Enable Wall Reflection
+ * @type select
+ * @option Enable
+ * @value true
+ * @option Disable
+ * @value false
+ * @option Unchanged
+ * @value unchanged
+ * @default unchanged
+ * 
+ * @arg reflectFloorXOffset
+ * @parent reflectFloor
+ * @text Floor x Offset
+ * @desc The x offset of the floor reflection for this character. Leave blank to keep unchanged.
+ * @type text
+ * 
+ * @arg reflectFloorYOffset
+ * @parent reflectFloor
+ * @text Floor y Offset
+ * @desc The y offset of the floor reflection for this character. Leave blank to keep unchanged.
+ * @type text
+ * 
+ * @arg reflectWallXOffset
+ * @text Wall x Offset
+ * @parent reflectWall
+ * @desc The x offset of the wall reflection for this character. Leave blank to keep unchanged.
+ * @type text
+ * 
+ * @arg reflectWallYOffset
+ * @text Wall y Offset
+ * @parent reflectWall
+ * @desc The y offset of the wall reflection for this character. Leave blank to keep unchanged.
+ * @type text
+ * 
+ * @command resetVehicleReflect
+ * @text Match Vehicle Reflection
+ * @desc Set the chosen vehicle's graphic to its current top view character graphic and opacity.
+ * 
+ * @arg id
+ * @text Vehicle Name
+ * @type text
+ * @desc Specify the vehicle to remove custom reflection images for.
+ * @default 0
+ * 
  * @command setWallReflectMode
  * @text Set Wall Reflection Mode
  * @desc Sets the variable defined in the plugin params to a reflection mode.
@@ -809,6 +912,9 @@ KCDev.Mirrors.actorDefault.reflectWall = true;
 KCDev.Mirrors.eventDefault = {};
 KCDev.Mirrors.eventDefault.reflectFloor = false;
 KCDev.Mirrors.eventDefault.reflectWall = false;
+KCDev.Mirrors.vehicleDefault = {};
+KCDev.Mirrors.vehicleDefault.reflectFloor = true;
+KCDev.Mirrors.vehicleDefault.reflectWall = true;
 KCDev.Mirrors.useZFightFix = false;
 /** @type {Map<number,number[]>} */
 KCDev.Mirrors.reflectWallPositions = new Map();
@@ -953,6 +1059,9 @@ KCDev.Mirrors.getGeneralCommandObj = function () {
  * @property {object} eventDefault
  * @property {boolean} eventDefault.reflectFloor
  * @property {boolean} eventDefault.reflectWall
+ * @property {object} vehicleDefault
+ * @property {boolean} vehicleDefault.reflectFloor
+ * @property {boolean} vehicleDefault.reflectWall
  * @property {string} wallReflectType
  * @property {number} wallReflectVar
  * @property {boolean} attemptFixZFight
@@ -1029,7 +1138,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
 (() => {
 
-    if (Window.PluginManagerEx) {
+    if (window.PluginManagerEx) {
 
         /**
          * 
@@ -1058,6 +1167,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
         KCDev.Mirrors.useZFightFix = parameters.attemptFixZFight;
         KCDev.Mirrors.actorDefault = parameters.actorDefault;
         KCDev.Mirrors.eventDefault = parameters.eventDefault;
+        KCDev.Mirrors.vehicleDefault = parameters.vehicleDefault;
         KCDev.Mirrors.wallRegions = new Set(parameters.wallRegions);
         KCDev.Mirrors.noReflectRegions = new Set(parameters.noReflectRegions);
 
@@ -1065,6 +1175,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         // plugin commands
         PluginManagerEx.registerCommand(script, 'changeEventReflect', function (args) {
+            
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
         });
 
@@ -1075,12 +1186,23 @@ KCDev.Mirrors.tryParseParameter = function (param) {
             KCDev.Mirrors.setActorReflect(...KCDev.Mirrors.convertChangeReflectArgs(actor, args));
         });
 
+        PluginManagerEx.registerCommand(script, 'changeVehicleReflect', function (args) {
+            const vehicle = KCDev.Mirrors.getVehicleCharacter(args.id);
+            if (vehicle) {
+                KCDev.Mirrors.setVehicleReflect(...KCDev.Mirrors.convertChangeReflectArgs(vehicle, args));
+            }
+        });
+
         PluginManagerEx.registerCommand(script, 'resetEventReflect', function (args) {
             KCDev.Mirrors.resetEventReflectImage.call(this, args.id || this.eventId());
         });
 
         PluginManagerEx.registerCommand(script, 'resetActorReflect', function (args) {
             KCDev.Mirrors.resetActorReflectImage.call(this, args.id);
+        });
+
+        PluginManagerEx.registerCommand(script, 'resetVehicleReflect', function (args) {
+            KCDev.Mirrors.resetVehicleReflectImage(args.id);
         });
 
         PluginManagerEx.registerCommand(script, 'refreshReflectMap', function (args) {
@@ -1131,6 +1253,13 @@ KCDev.Mirrors.tryParseParameter = function (param) {
         }
 
         try {
+            const vehicleDefault = JsonEx.parse(parameters.vehicleDefault);
+            KCDev.Mirrors.vehicleDefault = { reflectFloor: vehicleDefault.reflectFloor.toLowerCase() === 'true',  reflectWall: vehicleDefault.reflectWall.toLowerCase() === 'true'};
+        } catch (error) {
+            console.error(error.message);
+        }
+
+        try {
             KCDev.Mirrors.wallRegions = new Set(JsonEx.parse(parameters.wallRegions).map(id => Number(id)));
         } catch (error) {
             KCDev.Mirrors.wallRegions = new Set();
@@ -1165,6 +1294,14 @@ KCDev.Mirrors.tryParseParameter = function (param) {
             KCDev.Mirrors.setActorReflect(...KCDev.Mirrors.convertChangeReflectArgs(actor, args));
         });
 
+        PluginManager.registerCommand(script, 'changeVehicleReflect', function (args) {
+            args = convertVanillaArgs(args);
+            const vehicle = KCDev.Mirrors.getVehicleCharacter(args.id);
+            if (vehicle) {
+                KCDev.Mirrors.setVehicleReflect(...KCDev.Mirrors.convertChangeReflectArgs(vehicle, args));
+            }
+        });
+
         PluginManager.registerCommand(script, 'resetEventReflect', function (args) {
             args = convertVanillaArgs(args);
             KCDev.Mirrors.resetEventReflectImage.call(this, Number(args.id) || this.eventId());
@@ -1173,6 +1310,11 @@ KCDev.Mirrors.tryParseParameter = function (param) {
         PluginManager.registerCommand(script, 'resetActorReflect', function (args) {
             args = convertVanillaArgs(args);
             KCDev.Mirrors.resetActorReflectImage.call(this, Number(args.id));
+        });
+
+        PluginManager.registerCommand(script, 'resetVehicleReflect', function (args) {
+            args = convertVanillaArgs(args);
+            KCDev.Mirrors.resetVehicleReflectImage(args.id);
         });
 
         PluginManager.registerCommand(script, 'refreshReflectMap', function (args) {
@@ -1218,30 +1360,34 @@ KCDev.Mirrors.isNumMvArgsInRange = function (command, args, min, max = min) {
  * @param {string} commandName 
  * @param {string[]} args 
  * @param {Game_Interpreter} interpretter 
- * @returns {{isActor: boolean, id: id, character: Game_Character} | null}
+ * @returns {{type: 'actor' | 'vehicle' | 'event', id: id, character: Game_Character} | null}
  */
 KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter) {
-    let isActor = false;
     const arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
-    if (arg0 === 'actor') {
-        isActor = true;
-    }
-    else if (arg0 === 'event') {
-        isActor = false;
-    }
-    else {
+    const isActor = arg0 === 'actor';
+    const isEvent = arg0 === 'event';
+    const isVehicle = arg0 === 'vehicle';
+    if (!isActor && !isEvent && !isVehicle) {
         console.error(`\
         KC_Mirrors: ${commandName} received invalid 1st argument: ${arg0} 
-        Should be \'actor\' or \'event\'`);
+        Should be 'actor' or 'event' or 'vehicle'`);
         return null;
     }
+    const type = arg0;
 
     let /** @type {number} */ id = KCDev.Mirrors.tryParseParameter(args[1]);
 
-    if (typeof id !== 'number') {
+    if (typeof id !== 'number' && (isActor || isEvent)) {
         console.error(`\
         KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
         Should be a number!`);
+        return null;
+    }
+
+    if (id !== 'boat' && id !== 'ship' && id !== 'airship') {
+        console.error(`\
+        KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
+        Should be 'boat' or 'ship' or 'airship'!`);
         return null;
     }
 
@@ -1251,23 +1397,30 @@ KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter
         id = KCDev.Mirrors.getRealActorId(id);
         char = $gameActors.actor(id);
     }
-    else {
+    else if (isEvent) {
         if (id === 0) {
             id = interpretter.eventId();
         }
         char = $gameMap.event(id);
     }
+    else if (isVehicle) {
+        char = KCDev.Mirrors.getVehicleCharacter(id);
+    }
+    else {
+        console.error(`\
+        KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
+        Programmer forgot to account for all cases when chekcing arg0!`);
+    }
 
     if (!char) {
-        const c = isActor ? 'actor' : 'event';
         console.error(`\
-        KC_Mirrors: ${commandName} could not find ${c} with id ${id}
+        KC_Mirrors: ${commandName} could not find ${type} with id ${id}
         Original 2nd argument: ${args[1]}`);
         return null;
     }
 
     return {
-        isActor: isActor,
+        type: type,
         id: id,
         character: char
     };
@@ -1534,11 +1687,14 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            if (commonArgs.isActor) {
+            if (commonArgs.type === 'actor') {
                 KCDev.Mirrors.resetActorReflectImage(commonArgs.id);
             }
-            else {
+            else if (commonArgs.type === 'event') {
                 KCDev.Mirrors.resetEventReflectImage(commonArgs.id);
+            }
+            else if (commonArgs.type === 'vehicle') {
+                KCDev.Mirrors.resetVehicleReflectImage(commonArgs.id);
             }
 
             break;
@@ -1649,6 +1805,46 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Set reflection properties of a reflectable object
+ * @param {Game_Character | Game_Actor} char Reference to the character to be modified
+ * @param {string} reflectChar File name of the new graphic to use as a reflection.
+ * @param {number} reflectIndex Index of the character in the file to use as a reflection.
+ * @param {boolean} enableFloor If true, enable floor reflections for the target event.
+ * @param {boolean} enableWall If true, enable wall reflections for the target event.
+ * @param {number | undefined} floorOpacity Opacity of the floor reflection
+ * @param {number | undefined} wallOpacity Opacity of the wall reflection
+ * @param {number | undefined} floorXOffset x offset of the floor reflection
+ * @param {number | undefined} floorYOffset y offset of the floor reflection
+ * @param {number | undefined} wallXOffset x offset of the wall reflection
+ * @param {number | undefined} wallYOffset y offset of the wall reflection
+ */
+KCDev.Mirrors.setCharacterReflect = function (char, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset) {
+    if (char) {
+        char.setReflectImage(reflectChar, reflectIndex);
+        char.reflectFloorToggle(enableFloor);
+        char.reflectWallToggle(enableWall);
+        char.setReflectFloorOpacity(floorOpacity);
+        char.setReflectWallOpacity(wallOpacity);
+        char.setReflectFloorXOffset(floorXOffset);
+        char.setReflectFloorYOffset(floorYOffset);
+        char.setReflectWallXOffset(wallXOffset);
+        char.setReflectWallYOffset(wallYOffset);
+    }
+};
+
+/**
+ * 
+ * @param {Game_Character | Game_Actor} char 
+ */
+KCDev.Mirrors.resetCharacterReflectImage = function (char) {
+    if (char) {
+        char.setReflectImage();
+        char.reflectFloorToggle();
+        char.reflectWallToggle();
+    }
+};
+
+/**
  * Set reflection properties of an event on the map.
  * @param {number} eventId ID of the event to change the reflection properties of.
  * @param {string} reflectChar File name of the new graphic to use as a reflection.
@@ -1664,17 +1860,7 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
  */
 KCDev.Mirrors.setEventReflect = function (eventId, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset) {
     const event = $gameMap.event(eventId === 0 ? this.eventId() : eventId);
-    if (event) {
-        event.setReflectImage(reflectChar, reflectIndex);
-        event.reflectFloorToggle(enableFloor);
-        event.reflectWallToggle(enableWall);
-        event.setReflectFloorOpacity(floorOpacity);
-        event.setReflectWallOpacity(wallOpacity);
-        event.setReflectFloorXOffset(floorXOffset);
-        event.setReflectFloorYOffset(floorYOffset);
-        event.setReflectWallXOffset(wallXOffset);
-        event.setReflectWallYOffset(wallYOffset);
-    }
+    KCDev.Mirrors.setCharacterReflect(event, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset);
 };
 
 /**
@@ -1683,11 +1869,7 @@ KCDev.Mirrors.setEventReflect = function (eventId, reflectChar, reflectIndex, en
  */
 KCDev.Mirrors.resetEventReflectImage = function (eventId) {
     const event = $gameMap.event(eventId === 0 ? this.eventId() : eventId);
-    if (event) {
-        event.setReflectImage();
-        event.setReflectFloorOpacity();
-        event.setReflectWallOpacity();
-    }
+    KCDev.Mirrors.resetCharacterReflectImage(event);
 };
 
 /**
@@ -1736,17 +1918,7 @@ KCDev.Mirrors.setActorReflect = function (actorId, reflectChar, reflectIndex, en
     const realId = KCDev.Mirrors.getRealActorId(actorId);
     if (realId < 0) return;
     const actor = $gameActors.actor(realId);
-    if (actor) {
-        actor.setReflectImage(reflectChar, reflectIndex);
-        actor.reflectFloorToggle(enableFloor);
-        actor.reflectWallToggle(enableWall);
-        actor.setReflectFloorOpacity(floorOpacity);
-        actor.setReflectWallOpacity(wallOpacity);
-        actor.setReflectFloorXOffset(floorXOffset);
-        actor.setReflectFloorYOffset(floorYOffset);
-        actor.setReflectWallXOffset(wallXOffset);
-        actor.setReflectWallYOffset(wallYOffset);
-    }
+    KCDev.Mirrors.setCharacterReflect(actor, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset);
 };
 
 /**
@@ -1758,10 +1930,67 @@ KCDev.Mirrors.resetActorReflectImage = function (actorId) {
     const realId = KCDev.Mirrors.getRealActorId(actorId);
     if (realId < 0) return;
     const actor = $gameActors.actor(realId);
-    if (actor) {
-        actor.setReflectImage();
-        actor.setReflectFloorOpacity();
-        actor.setReflectWallOpacity();
+    KCDev.Mirrors.resetCharacterReflectImage(actor);
+};
+
+/**
+ * 
+ * @param {'boat' | 'ship' | 'airship'} vehicleName 
+ */
+KCDev.Mirrors.getVehicleCharacter = function (vehicleName) {
+    switch (vehicleName) {
+        case 'boat':
+            return $gameMap.boat();
+            break;
+
+        case 'airship':
+            return $gameMap.airship();
+            break;
+
+        case 'ship':
+            return $gameMap.ship();
+            break;
+
+        default:
+            break;
+    }
+
+    return null;
+};
+
+/**
+ * Set reflection properties of an actor.
+ * @param {'boat' | 'ship' | 'airship'} vehicleName Name of the vehicle to target.
+ * @param {string} reflectChar File name of the new graphic to use as a reflection.
+ * @param {number} reflectIndex Index of the character in the file to use as a reflection.
+ * @param {boolean} enableFloor If true, enable floor reflections for the target actor.
+ * @param {boolean} enableWall If true, enable wall reflections for the target actor.
+ * @param {number|undefined} floorOpacity Set floor reflection opacity
+ * @param {number|undefined} wallOpacity Set wall reflection opacity
+ * @param {number | undefined} floorXOffset x offset of the floor reflection
+ * @param {number | undefined} floorYOffset y offset of the floor reflection
+ * @param {number | undefined} wallXOffset x offset of the wall reflection
+ * @param {number | undefined} wallYOffset y offset of the wall reflection
+ */
+KCDev.Mirrors.setVehicleReflect = function (vehicleName, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset) {
+    const vehicle = KCDev.Mirrors.getVehicleCharacter(vehicleName);
+
+    if (vehicle) {
+        KCDev.Mirrors.setCharacterReflect(vehicle, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset);
+    }
+
+};
+
+/**
+ * Sets the target vehicle's reflection graphic to be the same as their character graphic.
+ * @param {string} vehicleName Targetted actor's ID
+ * @returns {void}
+ */
+KCDev.Mirrors.resetVehicleReflectImage = function (vehicleName) {
+    const vehicle = KCDev.Mirrors.getVehicleCharacter(vehicleName);
+
+    if (vehicle) {
+        KCDev.Mirrors.resetCharacterReflectImage(vehicle);
     }
 };
 
@@ -1799,32 +2028,30 @@ KCDev.Mirrors.getWallReflectMode = function () {
  */
 KCDev.Mirrors.convertChangeReflectArgs = function (char, args) {
 
-    if (!char) { // create a fake character with the desired functions if no character is passed in
+    if (!char) { // create a fake character with the desired properties if no character is passed in
         char = {
-            reflectName() { return '' },
-            reflectIndex() { return -1 },
-            reflectFloor() { return false; },
-            reflectWall() { return false; },
-            reflectFloorOpacity() { return undefined; },
-            reflectWallOpacity() { return undefined; },
-            reflectFloorXOffset() { return 0; },
-            reflectFloorYOffset() { return 0; },
-            reflectWallXOffset() { return 0; },
-            reflectWallYOffset() { return 0; }
+            _reflectName: '',
+            _reflectIndex: -1,
+            _reflectFloor: false,
+            _reflectWall: false,
+            _reflectFloorXOff: 0,
+            _reflectFloorYOff: 0,
+            _reflectWallXOff: 0,
+            _reflectWallYOff: 0
         };
     }
 
     const id = args.id;
-    const character = args.character === '' ? char.reflectName() : args.character;
-    const index = args.index === '' ? char.reflectIndex() : args.index;
-    const reflectFloor = args.reflectFloor === 'unchanged' ? char.reflectFloor() : args.reflectFloor;
-    const reflectWall = args.reflectWall === 'unchanged' ? char.reflectWall() : args.reflectWall;
-    const reflectFloorOpacity = typeof (args.reflectFloorOpacity) !== 'number' ? char.reflectFloorOpacity() : (args.reflectFloorOpacity === -1 ? undefined : args.reflectFloorOpacity);
-    const reflectWallOpacity = typeof (args.reflectWallOpacity) !== 'number' ? char.reflectWallOpacity() : (args.reflectWallOpacity === -1 ? undefined : args.reflectWallOpacity);
-    const reflectFloorXOff = typeof (args.reflectFloorXOffset) !== 'number' ? char.reflectFloorXOffset() : args.reflectFloorXOffset;
-    const reflectFloorYOff = typeof (args.reflectFloorYOffset) !== 'number' ? char.reflectFloorYOffset() : args.reflectFloorYOffset;
-    const reflectWallXOff = typeof (args.reflectWallXOffset) !== 'number' ? char.reflectFloorXOffset() : args.reflectWallXOffset;
-    const reflectWallYOff = typeof (args.reflectWallYOffset) !== 'number' ? char.reflectFloorYOffset() : args.reflectWallYOffset;
+    const character = args.character === '' ? char._reflectName : args.character;
+    const index = args.index === '' ? char._reflectIndex : args.index;
+    const reflectFloor = args.reflectFloor === 'unchanged' ? char._reflectFloor : args.reflectFloor;
+    const reflectWall = args.reflectWall === 'unchanged' ? char._reflectWall : args.reflectWall;
+    const reflectFloorOpacity = typeof (args.reflectFloorOpacity) !== 'number' ? char._reflectFloorOpacity : (args.reflectFloorOpacity === -1 ? undefined : args.reflectFloorOpacity);
+    const reflectWallOpacity = typeof (args.reflectWallOpacity) !== 'number' ? char._reflectWallOpacity : (args.reflectWallOpacity === -1 ? undefined : args.reflectWallOpacity);
+    const reflectFloorXOff = typeof (args.reflectFloorXOffset) !== 'number' ? char._reflectFloorXOff : args.reflectFloorXOffset;
+    const reflectFloorYOff = typeof (args.reflectFloorYOffset) !== 'number' ? char._reflectFloorYOff : args.reflectFloorYOffset;
+    const reflectWallXOff = typeof (args.reflectWallXOffset) !== 'number' ? char._reflectWallXOff : args.reflectWallXOffset;
+    const reflectWallYOff = typeof (args.reflectWallYOffset) !== 'number' ? char._reflectWallYOff : args.reflectWallYOffset;
     return [id, character.trim(), index, reflectFloor, reflectWall, reflectFloorOpacity, reflectWallOpacity, reflectFloorXOff, reflectFloorYOff, reflectWallXOff, reflectWallYOff];
 };
 
@@ -2195,6 +2422,14 @@ Game_Follower.prototype.update = function () {
     KCDev.Mirrors.updateActorCharacterReflect(this.actor(), this);
 };
 
+Game_Follower.prototype.reflectWall = function () {
+    return Game_Character.prototype.reflectWall.call(this) && (!$gamePlayer.isInVehicle() || $gamePlayer.areFollowersGathering());
+};
+
+Game_Follower.prototype.reflectFloor = function () {
+    return Game_Character.prototype.reflectFloor.call(this) && (!$gamePlayer.isInVehicle() || $gamePlayer.areFollowersGathering());
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Game_Follower edits                                                                                    //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2216,8 +2451,37 @@ Game_Player.prototype.update = function () {
     }
 };
 
+Game_Player.prototype.reflectWall = function () {
+    return Game_Character.prototype.reflectWall.call(this) && (!this.isInVehicle() || this.areFollowersGathering());
+};
+
+Game_Player.prototype.reflectFloor = function () {
+    return Game_Character.prototype.reflectFloor.call(this) && (!this.isInVehicle() || this.areFollowersGathering());
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Game_Player edits                                                                                      //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// START Game_Vehicle edits                                                                                   //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+KCDev.Mirrors.Game_Vehicle_update = Game_Vehicle.prototype.update;
+Game_Vehicle.prototype.update = function () {
+    if (this._reflectFloor === undefined) {
+        this.reflectFloorToggle(KCDev.Mirrors.vehicleDefault.reflectFloor);
+        this.reflectWallToggle(KCDev.Mirrors.vehicleDefault.reflectWall);
+    }
+    KCDev.Mirrors.Game_Vehicle_update.apply(this, arguments);
+};
+
+Game_Vehicle.prototype.reflectFloorYOffset = function () {
+    return Game_Character.prototype.reflectFloorYOffset.call(this) + this._altitude;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// END Game_Vehicle edits                                                                                     //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
