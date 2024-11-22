@@ -297,6 +297,10 @@ SOFTWARE.
  * If an argument is formatted as [choice1/choice2/choice3/etc], then you must
  * choose only one of the options without brackets.
  * 
+ * If an argument in brackets is formatted as [(type)], then use the type
+ * indicated. [(number)] would mean the argument is a number (1, 2, 13, etc.),
+ * for example.
+ * 
  * Arguments that end in a ? are OPTIONAL
  * 
  * You can use \v[x] and \s[y] as arguments to substitute in the values stored
@@ -305,8 +309,9 @@ SOFTWARE.
  * setReflectImage char_type id character?
  *   | Change the character reflection graphic.
  *   * example: setReflectImage actor 1 People2
- *   - char_type: [actor/event] Set whether the target is an actor or map event
- *   - id: ID number of the actor or event
+ *   - char_type: [actor/event/vehicle] Set what type of character the
+ *                target is
+ *   - id: [number/boat/ship/airship] identifier of the character
  *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
@@ -317,8 +322,9 @@ SOFTWARE.
  *   | Change the reflection's character ID. 0 is the top left in spritesheets
  *     not prefixed with $.
  *   * example: setReflectIndex event 5 1
- *   - char_type: [actor/event] Set whether the target is an actor or map event
- *   - id: ID number of the actor or event
+ *   - char_type: [actor/event/vehicle] Set what type of character the
+ *                target is
+ *   - id: [(number)/boat/ship/airship] identifier of the character
  *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
@@ -328,8 +334,9 @@ SOFTWARE.
  * setReflectVisible char_type id reflect_type new_visibility
  *   | Simple on/off set for reflection visibility.
  *   * example: setReflectVisible actor -1 all false
- *   - char_type: [actor/event] Set whether the target is an actor or map event
- *   - id: ID number of the actor or event
+ *   - char_type: [actor/event/vehicle] Set what type of character the
+ *                target is
+ *   - id: [(number)/boat/ship/airship] identifier of the character
  *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
@@ -342,8 +349,9 @@ SOFTWARE.
  * setReflectOpacity char_type id reflect_type opacity?
  *   | Set reflection opacity.
  *   * example: setReflectOpacity actor 4 127
- *   - char_type: [actor/event] Set whether the target is an actor or map event
- *   - id: ID number of the actor or event
+ *   - char_type: [actor/event/vehicle] Set what type of character the
+ *                target is
+ *   - id: [(number)/boat/ship/airship] identifier of the character
  *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
@@ -356,8 +364,9 @@ SOFTWARE.
  * setReflectOffset char_type id reflect_type axis offset
  *   | Set character reflection offset. This is added to the map offset.
  *   * example: setReflectOffset event 10 floor y -8
- *   - char_type: [actor/event] Set whether the target is an actor or map event
- *   - id: ID number of the actor or event
+ *   - char_type: [actor/event/vehicle] Set what type of character the
+ *                target is
+ *   - id: [(number)/boat/ship/airship] identifier of the character
  *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
@@ -372,8 +381,9 @@ SOFTWARE.
  *   | Reset a characters reflections to the current character graphic
  *     and index.
  *   * example: resetReflect actor 0
- *   - char_type: [actor/event] Set whether the target is an actor or map event
- *   - id: ID number of the actor or event
+ *   - char_type: [actor/event/vehicle] Set what type of character the
+ *                target is
+ *   - id: [(number)/boat/ship/airship] identifier of the character
  *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
