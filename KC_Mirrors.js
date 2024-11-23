@@ -840,7 +840,7 @@ SOFTWARE.
  * @default 0
  * 
  * @command setWallReflectMode
- * @text Set Wall Reflection Mode
+ * @text Set Wall Reflection Variable
  * @desc Sets the variable defined in the plugin params to a reflection mode.
  * 
  * @arg mode
