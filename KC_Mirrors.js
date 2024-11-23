@@ -1560,7 +1560,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             let newOpacity = undefined;
             if (args.length > 3) {
                 newOpacity = KCDev.Mirrors.tryParseParameter(args[3]);
-                if (typeof newOpacity !== 'number') {
+                if (typeof newOpacity !== 'number' || newOpacity < 0) {
                     if (newOpacity === 'undefined') {
                         newOpacity = undefined;
                     }
@@ -1682,7 +1682,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             const reflectEnabled = KCDev.Mirrors.tryParseParameter(args[3]);
             if (typeof reflectEnabled !== 'boolean') {
                 console.error(`\
-                KC_Mirrors: ${command} received invalid 4th argument ${reflectType}
+                KC_Mirrors: ${command} received invalid 4th argument ${reflectEnabled}
                 Valid arguments: 'true', 'false'`);
                 break;
             }
@@ -1698,6 +1698,46 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 commonArgs.character.reflectWallToggle(reflectEnabled);
             }
 
+            break;
+        }
+
+        case 'setReflectAngle': {
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 4)) {
+                break;
+            }
+
+            const commonArgs = KCDev.Mirrors.getCommonMvCommandArgs(command, args, this);
+
+            if (!commonArgs) {
+                break;
+            }
+
+            const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
+            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
+                Valid arguments: 'floor', 'wall', 'all'`);
+                break;
+            }
+
+            const reflectAngle = KCDev.Mirrors.tryParseParameter(args[3]);
+            if (typeof reflectEnabled !== 'number') {
+                console.error(`\
+                KC_Mirrors: ${command} received invalid 4th argument ${reflectAngle}
+                Must be a number!`);
+                break;
+            }
+
+            if (reflectType === 'floor') {
+                commonArgs.character.reflectFloorAngle(reflectAngle);
+            }
+            else if (reflectType === 'wall') {
+                commonArgs.character.reflectWallAngle(reflectAngle);
+            }
+            else if (reflectType === 'all') {
+                commonArgs.character.reflectFloorAngle(reflectAngle);
+                commonArgs.character.reflectWallAngle(reflectAngle);
+            }
             break;
         }
 
