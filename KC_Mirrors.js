@@ -898,6 +898,16 @@ SOFTWARE.
  * @option Unchanged
  * @value 
  * 
+ * @arg reflectFloorAngle
+ * @text Floor Angle
+ * @desc The angle (in degrees) all reflections are offset by. Leave blank to keep unchanged.
+ * @type text
+ * 
+ * @arg reflectWallAngle
+ * @text Wall Angle
+ * @desc The angle (in degrees) all reflections are offset by. Leave blank to keep unchanged.
+ * @type text
+ * 
  */
 
 /*~struct~defaults:
