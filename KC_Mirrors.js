@@ -1238,7 +1238,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
         });
 
         PluginManagerEx.registerCommand(script, 'overrideMapSettings', function (args) {
-            KCDev.Mirrors.overrideMapSettings(args.reflectFloor, args.reflectWall, args.mode);
+            KCDev.Mirrors.overrideMapSettings(args.reflectFloor, args.reflectWall, args.mode, args.reflectFloorAngle, args.reflectWallAngle);
         });
     }
     else {
@@ -1357,7 +1357,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         PluginManager.registerCommand(script, 'overrideMapSettings', function (args) {
             args = convertVanillaArgs(args);
-            KCDev.Mirrors.overrideMapSettings(args.reflectFloor, args.reflectWall, args.mode);
+            KCDev.Mirrors.overrideMapSettings(args.reflectFloor, args.reflectWall, args.mode, args.reflectFloorAngle, args.reflectWallAngle);
         });
     }
 
