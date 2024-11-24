@@ -1407,17 +1407,18 @@ KCDev.Mirrors.getCommonMvCommandArgs = function (commandName, args, interpretter
     let /** @type {number} */ id = KCDev.Mirrors.tryParseParameter(args[1]);
 
     if (typeof id !== 'number' && (isActor || isEvent)) {
-        console.error(`\
-        KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
-        Should be a number!`);
-        return null;
-    }
-
-    if (id !== 'boat' && id !== 'ship' && id !== 'airship') {
-        console.error(`\
-        KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
-        Should be 'boat' or 'ship' or 'airship'!`);
-        return null;
+        if (isActor || isEvent) {
+            console.error(`\
+            KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
+            Should be a number!`);
+            return null;
+        }
+        else if (id !== 'boat' && id !== 'ship' && id !== 'airship') {
+            console.error(`\
+            KC_Mirrors: ${commandName} received invalid 2nd argument: ${id}
+            Should be 'boat' or 'ship' or 'airship'!`);
+            return null;
+        }
     }
 
     /** @type {Game_Character} */
