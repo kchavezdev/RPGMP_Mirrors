@@ -181,10 +181,21 @@ SOFTWARE.
  *       tag <REFLECT_FLOOR_OFFSETS:1,1>, the final offset of that individual
  *       character's reflection will be -3 pixels horizontally and 7 pixels
  *       vertically.
+ * 
  *   | <REFLECT_WALL_OFFSETS:[x],[y]>
  *     | Offsets the relevant wall reflections by x pixels horizontally and
  *       y pixels vertically. Like the above, the final reflection position
  *       is the sum of the character offsets and the map offsets.
+ * 
+ *   | <REFLECT_FLOOR_ANGLE:[a]>
+ *     | Offsets the floor reflections by a degrees, where a positive a is
+ *       clockwise. Character angles are added to map angles to determine
+ *       the final rotation of the character.
+ * 
+ *   | <REFLECT_WALL_ANGLE:[a]>
+ *     | Offsets the wall reflections by a degrees, where positive a is
+ *       clockwise. Character angles are added to map angles to determine
+ *       the final rotation of the character.
  * 
  * Map Note Tags:
  * 
