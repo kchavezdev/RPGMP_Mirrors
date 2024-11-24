@@ -1100,6 +1100,8 @@ KCDev.Mirrors.parseMetaValues = function (reflectableObj, target, defaults, isAc
  * @param {Game_Event?} event
  */
 KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
+    text = text.replace(/\\/g, "\x1b");
+    text = text.replace(/\x1b\x1b/g, "\\");
 
     // game variable replacements
     while (text.match(/\x1bV\[(\d+)\]/gi)) {
