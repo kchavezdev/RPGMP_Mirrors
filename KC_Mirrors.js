@@ -1734,14 +1734,14 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             if (reflectType === 'floor') {
-                commonArgs.character.reflectFloorAngle(reflectAngle);
+                commonArgs.character.setReflectFloorAngle(reflectAngle);
             }
             else if (reflectType === 'wall') {
-                commonArgs.character.reflectWallAngle(reflectAngle);
+                commonArgs.character.setReflectWallAngle(reflectAngle);
             }
             else if (reflectType === 'all') {
-                commonArgs.character.reflectFloorAngle(reflectAngle);
-                commonArgs.character.reflectWallAngle(reflectAngle);
+                commonArgs.character.setReflectFloorAngle(reflectAngle);
+                commonArgs.character.setReflectWallAngle(reflectAngle);
             }
             break;
         }
@@ -1780,7 +1780,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             if (typeof arg0 !== 'string') {
                 console.error(`\
                     KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
-                    Valid arguments: 'wall', 'floor', 'all`);
+                    Valid arguments: 'wall', 'floor', 'all'`);
             }
 
             arg0 = arg0.toLowerCase();
@@ -1788,7 +1788,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             if (arg0 !== 'wall' && arg0 !== 'floor' && arg0 !== 'all') {
                 console.error(`\
                     KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
-                    Valid arguments: 'wall', 'floor', 'all`);
+                    Valid arguments: 'wall', 'floor', 'all'`);
             }
 
             const arg1 = KCDev.Mirrors.tryParseParameter(args[1]);
@@ -1803,8 +1803,50 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             const isWallOn = (arg0 === 'wall' || arg0 === 'all');
             const isFloorOn = (arg0 === 'floor' || arg0 === 'all');
 
-            KCDev.Mirrors.overrideMapSettings(isFloorOn, isWallOn, 'unchanged');
+            KCDev.Mirrors.overrideMapSettings(isFloorOn, isWallOn, '');
 
+            break;
+        }
+
+        case 'setMapReflectAngle': {
+            if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
+                break;
+            }
+
+            /** @type {string} */
+            let arg0 = KCDev.Mirrors.tryParseParameter(args[0]);
+            if (typeof arg0 !== 'string') {
+                console.error(`\
+                    KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
+                    Valid arguments: 'wall', 'floor', 'all'`);
+            }
+
+            arg0 = arg0.toLowerCase();
+
+            if (arg0 !== 'wall' && arg0 !== 'floor' && arg0 !== 'all') {
+                console.error(`\
+                    KC_Mirrors: ${command} received an invalid 1st argument: ${arg0}
+                    Valid arguments: 'wall', 'floor', 'all'`);
+            }
+
+            const arg1 = KCDev.Mirrors.tryParseParameter(args[1]);
+
+            if (typeof arg1 !== 'number') {
+                console.error(`\
+                    KC_Mirrors: ${command} received an invalid 2nd argument: ${arg1}
+                    Please enter a number.`);
+            }
+
+            if (arg0 === 'floor') {
+                $gameMap.setReflectFloorAngle(arg1);
+            }
+            else if (arg0 === 'wall') {
+                $gameMap.setReflectWallAngle(arg1);
+            }
+            else if (arg0 === 'all') {
+                $gameMap.setReflectFloorAngle(arg1);
+                $gameMap.setReflectWallAngle(arg1);
+            }
             break;
         }
 
@@ -2160,11 +2202,13 @@ KCDev.Mirrors.convertChangeReflectArgs = function (char, args) {
 
 /**
  * Overrides map settings. These params are usually controlled through note tags
- * @param {boolean} floorEnabled If false globally disable floor reflections for current map
- * @param {boolean} wallEnabled If false globally disable wall reflections for current map
+ * @param {boolean | string} floorEnabled If false globally disable floor reflections for current map
+ * @param {boolean | string} wallEnabled If false globally disable wall reflections for current map
  * @param {string} mode Reflection mode
+ * @param {number | string} floorAngle
+ * @param {number | string} wallAngle
  */
-KCDev.Mirrors.overrideMapSettings = function (floorEnabled = '', wallEnabled = '', mode = '') {
+KCDev.Mirrors.overrideMapSettings = function (floorEnabled = '', wallEnabled = '', mode = '', floorAngle = '', wallAngle = '') {
 
     // backwards compatibility
     if (floorEnabled === 'unchanged') {
@@ -2203,6 +2247,14 @@ KCDev.Mirrors.overrideMapSettings = function (floorEnabled = '', wallEnabled = '
                 $gameMap.setReflectMode(KCDev.Mirrors.getWallReflectMode());
                 break;
         }
+    }
+
+    if (typeof floorAngle === 'number') {
+        $gameMap.setReflectFloorAngle(floorAngle);
+    }
+
+    if (typeof wallAngle === 'number') {
+        $gameMap.setReflectWallAngle(wallAngle);
     }
 };
 
