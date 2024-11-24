@@ -1928,8 +1928,6 @@ KCDev.Mirrors.setCharacterReflect = function (char, reflectChar, reflectIndex, e
 KCDev.Mirrors.resetCharacterReflectImage = function (char) {
     if (char) {
         char.setReflectImage();
-        char.reflectFloorToggle();
-        char.reflectWallToggle();
     }
 };
 
