@@ -1726,7 +1726,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             const reflectAngle = KCDev.Mirrors.tryParseParameter(args[3]);
-            if (typeof reflectEnabled !== 'number') {
+            if (typeof reflectAngle !== 'number') {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid 4th argument ${reflectAngle}
                 Must be a number!`);
@@ -2540,6 +2540,8 @@ KCDev.Mirrors.updateActorCharacterReflect = function (actor, character) {
     character.setReflectFloorYOffset(actor.reflectFloorYOffset());
     character.setReflectWallXOffset(actor.reflectWallXOffset());
     character.setReflectWallYOffset(actor.reflectWallYOffset());
+    character.setReflectFloorRotation(actor.reflectFloorRotation());
+    character.setReflectWallRotation(actor.reflectWallRotation());
 };
 
 KCDev.Mirrors.Game_Actor_setup = Game_Actor.prototype.setup;
