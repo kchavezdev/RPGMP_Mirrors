@@ -377,6 +377,21 @@ SOFTWARE.
  *             positive x moves to the right, and positive y moves down,
  *             and the opposites are true
  * 
+ * setReflectAngle char_type id reflect_type angle
+ *   | Set character reflection offset. This is added to the map angle.
+ *   * example: setReflectAngle actor 0 floor 90
+ *   - char_type: [actor/event/vehicle] Set what type of character the
+ *                target is
+ *   - id: [(number)/boat/ship/airship] identifier of the character
+ *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
+ *       follower, -2 is the second follower, and so on
+ *     + If char_type is 'event,' then 0 is 'this event'
+ *   - reflect_type: [floor/wall/all] Determines whether the floor or wall
+ *                   reflection is being modified. 'all' modifies both.
+ *   - angle: An angle that the reflection will be offset by in degrees. 
+ *            Positive values rotate the reflection sprite clockwise. 
+ *            Negative values rotate the reflection counterclockwise.
+ * 
  * resetReflect char_type id
  *   | Reset a characters reflections to the current character graphic
  *     and index.
@@ -405,6 +420,15 @@ SOFTWARE.
  *     Enabling reflections does NOT take priority over individual settings.
  *   * example: setMapReflect floor false
  * 
+ * setReflectMapAngle reflect_type angle
+ *   | Offset all reflections on this map by angle degrees.
+ *   * example: setReflectMapAngle all 120
+ *   - reflect_type: [floor/wall/all] Determines whether the floor or wall
+ *                   reflection is being modified. 'all' modifies both.
+ *   - angle: An angle that the reflection will be offset by in degrees. 
+ *            Positive values rotate the reflection sprite clockwise. 
+ *            Negative values rotate the reflection counterclockwise.
+ * 
  * --------------------MV Plugin Commands Quick Reference----------------------
  * 
  * See above section for details. This is just a list of commands and
@@ -420,6 +444,8 @@ SOFTWARE.
  * 
  * setReflectOffset char_type id reflect_type axis offset
  * 
+ * setReflectAngle char_type id reflect_type angle
+ * 
  * resetReflect char_type id
  * 
  * forceWallReflectMode mode
@@ -427,6 +453,8 @@ SOFTWARE.
  * refreshReflectMap
  * 
  * setMapReflect reflect_type is_visible
+ * 
+ * setReflectMapAngle reflect_type angle
  * 
  * @param regionsParent
  * @text Regions
