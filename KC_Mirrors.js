@@ -872,6 +872,12 @@ SOFTWARE.
  * @option Unchanged
  * @value 
  * 
+ * @arg reflectFloorAngle
+ * @parent reflectFloor
+ * @text Floor Angle
+ * @desc The angle (in degrees) all reflections are offset by. Leave blank to keep unchanged.
+ * @type text
+ * 
  * @arg reflectWall
  * @text Allow Wall Reflections
  * @type select
@@ -883,6 +889,12 @@ SOFTWARE.
  * @value map notes
  * @option Unchanged
  * @value 
+ * 
+ * @arg reflectWallAngle
+ * @parent reflectWall
+ * @text Wall Angle
+ * @desc The angle (in degrees) all reflections are offset by. Leave blank to keep unchanged.
+ * @type text
  * 
  * @arg mode
  * @text Reflection Mode
@@ -897,16 +909,6 @@ SOFTWARE.
  * @value map notes
  * @option Unchanged
  * @value 
- * 
- * @arg reflectFloorAngle
- * @text Floor Angle
- * @desc The angle (in degrees) all reflections are offset by. Leave blank to keep unchanged.
- * @type text
- * 
- * @arg reflectWallAngle
- * @text Wall Angle
- * @desc The angle (in degrees) all reflections are offset by. Leave blank to keep unchanged.
- * @type text
  * 
  */
 
