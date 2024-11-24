@@ -1486,7 +1486,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
                 break;
             }
 
-            KCDev.Mirrors.overrideMapSettings('unchanged', 'unchanged', arg0);
+            KCDev.Mirrors.overrideMapSettings('', '', arg0);
 
             break;
         }
