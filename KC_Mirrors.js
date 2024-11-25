@@ -507,7 +507,7 @@ SOFTWARE.
  * @desc Default setting for vehicles.
  * @type struct<defaults>
  * @parent defaultParent
- * @default {"reflectFloor":"true","reflectWall":"true"}
+ * @default {"reflectFloor":"true","reflectWall":"false"}
  * 
  * @param advancedOptsParent
  * @text Other Options
