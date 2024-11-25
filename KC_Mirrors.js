@@ -397,6 +397,7 @@ SOFTWARE.
  *     + If char_type is 'actor,' then 0 is the party leader, -1 is the first
  *       follower, -2 is the second follower, and so on
  *     + If char_type is 'event,' then 0 is 'this event'
+ *     + If char_type is 'vehicle,' then numbers are an invalid agument
  *   - reflect_type: [floor/wall/all] Determines whether the floor or wall
  *                   reflection is being modified. 'all' modifies both.
  *   - angle: An angle that the reflection will be offset by in degrees. 
