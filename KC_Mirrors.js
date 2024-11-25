@@ -256,7 +256,7 @@ SOFTWARE.
  *   | are persistent and are included in the save file.
  * 
  * Match Vehicle Reflection
- *   | Sets this vehicle's reflection graphic to their normal top view graphic.
+ *   | Sets this vehicle's reflection graphic to its normal top view graphic.
  * 
  * Set Wall Reflection Mode
  *   | Sets the wall reflection mode by changing the wall reflection mode
