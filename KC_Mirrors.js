@@ -251,6 +251,13 @@ SOFTWARE.
  * Match Actor Reflection
  *   | Sets this actor's reflection graphic to their normal top view graphic.
  * 
+ * Change Vehicle Reflection
+ *   | Change the reflection parameters of a specified vehicle. These changes
+ *   | are persistent and are included in the save file.
+ * 
+ * Match Vehicle Reflection
+ *   | Sets this vehicle's reflection graphic to their normal top view graphic.
+ * 
  * Set Wall Reflection Mode
  *   | Sets the wall reflection mode by changing the wall reflection mode
  *   | variable defined in the plugin parameters.
@@ -293,8 +300,17 @@ SOFTWARE.
  * resetActorReflectImage(actor_id)
  *   | Same as Match Actor Reflection command (MZ)
  * 
+ * setVehicleReflect(vehicle_name, reflection_filename, reflection_index,
+ *                 floor_enabled, wall_enabled, floor_opacity,
+ *                 wall_opacity, floor_x_offset, floor_y_offset,
+ *                 wall_x_offset, wall_y_offset)
+ *   | Same as Change Vehicle Reflection command (MZ)
+ * 
+ * resetVehicleReflectImage(vehicle_name)
+ *   | Same as Match Vehicle Reflection command (MZ)
+ * 
  * setWallReflectMode(mode)
- *   | Same as Set Wall Reflection Mode command (MZ)
+ *   | Same as Set Wall Reflection Variable command (MZ)
  * 
  * refreshReflectWallCache()
  *   | Same as Refresh Wall Reflections command (MZ)
