@@ -1971,13 +1971,6 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
         this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
         this._tileId = 0;
     }
-
-    // the sprite's position flickers if we don't do this here
-    _refresh() {
-        super._refresh();
-        const pp = this._parentSprite.pivot;
-        this.pivot.set(pp.x, pp.y);
-    }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3207,10 +3200,21 @@ Sprite_Character.prototype.updateReflectCommon = function (r) {
     r.x = this.x;
     r.scale.set(this.scale.x, this.scale.y);
     r.rotation = this.rotation;
-    r.pivot.y = this.pivot.y;
-    r.setBlendColor(this.getBlendColor());
-    r.setColorTone(this.getColorTone());
-    r.blendMode = this.blendMode;
+    if (r.pivot.y !== this.pivot.y) {
+        r.pivot.y = this.pivot.y;
+    }
+    if (!r._blendColor.equals(this._blendColor)) {
+        r.setBlendColor(this.getBlendColor());
+    }
+    if (!r._colorTone.equals(this._colorTone)) {
+        r.setColorTone(this.getColorTone());
+    }
+    if (r.blendMode !== this.blendMode) {
+        r.blendMode = this.blendMode;
+    }
+    if (r._hue !== this._hue) {
+        r.setHue(this._hue);
+    }
 };
 
 /**
