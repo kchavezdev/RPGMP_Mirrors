@@ -36,6 +36,7 @@ SOFTWARE.
  * @orderAfter GALV_EventSpawnerMZ
  * @orderAfter GALV_EventSpawner
  * @orderAfter QMovement
+ * @orderAfter QSprite
  *
  * @plugindesc [v1.5]Add reflections to events and actors.
  *
