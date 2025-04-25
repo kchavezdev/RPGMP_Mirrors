@@ -38,7 +38,7 @@ SOFTWARE.
  * @orderAfter QMovement
  * @orderAfter QSprite
  *
- * @plugindesc [v1.5]Add reflections to events and actors.
+ * @plugindesc [v1.5.1]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
