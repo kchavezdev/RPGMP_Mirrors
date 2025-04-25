@@ -1611,7 +1611,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
-            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+            if (reflectType !== 'floor' && reflectType !== 'wall' && reflectType !== 'all') {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
                 Valid arguments: 'floor', 'wall', 'all'`);
