@@ -3567,3 +3567,46 @@ if (Imported.Galv_EventSpawner) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Galv Plugins Compatibility                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// START Q Plugins Compatibility                                                                              //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{
+    if (window.QSprite) {
+        KCDev.Mirrors.setReflectFrame_QSprite = KCDev.Mirrors.setReflectFrame;
+        /**
+         * @param {KCDev.Mirrors.Sprite_Reflect} r 
+         */
+        KCDev.Mirrors.setReflectFrame = function (r) {
+            const character = r._character;
+            let tempPose = '';
+
+            if (r._isReflectionWall) {
+                /** @type {Game_Character} */
+                const qSprite = character.qSprite();
+                if (qSprite) {
+                    tempPose = character._pose;
+                    if (tempPose) {
+                        const dir = Number(tempPose[tempPose.length - 1]);
+                        const newDir = character.reverseDir(dir);
+                        const newPose = tempPose.substring(0, tempPose.length - 1) + newDir;
+                        if (character.hasPose(newPose)) {
+                            character._pose = newPose;
+                        }
+                    }
+                }
+            }
+
+            KCDev.Mirrors.setReflectFrame_QSprite.apply(this, arguments);
+
+            if (tempPose) {
+                character._pose = tempPose;
+            }
+        };
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// END Q Plugins Compatibility                                                                                //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
