@@ -1167,12 +1167,12 @@ KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
     }
 
     // game switch replacements
-    text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) => 
+    text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) =>
         $gameSwitches.value(args) ? 'true' : 'false'
     );
 
     if (event) {
-        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (substring, args) => 
+        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (substring, args) =>
             $gameSelfSwitches.value([event._mapId, event._eventId, args.toUpperCase()]) ? 'true' : 'false'
         );
     }
@@ -1255,7 +1255,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         // plugin commands
         PluginManagerEx.registerCommand(script, 'changeEventReflect', function (args) {
-            
+
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
         });
 
@@ -1334,7 +1334,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         try {
             const vehicleDefault = JsonEx.parse(parameters.vehicleDefault);
-            KCDev.Mirrors.vehicleDefault = { reflectFloor: vehicleDefault.reflectFloor.toLowerCase() === 'true',  reflectWall: vehicleDefault.reflectWall.toLowerCase() === 'true'};
+            KCDev.Mirrors.vehicleDefault = { reflectFloor: vehicleDefault.reflectFloor.toLowerCase() === 'true', reflectWall: vehicleDefault.reflectWall.toLowerCase() === 'true' };
         } catch (error) {
             console.error(error.message);
         }
@@ -1559,7 +1559,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             let index = -1;
-            
+
             if (args.length > 1) {
                 index = KCDev.Mirrors.tryParseParameter(args[2]);
 
@@ -1825,7 +1825,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
 
             break;
         }
-        
+
         case 'setMapReflect': {
             if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
                 break;
@@ -2049,9 +2049,9 @@ KCDev.Mirrors.resetCharacterReflectImage = function (char) {
 KCDev.Mirrors.setEventReflect = function (eventId, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset, floorAngle, wallAngle) {
     const event = $gameMap.event(eventId === 0 ? this.eventId() : eventId);
     if (event) {
-        KCDev.Mirrors.setCharacterReflect(event, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset, floorAngle, wallAngle);        
+        KCDev.Mirrors.setCharacterReflect(event, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset, floorAngle, wallAngle);
     }
-    
+
 };
 
 /**
@@ -2063,7 +2063,7 @@ KCDev.Mirrors.resetEventReflectImage = function (eventId) {
     if (event) {
         KCDev.Mirrors.resetCharacterReflectImage(event);
     }
-    
+
 };
 
 /**
@@ -3502,7 +3502,7 @@ if (Imported.Galv_EventSpawner) {
 
     KCDev.Mirrors.Spriteset_Map_unspawnEvent = Spriteset_Map.prototype.unspawnEvent;
     Spriteset_Map.prototype.unspawnEvent = function (eventId) {
-        
+
         for (let i = 0; i < this._characterSprites.length; i++) {
             const sprite = this._characterSprites[i];
             if (sprite._reflectionFloor) {
