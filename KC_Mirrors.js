@@ -1963,10 +1963,12 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
 
         this.setCharacter(this._parentSprite._character);
 
-        if (!this._character) return;
+        const character = this._character;
 
-        this._characterName = (this._character.reflectName() === '') ? this._character.characterName() : this._character.reflectName();
-        this._characterIndex = (this._character.reflectIndex() < 0) ? this._character.characterIndex() : this._character.reflectIndex();
+        if (!character) return;
+
+        this._characterName = (character.reflectName() === '') ? character.characterName() : character.reflectName();
+        this._characterIndex = (character.reflectIndex() < 0) ? character.characterIndex() : character.reflectIndex();
         this.bitmap = ImageManager.loadCharacter(this._characterName);
         this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
         this._tileId = 0;
@@ -3139,8 +3141,8 @@ Sprite_Character.prototype.updateReflectWall = function () {
 
     const char = this._character;
     // need to floor for compatibility with certain pixel movement plugins
-    const charX = Math.floor(this._character.x);
-    const charY = Math.floor(this._character.y);
+    const charX = Math.floor(char.x);
+    const charY = Math.floor(char.y);
     const o = char.reflectWallOpacity();
 
     r.visible = $gameMap.reflectWall() && char.reflectWall() && !KCDev.Mirrors.noReflectRegions.has($gameMap.regionId(charX, charY)) && ((o === undefined && !char.isTransparent()) || o);
@@ -3314,15 +3316,18 @@ KCDev.Mirrors.handleReflectFrame = function (r) {
  */
 KCDev.Mirrors.setReflectFrame = function (r) {
 
+    /** @type {Game_Character} */
+    const character = r._character;
+
     // store these values
-    const tempCharIndex = r._character._characterIndex;
-    const tempCharName = r._character._characterName;
-    const tempCharDir = r._character._direction;
+    const tempCharIndex = character._characterIndex;
+    const tempCharName = character._characterName;
+    const tempCharDir = character._direction;
 
     // load in reflection parameters
-    r._character._characterName = r._characterName;
-    r._character._characterIndex = r._characterIndex;
-    if (r._isReflectionWall) r._character._direction = r._character.reverseDir(tempCharDir);
+    character._characterName = r._characterName;
+    character._characterIndex = r._characterIndex;
+    if (r._isReflectionWall) character._direction = character.reverseDir(tempCharDir);
 
     // set the frame
     const pw = r.patternWidth();
@@ -3332,9 +3337,9 @@ KCDev.Mirrors.setReflectFrame = function (r) {
     r.setFrame(sx, sy, pw, ph);
 
     // restore character properties
-    r._character._characterIndex = tempCharIndex;
-    r._character._characterName = tempCharName;
-    r._character._direction = tempCharDir;
+    character._characterIndex = tempCharIndex;
+    character._characterName = tempCharName;
+    character._direction = tempCharDir;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3471,16 +3476,18 @@ if (Imported.Galv_CharacterFrames) {
      */
     KCDev.Mirrors.setReflectFrame = function (r) {
 
+        const character = r._character;
+
         // store character values
-        const tmpCFrames = r._character._cframes;
+        const tmpCFrames = character._cframes;
 
         // write reflection values
-        r._character._cframes = r._cframes;
+        character._cframes = r._cframes;
 
         KCDev.Mirrors.setReflectFrame_GalvCF.apply(this, arguments);
 
         // restore original character values
-        r._character._cframes = tmpCFrames;
+        character._cframes = tmpCFrames;
     };
 }
 
@@ -3492,13 +3499,15 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
      */
     KCDev.Mirrors.setReflectFrame = function (r) {
 
-        const tmpDiagDir = r._character._diagDir;
+        const character = r._character;
 
-        if (r._isReflectionWall && tmpDiagDir) r._character._diagDir = r._character.reverseDir(tmpDiagDir);
+        const tmpDiagDir = character._diagDir;
+
+        if (r._isReflectionWall && tmpDiagDir) character._diagDir = character.reverseDir(tmpDiagDir);
 
         KCDev.Mirrors.setReflectFrame_GalvDM.apply(this, arguments);
 
-        r._character._diagDir = tmpDiagDir;
+        character._diagDir = tmpDiagDir;
     };
 }
 
