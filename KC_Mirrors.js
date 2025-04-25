@@ -36,8 +36,9 @@ SOFTWARE.
  * @orderAfter GALV_EventSpawnerMZ
  * @orderAfter GALV_EventSpawner
  * @orderAfter QMovement
+ * @orderAfter QSprite
  *
- * @plugindesc [v1.5]Add reflections to events and actors.
+ * @plugindesc [v1.5.1]Add reflections to events and actors.
  *
  * @help
  * KC_Mirrors.js
@@ -1167,12 +1168,12 @@ KCDev.Mirrors.convertEscapeCharacters = function (text, event = null) {
     }
 
     // game switch replacements
-    text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) => 
+    text = text.replace(/\x1bS\[(\d+)\]/gi, (substring, args) =>
         $gameSwitches.value(args) ? 'true' : 'false'
     );
 
     if (event) {
-        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (substring, args) => 
+        text = text.replace(/\x1bSS\[([ABCD])\]/gi, (substring, args) =>
             $gameSelfSwitches.value([event._mapId, event._eventId, args.toUpperCase()]) ? 'true' : 'false'
         );
     }
@@ -1255,7 +1256,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         // plugin commands
         PluginManagerEx.registerCommand(script, 'changeEventReflect', function (args) {
-            
+
             KCDev.Mirrors.setEventReflect.apply(this, KCDev.Mirrors.convertChangeReflectArgs($gameMap.event(args.id || this.eventId()), args));
         });
 
@@ -1334,7 +1335,7 @@ KCDev.Mirrors.tryParseParameter = function (param) {
 
         try {
             const vehicleDefault = JsonEx.parse(parameters.vehicleDefault);
-            KCDev.Mirrors.vehicleDefault = { reflectFloor: vehicleDefault.reflectFloor.toLowerCase() === 'true',  reflectWall: vehicleDefault.reflectWall.toLowerCase() === 'true'};
+            KCDev.Mirrors.vehicleDefault = { reflectFloor: vehicleDefault.reflectFloor.toLowerCase() === 'true', reflectWall: vehicleDefault.reflectWall.toLowerCase() === 'true' };
         } catch (error) {
             console.error(error.message);
         }
@@ -1559,7 +1560,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             let index = -1;
-            
+
             if (args.length > 1) {
                 index = KCDev.Mirrors.tryParseParameter(args[2]);
 
@@ -1611,7 +1612,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
-            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+            if (reflectType !== 'floor' && reflectType !== 'wall' && reflectType !== 'all') {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
                 Valid arguments: 'floor', 'wall', 'all'`);
@@ -1733,7 +1734,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
-            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+            if (reflectType !== 'floor' && reflectType !== 'wall' && reflectType !== 'all') {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
                 Valid arguments: 'floor', 'wall', 'all'`);
@@ -1774,7 +1775,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
             }
 
             const reflectType = KCDev.Mirrors.tryParseParameter(args[2]);
-            if (reflectType !== 'floor' && !reflectType !== 'wall' && reflectType !== 'all') {
+            if (reflectType !== 'floor' && reflectType !== 'wall' && reflectType !== 'all') {
                 console.error(`\
                 KC_Mirrors: ${command} received invalid 3rd argument ${reflectType}
                 Valid arguments: 'floor', 'wall', 'all'`);
@@ -1825,7 +1826,7 @@ Game_Interpreter.prototype.pluginCommand = function (command, args) {
 
             break;
         }
-        
+
         case 'setMapReflect': {
             if (!KCDev.Mirrors.isNumMvArgsInRange(command, args, 2)) {
                 break;
@@ -1963,20 +1964,15 @@ KCDev.Mirrors.Sprite_Reflect = class Sprite_Reflect extends Sprite_Character {
 
         this.setCharacter(this._parentSprite._character);
 
-        if (!this._character) return;
+        const character = this._character;
 
-        this._characterName = (this._character.reflectName() === '') ? this._character.characterName() : this._character.reflectName();
-        this._characterIndex = (this._character.reflectIndex() < 0) ? this._character.characterIndex() : this._character.reflectIndex();
+        if (!character) return;
+
+        this._characterName = (character.reflectName() === '') ? character.characterName() : character.reflectName();
+        this._characterIndex = (character.reflectIndex() < 0) ? character.characterIndex() : character.reflectIndex();
         this.bitmap = ImageManager.loadCharacter(this._characterName);
         this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
         this._tileId = 0;
-    }
-
-    // the sprite's position flickers if we don't do this here
-    _refresh() {
-        super._refresh();
-        const pp = this._parentSprite.pivot;
-        this.pivot.set(pp.x, pp.y);
     }
 };
 
@@ -2049,9 +2045,9 @@ KCDev.Mirrors.resetCharacterReflectImage = function (char) {
 KCDev.Mirrors.setEventReflect = function (eventId, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset, floorAngle, wallAngle) {
     const event = $gameMap.event(eventId === 0 ? this.eventId() : eventId);
     if (event) {
-        KCDev.Mirrors.setCharacterReflect(event, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset, floorAngle, wallAngle);        
+        KCDev.Mirrors.setCharacterReflect(event, reflectChar, reflectIndex, enableFloor, enableWall, floorOpacity, wallOpacity, floorXOffset, floorYOffset, wallXOffset, wallYOffset, floorAngle, wallAngle);
     }
-    
+
 };
 
 /**
@@ -2063,7 +2059,7 @@ KCDev.Mirrors.resetEventReflectImage = function (eventId) {
     if (event) {
         KCDev.Mirrors.resetCharacterReflectImage(event);
     }
-    
+
 };
 
 /**
@@ -3146,8 +3142,8 @@ Sprite_Character.prototype.updateReflectWall = function () {
 
     const char = this._character;
     // need to floor for compatibility with certain pixel movement plugins
-    const charX = Math.floor(this._character.x);
-    const charY = Math.floor(this._character.y);
+    const charX = Math.floor(char.x);
+    const charY = Math.floor(char.y);
     const o = char.reflectWallOpacity();
 
     r.visible = $gameMap.reflectWall() && char.reflectWall() && !KCDev.Mirrors.noReflectRegions.has($gameMap.regionId(charX, charY)) && ((o === undefined && !char.isTransparent()) || o);
@@ -3207,10 +3203,21 @@ Sprite_Character.prototype.updateReflectCommon = function (r) {
     r.x = this.x;
     r.scale.set(this.scale.x, this.scale.y);
     r.rotation = this.rotation;
-    r.pivot.y = this.pivot.y;
-    r.setBlendColor(this.getBlendColor());
-    r.setColorTone(this.getColorTone());
-    r.blendMode = this.blendMode;
+    if (r.pivot.y !== this.pivot.y) {
+        r.pivot.y = this.pivot.y;
+    }
+    if (!r._blendColor.equals(this._blendColor)) {
+        r.setBlendColor(this.getBlendColor());
+    }
+    if (!r._colorTone.equals(this._colorTone)) {
+        r.setColorTone(this.getColorTone());
+    }
+    if (r.blendMode !== this.blendMode) {
+        r.blendMode = this.blendMode;
+    }
+    if (r._hue !== this._hue) {
+        r.setHue(this._hue);
+    }
 };
 
 /**
@@ -3310,15 +3317,18 @@ KCDev.Mirrors.handleReflectFrame = function (r) {
  */
 KCDev.Mirrors.setReflectFrame = function (r) {
 
+    /** @type {Game_Character} */
+    const character = r._character;
+
     // store these values
-    const tempCharIndex = r._character._characterIndex;
-    const tempCharName = r._character._characterName;
-    const tempCharDir = r._character._direction;
+    const tempCharIndex = character._characterIndex;
+    const tempCharName = character._characterName;
+    const tempCharDir = character._direction;
 
     // load in reflection parameters
-    r._character._characterName = r._characterName;
-    r._character._characterIndex = r._characterIndex;
-    if (r._isReflectionWall) r._character._direction = r._character.reverseDir(tempCharDir);
+    character._characterName = r._characterName;
+    character._characterIndex = r._characterIndex;
+    if (r._isReflectionWall) character._direction = character.reverseDir(tempCharDir);
 
     // set the frame
     const pw = r.patternWidth();
@@ -3328,9 +3338,9 @@ KCDev.Mirrors.setReflectFrame = function (r) {
     r.setFrame(sx, sy, pw, ph);
 
     // restore character properties
-    r._character._characterIndex = tempCharIndex;
-    r._character._characterName = tempCharName;
-    r._character._direction = tempCharDir;
+    character._characterIndex = tempCharIndex;
+    character._characterName = tempCharName;
+    character._direction = tempCharDir;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3467,47 +3477,19 @@ if (Imported.Galv_CharacterFrames) {
      */
     KCDev.Mirrors.setReflectFrame = function (r) {
 
+        const character = r._character;
+
         // store character values
-        const tmpCFrames = r._character._cframes;
+        const tmpCFrames = character._cframes;
 
         // write reflection values
-        r._character._cframes = r._cframes;
+        character._cframes = r._cframes;
 
         KCDev.Mirrors.setReflectFrame_GalvCF.apply(this, arguments);
 
         // restore original character values
-        r._character._cframes = tmpCFrames;
+        character._cframes = tmpCFrames;
     };
-
-    // hacky speedup
-    // basically, hitting "load game" to a map with many reflections chugs otherwise on MZ
-    // this seems to be related to property access times?
-    // not entirely sure, but this fixes the slow down and shouldn't conflict with other plugins?
-    if (!JsonEx._cleanMetaData && Utils.RPGMAKER_NAME === 'MZ') {
-
-        // ported from MV
-        JsonEx._cleanMetadata = function (object) {
-            if (!object) return;
-
-            delete object['@'];
-
-            if (typeof object === 'object') {
-                Object.keys(object).forEach(function (key) {
-                    var value = object[key];
-                    if (typeof value === 'object') {
-                        JsonEx._cleanMetadata(value);
-                    }
-                });
-            }
-        };
-
-        KCDev.Mirrors.JsonEx_parse = JsonEx.parse;
-        JsonEx.parse = function (s) {
-            const obj = KCDev.Mirrors.JsonEx_parse.apply(this, arguments);
-            JsonEx._cleanMetadata(obj)
-            return obj;
-        };
-    }
 }
 
 if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
@@ -3518,13 +3500,15 @@ if (Imported.Galv_DiagonalMovement && Galv.DM.diagGraphic) {
      */
     KCDev.Mirrors.setReflectFrame = function (r) {
 
-        const tmpDiagDir = r._character._diagDir;
+        const character = r._character;
 
-        if (r._isReflectionWall && tmpDiagDir) r._character._diagDir = r._character.reverseDir(tmpDiagDir);
+        const tmpDiagDir = character._diagDir;
+
+        if (r._isReflectionWall && tmpDiagDir) character._diagDir = character.reverseDir(tmpDiagDir);
 
         KCDev.Mirrors.setReflectFrame_GalvDM.apply(this, arguments);
 
-        r._character._diagDir = tmpDiagDir;
+        character._diagDir = tmpDiagDir;
     };
 }
 
@@ -3532,7 +3516,7 @@ if (Imported.Galv_EventSpawner) {
 
     KCDev.Mirrors.Spriteset_Map_unspawnEvent = Spriteset_Map.prototype.unspawnEvent;
     Spriteset_Map.prototype.unspawnEvent = function (eventId) {
-        
+
         for (let i = 0; i < this._characterSprites.length; i++) {
             const sprite = this._characterSprites[i];
             if (sprite._reflectionFloor) {
@@ -3566,4 +3550,47 @@ if (Imported.Galv_EventSpawner) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // END Galv Plugins Compatibility                                                                             //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// START Q Plugins Compatibility                                                                              //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{
+    if (window.QSprite) {
+        KCDev.Mirrors.setReflectFrame_QSprite = KCDev.Mirrors.setReflectFrame;
+        /**
+         * @param {KCDev.Mirrors.Sprite_Reflect} r 
+         */
+        KCDev.Mirrors.setReflectFrame = function (r) {
+            const character = r._character;
+            let tempPose = '';
+
+            if (r._isReflectionWall) {
+                /** @type {Game_Character} */
+                const qSprite = character.qSprite();
+                if (qSprite) {
+                    tempPose = character._pose;
+                    if (tempPose) {
+                        const dir = Number(tempPose[tempPose.length - 1]);
+                        const newDir = character.reverseDir(dir);
+                        const newPose = tempPose.substring(0, tempPose.length - 1) + newDir;
+                        if (character.hasPose(newPose)) {
+                            character._pose = newPose;
+                        }
+                    }
+                }
+            }
+
+            KCDev.Mirrors.setReflectFrame_QSprite.apply(this, arguments);
+
+            if (tempPose) {
+                character._pose = tempPose;
+            }
+        };
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// END Q Plugins Compatibility                                                                                //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
